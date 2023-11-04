@@ -13,6 +13,9 @@ app_container=$(docker ps | grep $app_name | awk '{print $1}')
 npm_modules_path="/Users/emomkus/Desktop/code/npm_modules"
 npm_modules_provider="@edvinas1122"
 
+# local_modules or node_modules
+module_locality="local_modules"
+
 if [ -z "$app_container" ]
 then
 	echo "No $app_name container found. Creating one..."
@@ -21,7 +24,7 @@ then
 		-it \
 		-p 3000:3000 \
 		-v $(pwd)/:/app/ \
-		-v $npm_modules_path:/app/local_modules/$npm_modules_provider \
+		-v $npm_modules_path:/app/$module_locality/$npm_modules_provider \
 		$app_name /bin/bash
 	exit 0
 else
