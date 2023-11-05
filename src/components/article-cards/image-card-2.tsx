@@ -48,7 +48,11 @@ export function ArticleCard(
 		>
 		<Card.Section>
 			<a {...linkProps}>
-				<Image src={props.image} height={180} />
+				<Image
+					alt={`${props.title} cover image`}
+					src={props.image}
+					height={180}
+				/>
 			</a>
 		</Card.Section>
 
@@ -83,42 +87,19 @@ const Footer = ({
 
 }) => {
 
-	console.log(skills);
-
 	return (
 		<Group justify="end" className={classes.footer}>
-			{/* <Text fz="xs" >
-				Project dependencies:
-			</Text> */}
 			<Group justify="end" >
-			{skills.map((skill) => (
-				<SkillItem 
+			{skills.filter((skill) => (skill.title)).map((skill) => (
+				<SkillItem
 					key={skill.title}
 					title={skill.title}
 					image={skill.image}
-					link={skill.url}
+					url={skill.url}
 					description={skill.description}	
 				/>
 				))}
-			</Group>
-			{/*
-			<Text fz="sm" inline>
-				Bill Wormeater
-			</Text>
-			<Group gap={8} mr={0}>
-			<ActionIcon className={classes.action}>
-				<IconHeart style={{ width: rem(16), height: rem(16) }} color={theme.colors.red[6]} />
-			</ActionIcon>
-			<ActionIcon className={classes.action}>
-				<IconBookmark
-				style={{ width: rem(16), height: rem(16) }}
-				color={theme.colors.yellow[7]}
-				/>
-			</ActionIcon>
-			<ActionIcon className={classes.action}>
-				<IconShare style={{ width: rem(16), height: rem(16) }} color={theme.colors.blue[6]} />
-			</ActionIcon> */}
-			
+			</Group>			
 		</Group>
 	);
 };
@@ -130,7 +111,7 @@ const SkillItem = (props: {
 	description: string;
 }) => {
 	return (
-		<HoverCard shadow="md" position="top" shadow="md" withinPortal>
+		<HoverCard shadow="md" position="top" withinPortal>
 			<HoverCard.Target>		
 				<div style={{
 					display: 'flex',

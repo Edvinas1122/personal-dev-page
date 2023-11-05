@@ -1,5 +1,5 @@
 import {
-	NotionDatabaseTool
+	NotionDatabaseTool,
 } from "@edvinas1122/notion-database-tool";
 
 export default class BlogService {
@@ -13,14 +13,10 @@ export default class BlogService {
 			.getEntries(undefined, undefined, 3)
 			.all()
 			.then((entries: any) => entries.all());
-		const tables_with_images = await Promise
-			.all(projects
-				.map(async (project: any) => {
-					return await this.getProjectDetails(project);
-		}));
-		return tables_with_images;
+		const tablesWithImagesPromises = projects.map((project: any) => this.getProjectDetails(project));
+		const tablesWithImages = await Promise.all(tablesWithImagesPromises);
+		return tablesWithImages;
 	}
-
 
 	/*
 		Notion formater service should handle this
@@ -35,17 +31,31 @@ export default class BlogService {
 
 	private async getProjectDetails(table: any) {
 		const page = await table.retrievePageInfo();
-		if (!page) throw new Error("Page not found");
+		if (!page?.object || page?.object !== "page") 
+		{
+			console.log("mistakes", page);
+		}
 		const constructed_item = table;
-		constructed_item.cover = this.coverImage(page.cover);
-		constructed_item.icon = page.icon;
+		if (page) {
+			constructed_item.cover = this.coverImage(page.cover);
+			constructed_item.icon = page.icon;
+		} else {
+			constructed_item.cover = "";
+			constructed_item.icon = "";
+		}
 		constructed_item.external = await this.getRelations(table["External Deps"])
 			.then((relations) => relations.map((relation) => this.external(relation)));
 		return (constructed_item);
 	}
 
 	private async getRelations(fun: (()=>Promise<any>)[]) {
-		return await Promise.all(fun.map(async (f) => await f()));
+		const relations = await this.executePromises(fun);
+		return relations;
+	}
+
+	private async executePromises(promises: (()=>Promise<any>)[]) {
+		const results = await Promise.all(promises.map((promise) => promise()));
+		return results;
 	}
 
 	private getIcon(item: any) {
@@ -65,11 +75,12 @@ export default class BlogService {
 		like hey intra api, 42 api, etc
 	*/
 	private external(item: any) {
+		// console.log(item);
 		return {
 			title: item.Name,
 			description: item.Description,
 			url: item.URL,
-			image: this.getIcon(item),
+			image: item?.icon ? this.getIcon(item) : "",
 		}
 	}
 }

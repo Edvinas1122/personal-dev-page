@@ -15,9 +15,10 @@ import {
 } from "@/components/grid/grid";
 
 async function getTables() {
+	"use server";
 	const service = constructBlogService({
 		cache: "no-store"
-		// next: {revalidate: 50}
+		// next: {revalidate: 5}
 	});
 	const tables = await service.getProjects();
 	return tables.reverse();
@@ -25,6 +26,7 @@ async function getTables() {
 
 
 async function TableList() {
+	"use server";
 	const tables = await getTables();
 	const tableList: ArticleProps[] = tables.map((table: any) => {
 		return {
@@ -45,13 +47,15 @@ async function TableList() {
 	});
 
 	return (
+		<>
 		<ArticleGrid 
 			articles={tableList}
-		/>
+			/>
+		</>
 	);
 }
 
-export default async function Home() {
+export default function Home() {
 
 	const typer = new EnRichedTextTyper();
 	const title = typer

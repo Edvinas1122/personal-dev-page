@@ -1,7 +1,7 @@
 FROM oven/bun:latest
 
 RUN mkdir -p /app/local_modules
-RUN export NODE_ENV=production
+RUN export NODE_ENV="production"
 WORKDIR /app
 COPY package.json ./
 # COPY bun.lockb ./

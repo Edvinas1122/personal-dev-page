@@ -9,8 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@edvinas1122/api_wrapper": "file:local_modules/@edvinas1122/api_wrapper",
     "@edvinas1122/notion-database-tool": "file:local_modules/@edvinas1122/notion-database-tool",
+    "@mantine/carousel": "^7.1.7",
     "@mantine/core": "^7.1.7",
     "@mantine/hooks": "^7.1.7",
     "@tabler/icons-react": "^2.40.0",

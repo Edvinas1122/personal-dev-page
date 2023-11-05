@@ -66,8 +66,8 @@ import classes from './header.module.css';
 	},
 ];
 
-interface HeaderSearchProps {
-	sections: string[4];
+export interface HeaderSearchProps {
+	sections: string[];
 }
 
 export function HeaderSearch(props: HeaderSearchProps) {

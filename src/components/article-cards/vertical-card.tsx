@@ -15,8 +15,9 @@ export function ArticleCardVertical(
 		>
 		<Group wrap="nowrap" gap={0}>
 			<Image
-			src="https://images.unsplash.com/photo-1602080858428-57174f9431cf?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=400&q=80"
-			height={160}
+				alt={`${props.title} cover image`}
+				src="https://images.unsplash.com/photo-1602080858428-57174f9431cf?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=400&q=80"
+				height={160}
 			/>
 			<div className={classes.body_vertical}>
 			<Text tt="uppercase" c="dimmed" fw={700} size="xs">

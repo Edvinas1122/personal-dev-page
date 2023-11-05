@@ -22,7 +22,7 @@ export default function RootLayout({
 }) {
 return (
 	<html lang="en">
-		<Script>
+		<Script id="color_scheme_script">
 			<ColorSchemeScript />
 		</Script>
 		<body className={inter.className}>

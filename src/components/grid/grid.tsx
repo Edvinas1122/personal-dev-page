@@ -64,6 +64,7 @@ export function ArticleGrid({
 					title={articles[0].title}
 					description={articles[0].description}
 					external_deps={articles[0].external_deps}
+					button='Read More'
 				/>
 			<Grid gutter="lg">
 			<Grid.Col span={6}>
@@ -77,6 +78,7 @@ export function ArticleGrid({
 					title={articles[1].title}
 					description={articles[1].description}
 					external_deps={articles[1].external_deps}
+					button='Read More'
 				/>
 			</Grid.Col>
 			<Grid.Col span={6}>
@@ -90,6 +92,7 @@ export function ArticleGrid({
 					title={articles[2].title}
 					description={articles[2].description}
 					external_deps={articles[2].external_deps}
+					button='Read More'
 				/>
 			</Grid.Col>
 			</Grid>
