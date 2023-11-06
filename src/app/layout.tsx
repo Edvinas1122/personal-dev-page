@@ -4,6 +4,7 @@ import { MantineProvider, ColorSchemeScript } from "@mantine/core";
 import { theme } from "../theme";
 import Script from 'next/script';
 import "@mantine/core/styles.css";
+import '@mantine/code-highlight/styles.css';
 // import "./globals.css";
 
 const inter = Inter({ subsets: ['latin'] })

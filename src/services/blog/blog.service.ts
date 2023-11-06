@@ -18,6 +18,23 @@ export default class BlogService {
 		return tablesWithImages;
 	}
 
+	async getProject(key: string) {
+		try {
+			const project = await this.databaseTool
+				.getTable("Projects")
+				.getEntry("equals")
+				.byKey(key)
+				.then((entry: any) => entry.all());
+			const constructed_item = await this.getProjectDetails(project[0]);
+			return constructed_item;
+		} catch	(err: any) {
+			const message = JSON.parse(err.message.split("\n")[1]);
+			console.log(message.message);
+		}
+		
+
+	}
+
 	/*
 		Notion formater service should handle this
 		wrong responsibility place

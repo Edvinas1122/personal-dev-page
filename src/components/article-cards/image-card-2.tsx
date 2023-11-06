@@ -18,6 +18,7 @@ import {
 } from '@mantine/core';
 import classes from './image-card.module.css';
 import { ArticleCardProps } from './card';
+import Link from 'next/link'
 
 export interface ImageArticleCardProps extends ArticleCardProps {
 	badge: {
@@ -33,10 +34,16 @@ export interface ImageArticleCardProps extends ArticleCardProps {
 
 }
 
+import {
+	to_url_string,
+} from '@/utils/url_string';
+
 export function ArticleCard(
 	props: ImageArticleCardProps
 ) {
-	const linkProps = { href: 'https://mantine.dev', target: '_blank', rel: 'noopener noreferrer' };
+	const linkProps = { 
+		href: to_url_string(props.title),
+	};
 	const theme = useMantineTheme();
 
 	return (
@@ -47,13 +54,13 @@ export function ArticleCard(
 			style={{ height: props.height }}
 		>
 		<Card.Section>
-			<a {...linkProps}>
+			<Link {...linkProps}>
 				<Image
 					alt={`${props.title} cover image`}
 					src={props.image}
 					height={180}
 				/>
-			</a>
+			</Link>
 		</Card.Section>
 
 		<Badge className={classes.rating} variant="gradient" gradient={props.badge?.gradient}>
