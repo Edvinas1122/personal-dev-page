@@ -14,7 +14,7 @@ export default class BlogService {
 			.all()
 			.then((entries: any) => entries.all());
 		const tablesWithImagesPromises = projects.map((project: any) => this.getProjectDetails(project));
-		const tablesWithImages = await Promise.all(tablesWithImagesPromises);
+		const tablesWithImages = await Promise.all(tablesWithImagesPromises); /// parallel issues
 		return tablesWithImages;
 	}
 
@@ -25,11 +25,14 @@ export default class BlogService {
 				.getEntry("equals")
 				.byKey(key)
 				.then((entry: any) => entry.all());
+			if (!project) {
+				console.error("no project found");
+				throw new Error("no project found");
+			}
 			const constructed_item = await this.getProjectDetails(project[0]);
 			return constructed_item;
 		} catch	(err: any) {
-			const message = JSON.parse(err.message.split("\n")[1]);
-			console.log(message.message);
+			this.exceptionHandler(err);
 		}
 		
 
@@ -50,7 +53,7 @@ export default class BlogService {
 		const page = await table.retrievePageInfo();
 		if (!page?.object || page?.object !== "page") 
 		{
-			console.log("mistakes", page);
+			console.error("mistakes", page);
 		}
 		const constructed_item = table;
 		if (page) {
@@ -97,7 +100,18 @@ export default class BlogService {
 			title: item.Name,
 			description: item.Description,
 			url: item.URL,
+			image_type: item?.icon?.type,
 			image: item?.icon ? this.getIcon(item) : "",
+		}
+	}
+
+	private exceptionHandler(err: any) {
+		console.log(err);
+		if (err?.message)
+		{
+			// const message = JSON.parse(err.message.split("\n")[1]);
+			// console.log(message.message);
+			console.log(err.message);
 		}
 	}
 }

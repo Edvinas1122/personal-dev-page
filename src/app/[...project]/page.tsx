@@ -11,6 +11,7 @@ from "@/components/text/typer";
 import { Hero } from "@/components/hero/hero";
 import NotionList from "@/services/notion-views/List";
 import { Text, Paper, Container } from '@mantine/core';
+import { notFound } from "next/navigation";
 
 async function Description({
 	project
@@ -21,20 +22,22 @@ async function Description({
 	const manual_aquisition_methods = project["Manual"];
 	const manuals = await Promise.all(manual_aquisition_methods.map(async (method: any) => {
 		const manual = await method();
+		if (!manual) {
+			throw new Error("Error parallel fetching manuals");
+		}
 		return manual;
 	}));
 
 	const root_manual = manuals.find((manual: any) => {
 		return manual["Expands"].length == 0;
 	});
-	// console.log(root_manual);
 	const root_manual_page = await root_manual.retrievePage();
 	console.log(root_manual_page);
 	return (
 		<>
 			<Container p="xl" size="md" >
-			<NotionList // transpiles blocks
-				page={root_manual_page}
+				<NotionList
+					page={root_manual_page}
 				/>
 			</Container>
 		</>
@@ -53,6 +56,10 @@ async function Project({
 		next: {revalidate: 5}
 	});
 	const project = await service.getProject(name);
+	if (!project) {
+		notFound();
+		return null;
+	}
 	const typer = new EnRichedTextTyper();
 	const title = typer
 		.addGradientSegment(project.Name)
@@ -77,11 +84,21 @@ async function Project({
 			<Suspense>
 				<Description
 					project={project}
-				/>
+					/>
 			</Suspense>
 		</>
 	);
 }
+
+// export async function generateStaticParams() {
+   
+// 	return {
+// 		project: [
+// 			["Bicycle%20Share%20V2"],
+// 			["CV-Template"],
+// 		]
+// 	}
+// }
 
 export default function ProjectPage({
 	params,
@@ -90,19 +107,15 @@ export default function ProjectPage({
 		project: string[]
 	}
 }) {
-	if (params.project.length == 0) {
-		return null;
-	}
 	const name = url_string(params.project[0]);
-	console.log("being called");
+	console.log("being called", params.project);
+
 	return (
 		<>
 			<main>
-				<Suspense>
 					<Project
 						name={name}
 					/>
-				</Suspense>
 			</main>
 		</>
 	);

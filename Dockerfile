@@ -1,4 +1,5 @@
-FROM oven/bun:latest
+# FROM oven/bun:latest
+FROM node:latest
 
 RUN mkdir -p /app/local_modules
 RUN export NODE_ENV="production"

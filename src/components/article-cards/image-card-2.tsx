@@ -14,7 +14,8 @@ import {
 	MantineGradient,
 	MantineTheme,
 	HoverCard,
-	UnstyledButton
+	UnstyledButton,
+	Paper,
 } from '@mantine/core';
 import classes from './image-card.module.css';
 import { ArticleCardProps } from './card';
@@ -27,6 +28,7 @@ export interface ImageArticleCardProps extends ArticleCardProps {
 	},
 	external_deps: {
 		title: string;
+		image_type: "emoji" | "image";
 		image: string;
 		description: string;
 		url: string;
@@ -46,6 +48,7 @@ export function ArticleCard(
 	};
 	const theme = useMantineTheme();
 
+	console.log("header card render", props.title);
 	return (
 		<Card
 			withBorder
@@ -54,13 +57,13 @@ export function ArticleCard(
 			style={{ height: props.height }}
 		>
 		<Card.Section>
-			<Link {...linkProps}>
+			<a {...linkProps}>
 				<Image
 					alt={`${props.title} cover image`}
-					src={props.image}
+					src={props.image ? props.image : ""}
 					height={180}
 				/>
-			</Link>
+			</a>
 		</Card.Section>
 
 		<Badge className={classes.rating} variant="gradient" gradient={props.badge?.gradient}>
@@ -88,6 +91,7 @@ const Footer = ({
 	skills: {
 		title: string;
 		image: string,
+		image_type: "emoji" | "image";
 		description: string,
 		url: string
 	}[]
@@ -101,6 +105,7 @@ const Footer = ({
 				<SkillItem
 					key={skill.title}
 					title={skill.title}
+					image_type={skill.image_type}
 					image={skill.image}
 					url={skill.url}
 					description={skill.description}	
@@ -114,9 +119,12 @@ const Footer = ({
 const SkillItem = (props: { 
 	title: string; 
 	image: string;
+	image_type: "emoji" | "image";
 	url: string;
 	description: string;
 }) => {
+
+	console.log("skill item render", props.image, props.image_type);
 	return (
 		<HoverCard shadow="md" position="top" withinPortal>
 			<HoverCard.Target>		
@@ -124,12 +132,21 @@ const SkillItem = (props: {
 					display: 'flex',
 					flexDirection: 'column',
 				}}>
-				<Avatar
+				{props.image_type === "emoji" ? (
+					<Text
+						size='xs'
+						c="dimmed"
+						>
+						{props.image}
+					</Text>
+				) : (
+					<Avatar
 						src={props.image}
 						size={22}
 						radius="sm"
 						mr="xs"
 						/>
+				)}
 				<Text
 					size='xs'
 					c="dimmed"
@@ -143,6 +160,7 @@ const SkillItem = (props: {
 					title={props.title}
 					description={props.description}
 					image={props.image}
+					image_type={props.image_type}
 					url={props.url}
 				/>
 			</HoverCard.Dropdown>
@@ -154,22 +172,39 @@ export function UserButton({
 	title,
 	description,
 	image,
+	image_type,
 	url
 }:{
 	title: string;
 	description: string;
 	image: string;
+	image_type: "emoji" | "image";
 	url: string;
 }) {
+
+	console.log("user button render", image_type, image);
+
 	return (
-		<UnstyledButton
+		<Paper
 			className={classes.user}
 		>
 			<Group>
-				<Avatar
-					src={image}
-					radius="xs"
-				/>
+			{image_type === "emoji" ? (
+					<Text
+						size='xs'
+						c="dimmed"
+						style={{ size: "22px" }}
+						>
+						{image}
+					</Text>
+				) : (
+					<Avatar
+						src={image}
+						size={22}
+						radius="sm"
+						mr="xs"
+					/>
+				)}
 		
 				<div style={{ flex: 1 }}>
 					<Text size="sm" fw={500}>
@@ -183,6 +218,6 @@ export function UserButton({
 
 			{/* <IconChevronRight style={{ width: rem(14), height: rem(14) }} stroke={1.5} /> */}
 			</Group>
-		</UnstyledButton>
+		</Paper>
 	);
   }

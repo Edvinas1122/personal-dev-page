@@ -15,7 +15,6 @@ import {
 } from "@/components/grid/grid";
 
 async function getTables() {
-	"use server";
 	const service = constructBlogService({
 		// cache: "no-store"
 		next: {revalidate: 5}
@@ -26,7 +25,6 @@ async function getTables() {
 
 
 async function TableList() {
-	"use server";
 	const tables = await getTables();
 	const tableList: ArticleProps[] = tables.map((table: any) => {
 		return {
@@ -40,6 +38,7 @@ async function TableList() {
 			external_deps: table.external as {
 				title: string
 				image: string
+				image_type: "emoji" | "image"
 				description: string
 				url: string
 			}[],
