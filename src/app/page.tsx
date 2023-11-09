@@ -9,47 +9,55 @@ import
 	EnRichedTextTyper
 from "@/components/text/typer";
 import {
-	ArticleGrid,
-	ImageArticleCardProps,
-	ArticleProps
-} from "@/components/grid/grid";
+	ArchitecturePreviewGrid,
+	ArticleCardProps
+} from "@/components/grid/preview/architecture";
 
 async function getTables() {
 	const service = constructBlogService({
 		// cache: "no-store"
-		next: {revalidate: 5}
+		next: {revalidate: 350}
 	});
-	const tables = await service.getProjects();
-	return tables.reverse();
+	// const entires = await service.getProjects();
+	const entires = await service.getCompleteArchitercute();
+	return entires;
 }
 
+function convertToArticleProps(table: any): ArticleCardProps {
+	return {
+		title: table.Name,
+		description: table.Description,
+		category: table.Category,
+		created_at: table.Created,
+		image: table.cover,
+		external_deps: table.external as {
+			title: string
+			image: string
+			image_type: "emoji" | "image"
+			description: string
+			url: string
+		}[],
+		github: table["GitHub Page"],
+		radius: "md",
+		height: "", // filled later
+		dist: table.Dist,
+	}
+
+}
 
 async function TableList() {
 	const tables = await getTables();
-	const tableList: ArticleProps[] = tables.map((table: any) => {
-		return {
-			title: table.Name,
-			description: table.Description,
-			type: table.Category,
-			created_date: table.Created,
-			image: table.cover,
-			button: "Read more",
-			link: `/projects/${table.id}`,
-			external_deps: table.external as {
-				title: string
-				image: string
-				image_type: "emoji" | "image"
-				description: string
-				url: string
-			}[],
-		}
+	const tableList: ArticleCardProps[] = tables.map((table: any) => {
+		return convertToArticleProps(table);
 	});
 
 	return (
 		<>
-		<ArticleGrid 
-			articles={tableList}
-			/>
+			<div id={"Projects"}>
+			<ArchitecturePreviewGrid 
+				articles={tableList}
+				/>
+			</div>
 		</>
 	);
 }
@@ -81,9 +89,14 @@ export default function Home() {
 				button="Let's talk"
 				background_image={background_image}
 			/>
-			<Suspense fallback={<ArticleGrid/>}>
+			<Suspense fallback={<ArchitecturePreviewGrid/>}>
 				<TableList />
 			</Suspense>
+			<div 
+				style={{
+					height: "35vh"
+				}}
+			></div>
 		</main>
 	)
 }

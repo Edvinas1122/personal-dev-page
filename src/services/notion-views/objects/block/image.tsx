@@ -24,8 +24,6 @@ export default function handle_image({
 	image: image
 }) {
 
-	console.log("image");
-	console.log(image);
 
 	if (image.type === "external") {
 		return (

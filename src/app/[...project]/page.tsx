@@ -32,7 +32,6 @@ async function Description({
 		return manual["Expands"].length == 0;
 	});
 	const root_manual_page = await root_manual.retrievePage();
-	console.log(root_manual_page);
 	return (
 		<>
 			<Container p="xl" size="md" >
@@ -50,7 +49,6 @@ async function Project({
 	name: string
 }) {
 
-	console.log(name);
 	const service = constructBlogService({
 		// cache: "no-store"
 		next: {revalidate: 5}
@@ -108,7 +106,6 @@ export default function ProjectPage({
 	}
 }) {
 	const name = url_string(params.project[0]);
-	console.log("being called", params.project);
 
 	return (
 		<>

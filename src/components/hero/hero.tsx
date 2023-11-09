@@ -22,12 +22,33 @@ type HeroProps = {
 	disable_gradient?: boolean;
 	github_link?: string;
 }
+import { useWindowScroll } from '@mantine/hooks';
+import { useMediaQuery } from '@mantine/hooks';
+import React from 'react';
 
 export function Hero(
 	props: HeroProps
 ) {
 	const theme = useMantineTheme();
+	const isMobile = useMediaQuery('(max-width: 1000px)');
+	const [scroll, scrollTo] = useWindowScroll();
+	const [
+		background_height,
+		setHeight
+	] = React
+		.useState(100);
 
+	React.useEffect(() => {
+		if (isMobile) {
+			setHeight(100);
+		}
+		if (!isMobile && scroll.y > 0 && scroll.y < 300) {
+			const height = 100 - (scroll.y / 6);
+			setHeight(height);
+		}
+	}, [scroll.y]);
+
+	const title_offset = !isMobile ? (16 * background_height) / 200 : 3;
 	const background_gradient = "linear-gradient(250deg, rgba(130, 201, 30, 0) 0%, #062343 70%)"
 	const dimGradient = "linear-gradient(250deg, rgba(0, 0, 0, 0) 20%, rgba(0, 0, 0, 0.82) 70%)";
 	const gradient = props.disable_gradient ? `${dimGradient}` : `${background_gradient}`;
@@ -36,29 +57,49 @@ export function Hero(
 		backgroundSize: 'cover',
 		backgroundPosition: 'center',
 		backgroundImage: `${gradient}, url(${props.background_image})`,
-		paddingTop: 'calc(var(--mantine-spacing-xl) * 3)',
-		paddingBottom: 'calc(var(--mantine-spacing-xl) * 3)'
+		paddingTop: `calc(var(--mantine-spacing-xl) * ${title_offset})`,
+		paddingBottom: 'calc(var(--mantine-spacing-xl) * 3)',
+		maxHeight: `${isMobile ? "700px" : ""}`,
+		height: `${background_height}vh`,
 	};
 
+	function opacityDegression(height: number) {
+		if (height <= 50) {
+		  return "0%";
+		} else {
+		  const opacity = 2 * (height - 50);
+		  return `${opacity}%`;
+		}
+	  }
 	return (
 		<div style={rootStyle}>
 			<Container size="lg">
 				<div className={classes.inner}>
-				<div className={classes.content}>
-					<Title className={classes.title}>
+				<div className={classes.content}
+					style={{
+						opacity: opacityDegression(background_height)
+					}}
+				>
+					<Title 
+						className={classes.title}
+					>
 						<EnRichedTextDisplay
 							rich_text={props.title}
 							theme={theme}
 						/>
 					</Title>
-
-					<Text className={classes.description} mt={30}>
+					<Text 
+						className={classes.description}
+						mt={30}
+					>
 						<EnRichedTextDisplay
 							rich_text={props.description}
 							theme={theme}
 						/>
 					</Text>
-					<Group className={classes.controls}>
+					<Group 
+						className={classes.controls}
+					>
 					<Button
 						variant="gradient"
 						gradient={theme.defaultGradient}

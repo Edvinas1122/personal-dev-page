@@ -35,11 +35,13 @@
 }
   
 
-.rating {
-	position: absolute;
+.badge {
+	/* position: absolute; */
+	margin: 0;
+	padding: var(--mantine-spacing-xs);
 	top: var(--mantine-spacing-xs);
-	right: rem(12px);
-	pointer-events: none;
+	/* right: rem(12px); */
+	/* pointer-events: none; */
 }
 
 .title {
@@ -130,14 +132,26 @@
 	padding: var(--mantine-spacing-md);
 }
 
-.user {
+.pop_card {
 	display: block;
 	width: 200px;
 	max-height: 180px;
-	padding: var(--mantine-spacing-md);
+	border: var(--mantine-spacing-sm);
 	color: light-dark(var(--mantine-color-black), var(--mantine-color-dark-0));
   
-	@mixin hover {
+	/* @mixin hover {
 	  background-color: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-8));
+	} */
+}
+
+.link {
+	display: block;
+	align-items: end;
+}
+
+.button {
+	&:hover {
+		transform: scale(1.01);
+		box-shadow: var(--mantine-shadow-md);
 	}
 }

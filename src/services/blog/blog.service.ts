@@ -10,12 +10,62 @@ export default class BlogService {
 	async getProjects() {
 		const projects = await this.databaseTool
 			.getTable("Projects")
-			.getEntries(undefined, undefined, 3)
-			.all()
+			.query()
+			.filter("Category", "select", "equals", "Application")
+			.sort("Created", "ascending")
+			.limit(3)
+			// .cursor()
+			.get()
 			.then((entries: any) => entries.all());
+		// console.log(projects);
 		const tablesWithImagesPromises = projects.map((project: any) => this.getProjectDetails(project));
 		const tablesWithImages = await Promise.all(tablesWithImagesPromises); /// parallel issues
 		return tablesWithImages;
+	}
+
+	async getCompleteArchitercute() {
+		const architecture = (await this.getArchitectures())[0];
+		console.log(architecture);
+		const architercureModules = await Promise.all(architecture.Modules
+			.map(async (project_fetch: any) => await project_fetch())
+		);
+		/*
+			retrieve for each architecture project
+			- projects libraries - [[async fetch], [async fetch]]
+		*/
+		const module_libs = (await Promise
+			.all(architercureModules
+				.flatMap(async (module: any) => await Promise
+					.all(module.Modules
+						.map(async (project_fetch: any) => await project_fetch())
+					))
+		)).flat();
+		console.log(module_libs);
+		const architecture_with_images_promise = this.getProjectDetails(architecture);
+		const architecture_modules_with_images_promises = architercureModules.map((module: any) => this.getProjectDetails(module));
+		const module_libs_with_images_promises = module_libs.map((module: any) => this.getProjectDetails(module));
+		const items = await Promise.all([architecture_with_images_promise, ...architecture_modules_with_images_promises, ...module_libs_with_images_promises]);
+		// console.log(items);
+		return items;
+	}
+
+	async searchProjects(query: string) {
+		const projects = await this.databaseTool
+			.search(query, "Projects");
+		return projects;
+	}
+		
+
+	async getArchitectures() {
+		const architectures = await this.databaseTool
+			.getTable("Projects")
+			.query()
+			.filter("Category", "select", "equals", "Architecture")
+			.sort("Created", "ascending")
+			.limit(3)
+			.get()
+			.then((entries: any) => entries.all());
+		return architectures;
 	}
 
 	async getProject(key: string) {
@@ -34,8 +84,6 @@ export default class BlogService {
 		} catch	(err: any) {
 			this.exceptionHandler(err);
 		}
-		
-
 	}
 
 	/*
@@ -43,7 +91,7 @@ export default class BlogService {
 		wrong responsibility place
 	*/
 	private coverImage(structure: any): string {
-		if (!structure) return 'https://www.edvinasmomkus.com/_next/image?url=https%3A%2F%2Fwww.notion.so%2Fimage%2Fhttps%253A%252F%252Fs3-us-west-2.amazonaws.com%252Fsecure.notion-static.com%252F23185bc3-4231-41dc-8e86-8a4ca374fa80%252F1681923508963.jpeg%3Ftable%3Dblock%26id%3Dacd18d29-7b8c-4eb1-823d-21f63088898c%26cache%3Dv2&w=3840&q=75';
+		if (!structure) return structure;
 		if (structure.type === "external") return structure.external.url;
 		if (structure.type === "file") return structure.file.url;
 		return structure;
@@ -109,6 +157,7 @@ export default class BlogService {
 		console.log(err);
 		if (err?.message)
 		{
+			console.log(err);
 			// const message = JSON.parse(err.message.split("\n")[1]);
 			// console.log(message.message);
 			console.log(err.message);
