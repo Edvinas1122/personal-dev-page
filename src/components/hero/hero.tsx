@@ -6,6 +6,7 @@ import {
 	Button,
 	useMantineTheme,
 	Group,
+	Image
 } from '@mantine/core';
 import classes from './hero.module.css';
 import {
@@ -54,13 +55,37 @@ export function Hero(
 	const gradient = props.disable_gradient ? `${dimGradient}` : `${background_gradient}`;
 	const rootStyle = {
 		// backgroundColor: '#11284b',
-		backgroundSize: 'cover',
-		backgroundPosition: 'center',
-		backgroundImage: `${gradient}, url(${props.background_image})`,
+		// backgroundSize: 'cover',
+		// backgroundPosition: 'center',
+		// backgroundImage: `${gradient}, url(${props.background_image})`,
+		// backgroundImage: `${gradient}`,
 		paddingTop: `calc(var(--mantine-spacing-xl) * ${title_offset})`,
 		paddingBottom: 'calc(var(--mantine-spacing-xl) * 3)',
 		maxHeight: `${isMobile ? "700px" : ""}`,
 		height: `${background_height}vh`,
+		// filter: "blur(8px)",
+		// webkitFilter: "blur(8px)",
+	};
+	const imageStyle = {
+		position: "absolute",
+		top: 0,
+		maxHeight: `${isMobile ? "700px" : ""}`,
+		height: `${background_height}vh`,
+		// backgroundImage: `${gradient}`,
+		// zIndex: 5,
+		// opacity: 0.1,
+		// webkitFilter: "blur(4px)",
+	};
+
+	const gradientItem = {
+		position: "absolute",
+		top: 0,
+		maxHeight: `${isMobile ? "700px" : ""}`,
+		height: `${background_height}vh`,
+		backgroundImage: `${gradient}`,
+		// zIndex: 10,
+		width: "100%",
+		// opacity: 0.5,
 	};
 
 	function opacityDegression(height: number) {
@@ -72,8 +97,24 @@ export function Hero(
 		}
 	  }
 	return (
+		<>
 		<div style={rootStyle}>
-			<Container size="lg">
+			{/* <div style={rootStyle} /> */}
+			<Image 
+				src={props.background_image}
+				style={{
+					...imageStyle,
+					filter: `blur(${4 * (2 * (background_height - 50)) / 100}px)`,
+				}}
+				alt="background"
+			/>
+			<div style={gradientItem}/>
+			<Container size="lg"
+				style={{
+					zIndex: 20,
+					position: "relative",
+				}}
+			>
 				<div className={classes.inner}>
 				<div className={classes.content}
 					style={{
@@ -127,5 +168,6 @@ export function Hero(
 				</div>
 			</Container>
 		</div>
+		</>
 	);
 }
