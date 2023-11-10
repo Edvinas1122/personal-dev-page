@@ -5,6 +5,7 @@ import {
 	Card,
 	MantineTheme,
 	Button,
+	Image,
 } from '@mantine/core';
 import classes from './image-card.module.css';
 import {
@@ -23,9 +24,13 @@ type SimpleCardProps = {
 	image?: string;
 }
 
+import {
+	useHover,
+} from '@mantine/hooks';
+
 export function SimpleCard(props: SimpleCardProps) {
 
-
+	const { hovered, ref } = useHover();
 	const title_font_color = !props.image ? "black" : "white";
 	const description_font_color = !props.image ? "gray" : "#FFFAF0";
 	const linkProps = { 
@@ -33,19 +38,23 @@ export function SimpleCard(props: SimpleCardProps) {
 	};
 	return (
 		<Card
-			p="md"
 			radius="md"
 			className={classes.card_2}
 			style={{ 
 				height: props.height,
 				textShadow: props.image ? "0px 0px 4px black" : "",
-				backgroundImage: props.image ? `url(${props.image})` : "",
-				backgroundSize: "cover",
 			}}
-
 			withBorder
 			shadow='md'
+			ref={ref}
 		>
+			<Card.Section
+				p="md"
+				style={{
+					zIndex: 2,
+					position: "relative",
+				}}
+			>
 				<Group justify="start">
 					{props.badges}
 				</Group>
@@ -62,7 +71,7 @@ export function SimpleCard(props: SimpleCardProps) {
 				<Text
 					c={description_font_color}
 					className={classes.description}
-					lineClamp={4}
+					lineClamp={3}
 					ta="start"
 					mt="md"
 					>
@@ -87,6 +96,31 @@ export function SimpleCard(props: SimpleCardProps) {
 			>
 				Read more
 			</Button>
+			</Card.Section>
+			<Card.Section
+				style={{
+				}}
+			>
+				{
+					!props.image ? null : (
+						<Image
+							src={props.image}
+							alt={props.title + "_image"}
+							style={{
+								top: 0,
+								width: "100%",
+								height: "100%",
+								objectFit: "cover",
+								objectPosition: "center",
+								position: "absolute",
+								zIndex: 1,
+								transition: "transform 0.35s ease-in-out",
+								transform: `${hovered ? "scale(1.03)" : "scale(1)"}`
+							}}
+						/>
+					)
+				}
+			</Card.Section>
 		</Card>
 	);
 }

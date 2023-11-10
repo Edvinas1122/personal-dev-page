@@ -14,7 +14,7 @@
 }
 
 .card_2 {
-	position: relative;
+	/* position: relative; */
 	background-color: var(--mantine-color-body);
 	transition: transform 150ms ease, box-shadow 150ms ease;
 	&:hover {

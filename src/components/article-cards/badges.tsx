@@ -73,6 +73,20 @@ export function LinkBadge(
 import { useHover } from '@mantine/hooks';
 import { motion } from 'framer-motion';
 
+const animation = {
+	retracted: {
+		width: "1em",
+		transition: {
+			duration: 0.5,
+		}
+	},
+	expanded: {
+		width: "100%",
+		transition: {
+			duration: 0.5,
+		}
+	}
+}
 
 export function HoverExample({
 	children,

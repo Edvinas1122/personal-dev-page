@@ -26,30 +26,30 @@ export const blogTables: TableProps[] = [
 			}]
 		}
 	},
-	// {
-	// 	name: "External Deps",
-	// 	database_id: ,
-	// 	properties: {
-	// 		key: {
-	// 			property: "Name",
-	// 			property_type: "title",
-	// 		},
-	// 		properties: [{
-	// 			property: "Name",
-	// 			property_type: "title",
-	// 		},{
-	// 			property: "Description",
-	// 			property_type: "rich_text",
-	// 		},{
-	// 			property: "URL",
-	// 			property_type: "url",
-	// 		},{
-	// 			property: "category",
-	// 			property_type: "select",
-	// 		},{
-	// 			property: "Type",
-	// 			property_type: "select",
-	// 		}]
-	// 	}
-	// },
+	{
+		name: "External Deps",
+		database_id: process.env.EXTERNAL_MODULES as string,
+		properties: {
+			key: {
+				property: "Name",
+				property_type: "title",
+			},
+			properties: [{
+				property: "Name",
+				property_type: "title",
+			},{
+				property: "Description",
+				property_type: "rich_text",
+			},{
+				property: "URL",
+				property_type: "url",
+			},{
+				property: "category",
+				property_type: "select",
+			},{
+				property: "Type",
+				property_type: "select",
+			}]
+		}
+	},
 ]

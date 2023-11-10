@@ -14,7 +14,6 @@ export default class BlogService {
 			.filter("Category", "select", "equals", "Application")
 			.sort("Created", "ascending")
 			.limit(3)
-			// .cursor()
 			.get()
 			.then((entries: any) => entries.all());
 		// console.log(projects);
@@ -25,7 +24,6 @@ export default class BlogService {
 
 	async getCompleteArchitercute() {
 		const architecture = (await this.getArchitectures())[0];
-		console.log(architecture);
 		const architercureModules = await Promise.all(architecture.Modules
 			.map(async (project_fetch: any) => await project_fetch())
 		);
@@ -40,7 +38,7 @@ export default class BlogService {
 						.map(async (project_fetch: any) => await project_fetch())
 					))
 		)).flat();
-		console.log(module_libs);
+		// console.log(module_libs);
 		const architecture_with_images_promise = this.getProjectDetails(architecture);
 		const architecture_modules_with_images_promises = architercureModules.map((module: any) => this.getProjectDetails(module));
 		const module_libs_with_images_promises = module_libs.map((module: any) => this.getProjectDetails(module));
@@ -56,7 +54,7 @@ export default class BlogService {
 	}
 		
 
-	async getArchitectures() {
+	private async getArchitectures() {
 		const architectures = await this.databaseTool
 			.getTable("Projects")
 			.query()
@@ -86,6 +84,41 @@ export default class BlogService {
 		}
 	}
 
+	async getGroupedExternalDeps(
+		attributeExtractor: (dep: any, key: string) => any
+	) {
+		const deps = await this.getExternalDeps();
+		const deps_with_images = await Promise
+			.all(deps
+				.map((dep: any) => this
+					.getProjectDetails(dep, "💼 Projects"))
+		);
+		const grouped = deps.reduce((acc: any, dep: any) => {
+			const category = dep.Type;
+			if (!acc[category]) acc[category] = [];
+			const extracted = attributeExtractor(dep, dep.Type);
+			acc[category].push(extracted);
+			return acc;
+		}, {});
+		return grouped;
+	}
+
+	private async getExternalDeps() {
+		try {
+			const deps = await this.databaseTool
+				.getTable("External Deps")
+				.query()
+				.filter("category", "select", "equals", "digital")
+				.limit(30)
+				.get()
+				.then((entries: any) => entries.all());
+			return deps;
+		} catch (err: any) {
+			console.error(err);
+			this.exceptionHandler(err);
+		}
+	}
+
 	/*
 		Notion formater service should handle this
 		wrong responsibility place
@@ -97,7 +130,10 @@ export default class BlogService {
 		return structure;
 	}
 
-	private async getProjectDetails(table: any) {
+	private async getProjectDetails(
+		table: any,
+		related_table: string = "External Deps"
+	) {
 		const page = await table.retrievePageInfo();
 		if (!page?.object || page?.object !== "page") 
 		{
@@ -111,8 +147,12 @@ export default class BlogService {
 			constructed_item.cover = "";
 			constructed_item.icon = "";
 		}
-		constructed_item.external = await this.getRelations(table["External Deps"])
-			.then((relations) => relations.map((relation) => this.external(relation)));
+		if (related_table) {
+			constructed_item.external = await this
+				.getRelations(table[related_table])
+					.then((relations) => relations
+						.map((relation) => this.external(relation)));
+		}
 		return (constructed_item);
 	}
 
@@ -158,8 +198,6 @@ export default class BlogService {
 		if (err?.message)
 		{
 			console.log(err);
-			// const message = JSON.parse(err.message.split("\n")[1]);
-			// console.log(message.message);
 			console.log(err.message);
 		}
 	}

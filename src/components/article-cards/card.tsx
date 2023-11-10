@@ -8,6 +8,7 @@ import { RelatedItems } from './related-items';
 import { MantineTheme, useMantineTheme } from '@mantine/core';
 import { SimpleCard } from './simple-card';
 import { CategoryBadge, LinkBadge } from './badges';
+import { Card } from '@mantine/core';
 
 export interface ArticleCardProps {
 	title: string;
@@ -24,6 +25,7 @@ export interface ArticleCardProps {
 		url: string;
 	}[],
 	github: string | null;
+	repo_languages?: {[language: string]: number};
 	created_at: string;
 	dist: string;
 };
@@ -32,17 +34,38 @@ export function GeneralArticleCard(
 	props: ArticleCardProps
 ) {
 	const theme = useMantineTheme();
-	const color = props.image ? "antiquewhite" : "dimmed";
+	const color = props.image ? "antiquewhite" : "gray";
 	return (
 		<ArticleCardSelect
 			{...props}
 			theme={theme}
 		>
+			<>
 			<RelatedItems
 				theme={theme}
 				skills={props.external_deps}
 				textColor={color}
-			/>
+				/>
+				{props.repo_languages && (
+					<Card.Section
+						w="100%"
+						style={{
+							bottom: "0",
+							padding: "var(--mantine-spacing-md)",
+							position: "absolute",
+							display: "flex",
+							justifyContent: "flex-end",
+						}}
+					>
+						<div>
+						<Languages
+							color={color}
+							languages={props.repo_languages}
+						/>
+						</div>
+					</Card.Section>
+				)}
+			</>
 		</ArticleCardSelect>
 	);
 }
@@ -70,6 +93,7 @@ import {
 	IconBrandGithub,
 	IconBrandNpm,
 } from '@tabler/icons-react';
+import { Languages } from './languages';
 
 function ArticleCardSelect(props: ArticleCardSelectProps) {
 

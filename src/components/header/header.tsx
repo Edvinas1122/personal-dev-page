@@ -256,7 +256,9 @@ export function HeaderSearch(props: HeaderSearchProps) {
 					data={['React', 'Angular', 'Vue', 'Next.js', 'Riot.js', 'Svelte', 'Blitz.js']}
 					visibleFrom="xs"
 				/> */}
-				<SearchBar/>
+				<SearchBar
+					searchServerMethod={props.searchServerMethod}
+				/>
 			</Group>
 		  </ScrollArea>
 		</Drawer>
@@ -332,7 +334,8 @@ import {
 	TextInput,
 	Code,
 	Modal,
-	FocusTrap
+	FocusTrap,
+	Loader,
 } from '@mantine/core';
 import {
 	useHotkeys,
@@ -351,11 +354,14 @@ function SearchBar(
 	const [debaunced] = useDebouncedValue(search, 200);
 	const [results, setResults] = React.useState([]);
 	const [were_used, setWereUsed] = React.useState(false);
+	const [loading, setLoading] = React.useState(false);
 
 	React.useEffect(() => {
 		console.log('searching', debaunced);
 		if (debaunced.length > 0) {
+			setLoading(true);
 			props.searchServerMethod(debaunced).then((res) => {
+				setLoading(false);
 				setResults(res.results);
 				setWereUsed(true);
 				console.log('results', res);
@@ -396,10 +402,10 @@ function SearchBar(
 					aria-label='Search'
 					size="xs"
 					leftSection={<IconSearch style={{ width: rem(12), height: rem(12) }} stroke={1.5} />}
+					rightSection={loading ? <Loader size="xs" />: null}
 					rightSectionWidth={70}
 					styles={{ section: { pointerEvents: 'none' } }}
 					mb="sm"
-					px="lg"
 					data-autofocus
 					onChange={(event) => {
 						const currentValue = event.currentTarget.value;
@@ -459,8 +465,6 @@ function ResultDisplay(props: {
 						}}
 					>
 						<Group
-							component={Link}
-							href={to_url_string(result.title)}
 							style={{
 								textDecoration: 'none',
 								color: 'inherit',
@@ -470,6 +474,13 @@ function ResultDisplay(props: {
 								margin: '0.5rem',
 							}}
 						>
+							<Link
+								href={to_url_string(result.title)}
+								style={{
+									textDecoration: 'none',
+									color: 'inherit',
+								}}
+							>
 						<Text>
 							{result.at}
 						</Text>
@@ -483,6 +494,7 @@ function ResultDisplay(props: {
 							>
 							{result.description}
 						</Text>
+							</Link>
 						</Group>
 					</li>
 				)

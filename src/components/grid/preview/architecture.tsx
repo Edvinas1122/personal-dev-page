@@ -5,22 +5,27 @@ import {
 	SimpleGrid,
 	Skeleton,
 	Title,
+	TextInput,
 	rem
 } from '@mantine/core';
 import {
 	ArticleCardProps,
 	GeneralArticleCard
 } from '../../article-cards/card';
-import { motion } from "framer-motion";
+import { m, motion } from "framer-motion";
 const item = {
-	hidden: { y: 20, opacity: 0 },
+	hidden: { y: 20, opacity: 0, filter: "blur(1px)" },
 	visible: {
 		y: 0,
-		opacity: 1
+		opacity: 1,
+		filter: "blur(0px)"
 	}
 };
 const container = {
-	hidden: { opacity: 1, scale: 0 },
+	hidden: {
+		opacity: 1,
+		scale: 0,
+	},
 	visible: {
 		opacity: 1,
 		scale: 1,
@@ -30,8 +35,13 @@ const container = {
 		}
 	}
 };
+import { IconSearch } from '@tabler/icons-react';
 import React from 'react';
-import { useIntersection } from "@mantine/hooks";
+import {
+	useIntersection,
+	useWindowScroll,
+	useMediaQuery
+} from "@mantine/hooks";
 
 export function ArchitecturePreviewGrid({
 	articles,
@@ -42,15 +52,31 @@ export function ArchitecturePreviewGrid({
 		// root: window.
 		threshold: 1,
 	});
+	const matches = useMediaQuery('(max-width: 1000px)');
+	const [scroll, scrollTo] = useWindowScroll();
 	const [visible, setVisible] = React.useState(false);
 	React.useEffect(() => {
-		if (entry?.isIntersecting) {
+		if (matches) return;
+		if (entry?.isIntersecting && !visible) {
 			console.log("intersecting");
+			// scrollToProjects();
 			setVisible(true);
+		} else if (!entry?.isIntersecting && visible && scroll.y < 200) {
+			console.log("not intersecting");
+			setVisible(false);
 		}
 	}, [entry]);
 	const PRIMARY_COL_HEIGHT = rem(280);
 	const SECONDARY_COL_HEIGHT = `calc(${PRIMARY_COL_HEIGHT} / 2 - var(--mantine-spacing-md) / 2)`;
+	
+	function scrollToProjects() {
+		const element = document.getElementById('Projects');
+		if (!element) return;
+		const offsetTop = element.offsetTop - 100;
+		if (!matches) {
+			scrollTo({x: 0, y: offsetTop});
+		}
+	}
 
 	if (!articles) {
 		return (
@@ -69,6 +95,28 @@ export function ArchitecturePreviewGrid({
 				paddingTop: rem(64),
 			}}
 		>
+		<Title 
+			my="md"
+			ref={ref}
+		>
+			Projects
+		</Title>
+		<TextInput
+				placeholder="Search"
+				size="xs"
+				leftSection={
+					<IconSearch
+						style={{
+							width: rem(12),
+							height: rem(12)
+						}}
+						stroke={1.5}
+						/>
+				}
+				rightSectionWidth={70}
+				styles={{ section: { pointerEvents: 'none' } }}
+				mb="sm"
+			/>
 		<motion.ul
 			variants={container}
 			initial="hidden"
@@ -78,12 +126,6 @@ export function ArchitecturePreviewGrid({
 				padding: 0,
 			 }}
 		>
-		<Title 
-			my="md"
-			ref={ref}
-		>
-			Projects
-		</Title>
 		<SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md">
 			<motion.li variants={item}>
 			<GeneralArticleCard
