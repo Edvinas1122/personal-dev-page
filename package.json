@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@edvinas1122/notion-database-tool": "file:local_modules/@edvinas1122/notion-database-tool",
+    "@edvinas1122/notion-database-tool": "^0.0.11",
     "@mantine/carousel": "^7.1.7",
     "@mantine/code-highlight": "^7.1.7",
     "@mantine/core": "^7.1.7",
