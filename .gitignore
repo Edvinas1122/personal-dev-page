@@ -37,3 +37,6 @@ next-env.d.ts
 .next/
 node_modules/
 local_modules/
+.env
+dbUtils.sh
+package-lock.json
