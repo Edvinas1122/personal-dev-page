@@ -61,9 +61,11 @@
 	color: var(--mantine-color-white);
 	opacity: 0.75;
 	max-width: rem(500px);
+	font-size: rem(22px);
 
 	@media (max-width: $mantine-breakpoint-md) {
-	max-width: 100%;
+		max-width: 100%;
+		font-size: rem(14px);
 	}
 }
 

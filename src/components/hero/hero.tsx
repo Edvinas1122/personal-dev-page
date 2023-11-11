@@ -79,7 +79,7 @@ export function Hero(
 	const theme = useMantineTheme();
 	const isMobile = useMediaQuery('(max-width: 1000px)');
 	const [scroll, scrollTo] = useWindowScroll();
-	const [hero_visible, setHeroVisible] = React.useState(true);
+	const [hero_visible, setHeroVisible] = React.useState(false);
 	const { ref, entry } = useIntersection({
 		threshold: 1,
 	});
@@ -89,7 +89,10 @@ export function Hero(
 	}
 
 	React.useEffect(() => {
-		if (isMobile) return;
+		if (isMobile) {
+			setHeroVisible(true);
+			return;
+		}
 		if (!entry?.isIntersecting && scroll.y > 10 && hero_visible === true) {
 			console.log("away from hero");
 			setHeroVisible(false);
@@ -98,11 +101,8 @@ export function Hero(
 			focusOnHero();
 			setHeroVisible(true);
 		}
-	}, [entry?.isIntersecting, scroll.y, hero_visible]);
+	}, [entry?.isIntersecting, hero_visible, isMobile]);
 
-
-	const center_scale = props.avatar ? 0.8 : 1;
-	const title_offset = !isMobile ? (16 * 100) / 200 : props.avatar ? 2 : 3;
 	const background_gradient = "linear-gradient(250deg, rgba(130, 201, 30, 0) 0%, #062343 70%)"
 	const dimGradient = "linear-gradient(250deg, rgba(0, 0, 0, 0) 20%, rgba(0, 0, 0, 0.82) 70%)";
 	const gradient = props.disable_gradient ? `${dimGradient}` : `${background_gradient}`;
@@ -114,7 +114,6 @@ export function Hero(
 		top: 0,
 		maxHeight: `${isMobile ? "700px" : ""}`,
 		height: `100vh`,
-		opacity: `${(100 - scroll.y / 12)/ 100}`,
 	};
 
 	const gradientItem = {
@@ -125,15 +124,6 @@ export function Hero(
 		width: "100%"
 	};
 
-	function content_top_margin(height: number) {
-		// return "calc(var(--mantine-spacing-xl) * 2)";
-		if (height <= 50) {
-			return "calc(var(--mantine-spacing-xl) * 1)";
-		} else {
-			const margin = 2 / (50 / (height - 50)) * (50 / (height - 50));
-			return `calc(var(--mantine-spacing-xl) * ${margin})`;
-		}
-	}
 	return (
 		<>
 		<motion.div 
@@ -141,8 +131,8 @@ export function Hero(
 			initial={hero_visible ? animation_colapse.visible : animation_colapse.hidden}
 			animate={hero_visible ? animation_colapse.visible : animation_colapse.hidden}
 			style={{	
-			...rootStyle
-		}}>
+				...rootStyle
+			}}>
 			<motion.div
 				initial={hero_visible ? animations.visible : animations.hidden}
 				animate={hero_visible ? animations.visible : animations.hidden}

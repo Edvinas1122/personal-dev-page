@@ -85,7 +85,7 @@ export default class BlogService {
 	}
 
 	async getGroupedExternalDeps(
-		attributeExtractor: (dep: any, key: string) => any
+		attributeExtractor: (dep: any, key: string) => any,
 	) {
 		const deps = await this.getExternalDeps();
 		const deps_with_images = await Promise
@@ -93,7 +93,7 @@ export default class BlogService {
 				.map((dep: any) => this
 					.getProjectDetails(dep, "💼 Projects"))
 		);
-		const grouped = deps.reduce((acc: any, dep: any) => {
+		const grouped = deps_with_images.reduce((acc: any, dep: any) => {
 			const category = dep.Type;
 			if (!acc[category]) acc[category] = [];
 			const extracted = attributeExtractor(dep, dep.Type);
@@ -124,6 +124,7 @@ export default class BlogService {
 		wrong responsibility place
 	*/
 	private coverImage(structure: any): string {
+		console.log(structure);
 		if (!structure) return structure;
 		if (structure.type === "external") return structure.external.url;
 		if (structure.type === "file") return structure.file.url;

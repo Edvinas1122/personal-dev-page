@@ -56,7 +56,10 @@ export function ArchitecturePreviewGrid({
 	const [scroll, scrollTo] = useWindowScroll();
 	const [visible, setVisible] = React.useState(false);
 	React.useEffect(() => {
-		if (matches) return;
+		if (matches) {
+			setVisible(true);
+			return;
+		}
 		if (entry?.isIntersecting && !visible) {
 			console.log("intersecting");
 			// scrollToProjects();
@@ -65,7 +68,7 @@ export function ArchitecturePreviewGrid({
 			console.log("not intersecting");
 			setVisible(false);
 		}
-	}, [entry]);
+	}, [entry, matches]);
 	const PRIMARY_COL_HEIGHT = rem(280);
 	const SECONDARY_COL_HEIGHT = `calc(${PRIMARY_COL_HEIGHT} / 2 - var(--mantine-spacing-md) / 2)`;
 	

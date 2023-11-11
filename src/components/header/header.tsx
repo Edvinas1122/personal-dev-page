@@ -119,7 +119,7 @@ export function HeaderSearch(props: HeaderSearchProps) {
 		window.addEventListener('hashchange', handleHashChange);
 		handleHashChange();
 		return () => {
-		  window.removeEventListener('hashchange', handleHashChange);
+			window.removeEventListener('hashchange', handleHashChange);
 		};
 	}, []);
 

@@ -9,8 +9,10 @@ import {
 	Anchor,
 	Center,
 	Paper,
+	Button,
 } from '@mantine/core';
 import classes from './image-card.module.css';
+import { ReactNode } from 'react';
 
 export const RelatedItems = ({
 	theme,
@@ -53,6 +55,8 @@ function SkillTag(props: {
 	image: string;
 	image_type: "emoji" | "image";
 	textColor: string;
+	hideUndertitle?: boolean;
+	bordered?: boolean;
 }) {
 	const image = props.image_type === "emoji" ? (
 		<Text
@@ -69,7 +73,6 @@ function SkillTag(props: {
 			src={props.image}
 			size="sm"
 			radius="xs"
-			// variant="circle"
 		/>
 	);
 
@@ -84,33 +87,39 @@ function SkillTag(props: {
 				style={{
 					backgroundColor: "white",
 					borderRadius: 500,
+					borderColor: props.textColor,
 					width: 25,
 					height: 25,
 					display: 'flex',
 					justifyContent: 'center',
 					alignItems: 'center',
-					padding: 13,	
+					padding: 13,
 				}}
 			>
 			{image}
 			</Paper>
-			<Text
-				size='xs'
-				c={props.textColor}
-				>
-				{props.title}
-			</Text>
+			{!props.hideUndertitle && (
+
+				<Text
+					size='xs'
+					c={props.textColor}
+					>
+					{props.title}
+				</Text>
+			)}
 		</div>
 	);
 }
 
-const SkillItem = (props: { 
+export const SkillItem = (props: { 
 	title: string; 
 	image: string;
 	image_type: "emoji" | "image";
 	url: string;
 	description: string;
 	textColor: string;
+	hideUndertitle?: boolean;
+	bordered?: boolean;
 }) => {
 
 	function adjustTitle(title: string) {
@@ -121,7 +130,12 @@ const SkillItem = (props: {
 	}
 
 	return (
-		<HoverCard shadow="md" position="top" withinPortal>
+		<HoverCard
+			shadow="md"
+			position="top"
+			openDelay={200}
+			withinPortal
+		>
 			<HoverCard.Target>		
 				<Group>
 					<SkillTag
@@ -129,6 +143,8 @@ const SkillItem = (props: {
 						image={props.image}
 						image_type={props.image_type}
 						textColor={props.textColor}
+						hideUndertitle={props.hideUndertitle}
+						bordered={props.bordered}
 						/>
 				</Group>
 			</HoverCard.Target>
