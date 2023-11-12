@@ -102,10 +102,10 @@ export default function ProjectPage({
 	params,
 }: {
 	params: {
-		project: string[]
+		project: string;
 	}
 }) {
-	const name = url_string(params.project[0]);
+	const name = url_string(params.project);
 
 	return (
 		<>

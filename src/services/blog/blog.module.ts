@@ -5,7 +5,8 @@ import
 } from "@edvinas1122/notion-database-tool";
 
 import {
-	blogTables
+	blogTables,
+	DevJournal
 } from "./blog.orm";
 import
 	BlogService
@@ -24,3 +25,7 @@ export function constructBlogService(cache?: { [key: string]: any }) {
 	);
 	return blogService;
 }
+
+export type {
+	DevJournal
+};

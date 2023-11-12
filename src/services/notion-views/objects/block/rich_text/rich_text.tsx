@@ -1,5 +1,6 @@
 import handleMention from "./mention";
 import handleEquation from "./equation";
+import React from "react";
 
 export type richText = {
 	type: "rich_text";
@@ -31,13 +32,14 @@ export default function displayRichText(richTextSegments: richText[]): JSX.Eleme
 	if (!richTextSegments) {
 		return null;
 	}
-	return richTextSegments.map((richTextSegment) => {
+	return richTextSegments.map((richTextSegment, index) => {
 					const handler = richTextHandlers[richTextSegment.type];
 					if (!handler) {
 						console.warn(`No handler for rich text type ${richTextSegment.type}`);
 						return null;
 					}
-					return handler(richTextSegment);
+					const elemtnt = handler(richTextSegment);
+					return <React.Fragment key={richTextSegment.type + index}>{elemtnt}</React.Fragment>;
 				}).filter((element) => element !== null) as JSX.Element[];
 }
 

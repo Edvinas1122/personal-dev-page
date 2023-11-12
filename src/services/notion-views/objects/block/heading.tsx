@@ -6,11 +6,15 @@ interface Heading {
 }
 
 
-function handleHeading({
-	heading
+export function handleHeading({
+	heading,
 }: {
 	heading: Heading,
 }): any {
+	if (heading === undefined) {
+		// return null;
+		throw new Error("heading is undefined");
+	}
 	const richText = displayRichText(heading.rich_text);
 	return (
 		<>
@@ -26,7 +30,10 @@ export function handleHeading_1({
 }): any {
 	const heading = handleHeading({heading: heading_1});
 	return (
-		<h1 className={"notion-heading_1"}>
+		<h1
+			className={"notion-heading_1"}
+			id={heading_1.rich_text.map((richText) => richText.plain_text).join("")}
+		>
 			{heading}
 		</h1>
 	);
@@ -39,7 +46,10 @@ export function handleHeading_2({
 }): any {
 	const heading = handleHeading({heading: heading_2});
 	return (
-		<h2 className={"notion-heading_2"}>
+		<h2
+			className={"notion-heading_2"}
+			id={heading_2.rich_text.map((richText) => richText.plain_text).join("")}
+		>
 			{heading}
 		</h2>
 	);
@@ -52,7 +62,10 @@ export function handleHeading_3({
 }): any {
 	const heading = handleHeading({heading: heading_3});
 	return (
-		<h3 className={"notion-heading_3"}>
+		<h3
+			className={"notion-heading_3"}
+			id={heading_3.rich_text.map((richText) => richText.plain_text).join("")}
+		>
 			{heading}
 		</h3>
 	);

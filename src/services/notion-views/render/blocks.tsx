@@ -1,9 +1,9 @@
 import Block, {BlockType, notionBlock} from "./blocksRender";
 
-interface BlocksViewProps {
+type BlocksViewProps = {
 	blocks: notionBlock[];
 	fetchBlocks: (blockId: string) => Promise<any>;
-}
+};
 
 enum WrappedListType {
 	numbered_list_item,

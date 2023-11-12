@@ -1,5 +1,5 @@
 import {
-	TableProps
+	TableProps,
 } from "@edvinas1122/notion-database-tool";
 
 export const blogTables: TableProps[] = [
@@ -52,4 +52,42 @@ export const blogTables: TableProps[] = [
 			}]
 		}
 	},
+	{
+		name: "Dev Journal",
+		database_id: process.env.JOURNAL as string,
+		properties: {
+			key: {
+				property: "Name",
+				property_type: "title",
+			},
+			properties: [{
+				property: "Name",
+				property_type: "title",
+			},{
+				property: "Type",
+				property_type: "select",
+			},{
+				property: "Description",
+				property_type: "rich_text",
+			},{
+				property: "Projects",
+				property_type: "relation",
+			},]
+		}
+	}
 ]
+
+
+export type DevJournal = {
+	Name: string,
+	Type: string,
+	Description: string,
+	Projects: string[],
+	Date: string,
+	Appearant: "minor" | "major",
+	"💼 Projects": any[],
+	"🧰 Features": any[],
+	URL: string,
+}
+
+

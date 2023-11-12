@@ -34,7 +34,7 @@ export function SimpleCard(props: SimpleCardProps) {
 	const title_font_color = !props.image ? "black" : "white";
 	const description_font_color = !props.image ? "gray" : "#FFFAF0";
 	const linkProps = { 
-		href: to_url_string(props.title),
+		href: "/projects/"+ to_url_string(props.title),
 	};
 	return (
 		<Card

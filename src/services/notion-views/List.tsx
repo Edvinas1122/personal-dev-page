@@ -10,7 +10,6 @@ const NotionList = ({
 
 	const list = page.page;
 	const fetchBlocks = (block_id: string) => page.getChildrenBlocks(block_id);
-	// console.log(page.page)
 
 	if (list === undefined) {
 		return (

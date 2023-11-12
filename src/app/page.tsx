@@ -331,7 +331,7 @@ async function fetchPersonalInfo(): Promise<PersonalInfo> {
 	const github_integration_token = process.env.GITHUB_INTEGRATION_TOKEN;
 	const username = "edvinas1122";
 	const octokit = new Octokit({
-		github_integration_token
+		auth: github_integration_token
 	});
 	octokit.request.defaults({
 		next: {

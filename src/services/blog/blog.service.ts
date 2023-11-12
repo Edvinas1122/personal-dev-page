@@ -1,6 +1,11 @@
 import {
 	NotionDatabaseTool,
+	//@ts-ignore
+	Entry,
+	//@ts-ignore
+	NotionEntry
 } from "@edvinas1122/notion-database-tool";
+import { DevJournal } from "./blog.orm";
 
 export default class BlogService {
 	constructor(
@@ -20,6 +25,94 @@ export default class BlogService {
 		const tablesWithImagesPromises = projects.map((project: any) => this.getProjectDetails(project));
 		const tablesWithImages = await Promise.all(tablesWithImagesPromises); /// parallel issues
 		return tablesWithImages;
+	}
+
+	private transformJournal(journal: DevJournal) {
+		return {
+			Name: journal.Name,
+			Type: journal.Type,
+			Date: journal.Date,
+			URL: journal.URL,
+			Description: journal.Description,
+		}
+	}
+
+	async getJournal({
+		name,
+		page
+	}: {
+		name: string,
+		page: number
+	}) {
+		//@ts-ignore
+		const projects: NotionEntry[] = await this.databaseTool
+			.getTable("Projects")
+			.getEntry("equals")
+			.byKey(name)
+			//@ts-ignore
+			.then((entry: Entry) => entry.all());
+		if (!projects || !projects[0]) {
+			console.error("no journal found");
+			throw new Error("no journal found");
+		}
+		const journal: DevJournal[] = await Promise
+			.all(projects[0]["Dev Journal"]
+				.map(async (journal_fetch_method: any) => {
+					const article = await journal_fetch_method();
+					return this.transformJournal(article as DevJournal);
+				}));
+		return journal;
+	}
+
+	async getJournalArticle({
+		name,
+	}: {
+		name: string,
+	}) {
+		//@ts-ignore
+		const journal: NotionEntry[] = await this.databaseTool
+			.getTable("Dev Journal")
+			.query()
+			.filter("Name", "title", "equals", name)
+			.limit(1)
+			.get()
+			//@ts-ignore
+			.then((entries: Entry) => entries.all());
+		if (!journal || !journal[0]) {
+			console.error("no journal article found");
+			throw new Error("no journal article found");
+		}
+		const article_info: NotionEntry = journal[0];
+		const article_blocks = await article_info.retrievePage();
+		return {
+			page: article_blocks.page,
+			article_info: this.transformJournal(article_info),
+			contents: this.transpileArticeContents(article_blocks.page)
+		}
+	}
+
+
+
+	private transpileArticeContents(
+		blocks: any[]
+	): {
+		label: string,
+		link: string,
+		order: number,
+	}[] {
+		const contents = blocks
+			.filter((block: any) => block.type === "heading_1" || block.type === "heading_2" || block.type === "heading_3") 
+			.map((block: any) => {
+				const text = block[block.type].rich_text
+					.map((text: any) => text.plain_text).join("");
+				console.log(text);
+				return {
+					label: text,
+					link: "#"+text,
+					order: block.type === "heading_1" ? 1 : block.type === "heading_2" ? 2 : 3
+				}
+			})
+		return contents;
 	}
 
 	async getCompleteArchitercute() {
@@ -124,7 +217,6 @@ export default class BlogService {
 		wrong responsibility place
 	*/
 	private coverImage(structure: any): string {
-		console.log(structure);
 		if (!structure) return structure;
 		if (structure.type === "external") return structure.external.url;
 		if (structure.type === "file") return structure.file.url;
@@ -202,4 +294,5 @@ export default class BlogService {
 			console.log(err.message);
 		}
 	}
+
 }
