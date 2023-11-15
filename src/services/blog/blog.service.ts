@@ -124,7 +124,6 @@ export default class BlogService {
 		wrong responsibility place
 	*/
 	private coverImage(structure: any): string {
-		console.log(structure);
 		if (!structure) return structure;
 		if (structure.type === "external") return structure.external.url;
 		if (structure.type === "file") return structure.file.url;
@@ -195,10 +194,9 @@ export default class BlogService {
 	}
 
 	private exceptionHandler(err: any) {
-		console.log(err);
+		console.error(err);
 		if (err?.message)
 		{
-			console.log(err);
 			console.log(err.message);
 		}
 	}

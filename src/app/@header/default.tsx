@@ -13,7 +13,6 @@ async function searchMethod(query: string): Promise<any> {
 	});
 	// console.log("searching for", query);
 	const results = await service.searchProjects(query);
-	console.log("results", results);
 	const resolvedResults = await Promise.all(results.map(async (result: any) => {
 		const properties = result.properties;
 		const keys = Object.keys(properties);
@@ -23,12 +22,12 @@ async function searchMethod(query: string): Promise<any> {
 			acc[key] = resolvedValues[index];
 			return acc;
 		}, {});
+		console.log("Searching", query);
 		return {
 		  ...result,
 		  properties: resolvedProperties
 		};
 	  }));
-	  console.log("resolved results", resolvedResults);
 	const propeties = resolvedResults.map((result: any) => {
 		return {
 			at: result.properties.Category,
@@ -43,21 +42,25 @@ async function searchMethod(query: string): Promise<any> {
 	}
 }
 
+// export default function Navbar() {
+
+// 	const sections = [
+// 		"Main",
+// 		"Projects",
+// 		"Journal",
+// 		"Contact",
+// 	];
+
+// 	return (
+// 		<>
+// 			<HeaderSearch
+// 				sections={sections}
+// 				searchServerMethod={searchMethod}
+// 			/>
+// 		</>
+// 	);
+// }
+
 export default function Navbar() {
-
-	const sections = [
-		"Main",
-		"Projects",
-		"Journal",
-		"Contact",
-	];
-
-	return (
-		<>
-			<HeaderSearch
-				sections={sections}
-				searchServerMethod={searchMethod}
-			/>
-		</>
-	);
+	null;
 }

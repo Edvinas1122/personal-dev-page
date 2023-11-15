@@ -1,8 +1,9 @@
-"use client";
+"use server";
 import React from 'react';
 import {
 	Text,
-	MantineTheme
+	MantineTheme,
+	MantineComponent
 } from '@mantine/core';
 
 type TextSegment = {
@@ -25,21 +26,25 @@ type SegmentHandlers = {
 	[Type in Segment['type']]: (segment: Extract<Segment, { type: Type }>, theme?: MantineTheme) => React.ReactNode;
 };
 
+import {
+	GradientThemedText
+} from "./contexted";
+
 const handleSegment: SegmentHandlers = {
 	text: (segment, theme?: MantineTheme) => {
-		return <span>{segment.content}</span>; // Wrapping text content in span
+		return <>{segment.content}</>; // Wrapping text content in span
 	},
 	gradient: (segment, theme?: MantineTheme) => {
-		// Ensuring theme and theme.defaultGradient exist
-		if (!theme || !theme.defaultGradient) {
-			console.error('Theme or defaultGradient not available for gradient segment.');
-			return <></>;
-		}
-
 		return (
-			<Text component="span" inherit variant="gradient" gradient={theme.defaultGradient}>
+			<GradientThemedText 
+				component="span"
+				inherit
+				variant="gradient"
+				// gradient={"default-gradient"}
+				// gradient={theme.defaultGradient}
+			>
 				{segment.content}
-			</Text>
+			</GradientThemedText>
 		);
 	},
 	new_line: (segment, theme?: MantineTheme) => {
@@ -66,22 +71,26 @@ function getSegment(
 	return handler(segment, theme);
 }
 
-type TextProps = {
+type TextProps<ComponentProps = {}> = {
 	rich_text: EnRichedText;
-	theme: MantineTheme; // Made optional since not all segments might need it
-};
+	Component?: React.ComponentType<ComponentProps> | MantineComponent<any>;
+} & ComponentProps;
 
-function EnRichedTextDisplay({ rich_text, theme }: TextProps) {
+function EnRichedTextDisplay<ComponentProps>({ 
+	rich_text,
+	Component = Text,
+	...props
+}: TextProps<ComponentProps>) {
 	return (
-		<>
+		<Component {...props as ComponentProps}>
 		{rich_text.map((
 			segment: Segment,
 			index: number
 		) => {
-			const result = getSegment(segment, theme);
+			const result = getSegment(segment);
 			return <React.Fragment key={index}>{result}</React.Fragment>;
 		})}
-		</>
+		</Component>
 	);
 }
 

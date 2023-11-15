@@ -1,11 +1,34 @@
-@tailwind base;
+/* @tailwind base;
 @tailwind components;
-@tailwind utilities;
+@tailwind utilities; */
 
 :root {
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
   --background-end-rgb: 255, 255, 255;
+  /* --left-spacing: max(0px, calc(30vw - 200px)); */
+	/* --top-spacing: max(0px, calc(38vh - 220px)); */
+  --mobile-breakpoint-width: 640px;
+  --mobile-breakpoint-height: 800px;
+
+  /* spacing tool */
+  --left-spacing: max(0px, calc(30vw - 200px));
+  --top-spacing: max(0px, calc(36vh - 210px));
+  /* fonts */
+  --font-extra-large: calc(rem(18px) + 2.4vh);
+  --font-medium-large: calc(rem(8px) + 1.2vh);
+  --font-label-large: calc(rem(12px) + 0.8vh);
+
+  /*item scaling*/
+  --prop-scale: 1;
+}
+
+@media (max-width: 640px) or (max-height: 800px) {
+  :root {
+    --prop-scale: 0.8;
+    /* --font-extra-large: rem(34px); */
+    /* --font-medium-large: rem(14px); */
+  }
 }
 
 @media (prefers-color-scheme: dark) {
@@ -13,10 +36,11 @@
     --foreground-rgb: 255, 255, 255;
     --background-start-rgb: 0, 0, 0;
     --background-end-rgb: 0, 0, 0;
+    --left-spacing: max(0px, calc(30vw - 200px));
   }
 }
 
-body {
+/* body {
   color: rgb(var(--foreground-rgb));
   background: linear-gradient(
       to bottom,
@@ -24,4 +48,4 @@ body {
       rgb(var(--background-end-rgb))
     )
     rgb(var(--background-start-rgb));
-}
+} */

@@ -94,10 +94,8 @@ export function Hero(
 			return;
 		}
 		if (!entry?.isIntersecting && scroll.y > 10 && hero_visible === true) {
-			console.log("away from hero");
 			setHeroVisible(false);
 		} else if (entry?.isIntersecting && hero_visible === false) {
-			console.log("back to hero")
 			focusOnHero();
 			setHeroVisible(true);
 		}
@@ -182,25 +180,25 @@ export function Hero(
 						</motion.div>
 					)}
 					<motion.div variants={item}>
-					<Title 
-						className={classes.title}
-					>
-						<EnRichedTextDisplay
-							rich_text={props.title}
-							theme={theme}
-						/>
-					</Title>
+						<Title 
+							className={classes.title}
+						>
+							<EnRichedTextDisplay
+								rich_text={props.title}
+								theme={theme}
+							/>
+						</Title>
 					</motion.div>
 					<motion.div variants={item}>
-					<Text 
-						className={classes.description}
-						mt={30}
-					>
-						<EnRichedTextDisplay
-							rich_text={props.description}
-							theme={theme}
-						/>
-					</Text>
+						<Text 
+							className={classes.description}
+							mt={30}
+						>
+							<EnRichedTextDisplay
+								rich_text={props.description}
+								theme={theme}
+							/>
+						</Text>
 					</motion.div>
 					<Group 
 						className={classes.controls}

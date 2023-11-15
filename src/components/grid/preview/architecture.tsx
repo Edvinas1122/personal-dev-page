@@ -61,11 +61,9 @@ export function ArchitecturePreviewGrid({
 			return;
 		}
 		if (entry?.isIntersecting && !visible) {
-			console.log("intersecting");
 			// scrollToProjects();
 			setVisible(true);
 		} else if (!entry?.isIntersecting && visible && scroll.y < 200) {
-			console.log("not intersecting");
 			setVisible(false);
 		}
 	}, [entry, matches]);
