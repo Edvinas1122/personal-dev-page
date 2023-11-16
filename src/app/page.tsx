@@ -184,7 +184,7 @@ async function TableList({
 	const tableList: ArticleCardProps[] = tables.map((table: any) => {
 		return convertToArticleProps(table);
 	});
-	const stats = await getGitHubStats({user_name});
+	// const stats = await getGitHubStats({user_name});
 
 	return (
 		<>
@@ -194,11 +194,11 @@ async function TableList({
 				articles={tableList}
 			/>
 			<SkillsList />
-			<ProgressCard 
+			{/* <ProgressCard 
 				title="GitHub Stats"
 				description={`Programming Languages used in ${stats.repos} repositories`}
 				items={stats.language_info}
-			/>
+			/> */}
 			</div>
 		</>
 	);
@@ -393,11 +393,11 @@ export default async function Home() {
 				github_link={github_link}
 				avatar={user.avatar_url}
 			/> */}
-			{/* <Suspense fallback={<ArchitecturePreviewGrid/>}>
+			<Suspense fallback={<ArchitecturePreviewGrid/>}>
 				<TableList
 					user_name={user.login}
 				/>
-			</Suspense> */}
+			</Suspense>
 			<div 
 				style={{
 					height: "35vh"

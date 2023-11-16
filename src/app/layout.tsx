@@ -36,13 +36,13 @@ export default function RootLayout({
 				<GlobalHeaderLayout>
 					{header}
 				</GlobalHeaderLayout>
+				{children}
 				<div 
 					style={{
 						height: "50000px",
 					}}
 				>
 				</div>
-					{/* {children} */}
 				</MantineProvider>
 			</body>
 		</html>

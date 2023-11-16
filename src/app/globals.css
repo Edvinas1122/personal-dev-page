@@ -13,7 +13,7 @@
 
   /* spacing tool */
   --left-spacing: max(0px, calc(30vw - 200px));
-  --top-spacing: max(0px, calc(36vh - 210px));
+  --top-spacing: max(0px, calc(34vh - 180px));
   /* fonts */
   --font-extra-large: calc(rem(18px) + 2.4vh);
   --font-medium-large: calc(rem(8px) + 1.2vh);
@@ -21,6 +21,12 @@
 
   /*item scaling*/
   --prop-scale: 1;
+}
+
+@media (max-width: 640px) {
+  :root {
+    --top-spacing: max(0px, calc(34vh - 250px));
+  }
 }
 
 @media (max-width: 640px) or (max-height: 800px) {

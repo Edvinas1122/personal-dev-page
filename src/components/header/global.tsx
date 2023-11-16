@@ -1,8 +1,11 @@
 import {
-	ScrollDrivenEnstructionProvider
+	SingleEnstruction
 } from "@/utils/framer"
 import {
-	Motion
+	Motion,
+	MauntMotion,
+	PresenceContext,
+	ScrollDrivenEnstructionProvider
 } from "@/utils/module"
 import classes from './header.module.css';
 import
@@ -21,97 +24,115 @@ import {
 } from "@mantine/core";
 
 const down_pop_hidden = {
-	y: 20,
+	y: 40,
 	opacity: 0,
-	filter: "blur(1px)",
 }
 
 const down_pop_visible = {
 	y: 0,
 	opacity: 1,
-	filter: "blur(0px)",
 }
 
-function animation_set(animation: {}, duration: number, delay: number) {
+function animation_set(
+	animation: {},
+	duration: number,
+	delay: number,
+	type: string = "linear"
+) {
 	return {
 		...animation,
 		transition: {
 			duration: duration,
+			staggerChildren: 0.5,
 			delay: delay,
+			type: type,
+			bounce: 0.55,
 		}
 	}
 }
 
 const animations = {
-	founder: {
-		expanded: animation_set({
-			x: 'var(--left-spacing)',
-			y: 'var(--top-spacing)',
-		}, 0.12, 0),
-		contracted: animation_set({
-			x: "0vw",
-			y: "0vh",
-		}, 0.12, 0.1),
-	},
+	// founder: {
+	// 	expanded: animation_set({
+	// 		marginLeft: 'var(--left-spacing)',
+	// 	}, 0.3, 0, "tween"),
+	// 	contracted: animation_set({
+	// 		marginLeft: "0",
+	// 	}, 0.12, 0.1, "linear"),
+	// },
 	avatar: {
 		contracted: animation_set({
+			marginTop: "0",
 			width: "var(--contracted-size)",
 			height: "var(--contracted-size)",
-		}, 0.3, 0.1),
+		}, 0.25, 0.15, "linear"),
 		expanded: animation_set({
+			ease: "easeInOut",
+			marginTop: "var(--top-spacing)",
 			width: "var(--expanded-size)",
 			height: "var(--expanded-size)",
-		}, 0.3, 0.1),
+		}, 0.3, 0.1, "linear"),
 	},
 	title: {
-		contracted: animation_set(down_pop_hidden, 0.1, 0),
-		expanded: animation_set(down_pop_visible, 0.3, 0.3),
+		contracted: animation_set(down_pop_hidden, 0.2, 0),
+		expanded: animation_set(down_pop_visible,
+			0.3, 0.4, "spring"),
 	},
 	description: {
-		contracted: animation_set(down_pop_hidden, 0.1, 0),
-		expanded: animation_set(down_pop_visible, 0.3, 0.4),
+		contracted: animation_set(down_pop_hidden, 0.15, 0),
+		expanded: animation_set(down_pop_visible,
+			0.3, 0.5, "spring"),
 	},
 	button: {
 		contracted: animation_set(down_pop_hidden, 0.1, 0),
-		expanded: animation_set(down_pop_visible, 0.3, 0.5),
+		expanded: animation_set(down_pop_visible, 0.3, 0.6, "spring"),
 	},
 	header: {
-		contracted: {
+		contracted: animation_set({
+			marginBottom: "6rem",
 			height: "4rem",
-		},
+			backgroundColor: "rgba(8, 45, 85, 0)",
+		}, 0.3, 0.2),
 		expanded: animation_set({
 			height: "100vh",
+			backgroundColor: "rgba(6, 35, 67, 1)",
+			type: "tween",
 		}, 0.3, 0.1),
 	},
 	hero: {
-		contracted: animation_set({
+		contracted: {
 			opacity: 0,
-			height: "0vh",
-		}, 0.25, 0.15),
+			scale: 1,
+			filter: "blur(0px)",
+			transition: {
+				duration: 0.2,
+				delay: 0.15,
+			}
+		},
 		expanded: {
 			opacity: 1,
-			height: "100vh",
+			scale: 1.1,
+			filter: "blur(1.6px)",
+			transition: {
+				duration: 4,
+				delay: 0.5,
+				type: "spring",
+			}
 		},
 	}
 }
 
-const scroll_react_enstructions = [{
+const scroll_react_enstructions: SingleEnstruction[] = [{
 	value: 0,
 	threshold: 20,
-	animation: "expanded"
+	animation: "expanded",
+	mount: true,
 }, {
 	value: 50,
-	threshold: 500,
-	animation: "contracted"
+	threshold: 800000,
+	animation: "contracted",
+	mount: false,
 }]
-
-const gradientItem = {
-	position: "absolute",
-	top: 0,
-	// maxHeight: `${isMobile ? "700px" : ""}`,
-	// backgroundImage: `${gradient}`,
-	width: "100%"
-};
 
 function GlobalHeaderLayout({
 	children
@@ -137,15 +158,15 @@ function GlobalHeaderLayout({
 	return (
 		<ScrollDrivenEnstructionProvider
 			react={scroll_react_enstructions}
-			initial="contracted"
+			initial={{
+				animation: "contracted",
+				mount: true,
+			}}
 		>
 			<Motion.Header
 				className={classes.header}
 				variants={animations.header}
-				initial={"contracted"}
-				transition={{
-					duration: 0.5
-				}}
+				initial={"expanded"}
 				style={{
 					position: "fixed",
 				}}
@@ -155,6 +176,7 @@ function GlobalHeaderLayout({
 					description={description}
 					avatar={avatar}
 				/>
+				<GlobalNavigation />
 				<Hero
 					background_image={background_image}
 				/>
@@ -163,10 +185,6 @@ function GlobalHeaderLayout({
 		</ScrollDrivenEnstructionProvider>
 	);
 }
-
-import {
-	GradientThemedButton
-} from "@/components/text/contexted";
 
 function FounderInfo({
 	title,
@@ -179,13 +197,12 @@ function FounderInfo({
 }) {
 
 	return (
-		<Motion.HGroup
+		<hgroup
 			className={classes.content}
-			variants={animations.founder}
+			// variants={animations.founder}
 			style={{
 				position: "relative",
 				zIndex: 30,
-				margin: "10px",
 			}}
 		>
 			<Avatar
@@ -201,44 +218,61 @@ function FounderInfo({
 				variants={animations.avatar}
 				/>
 			<EnRichedTextDisplay
-				Component={Motion.Title}
-				variants={animations.title}
+				Component={MauntMotion.Title}
+				// mountable={true}
+				// variants={animations.title}
 				className={classes.title}
-				initial={"contracted"}
+				initial={animations.title.contracted}
 				rich_text={title}
+				animate={animations.title.expanded}
+				exit={animations.title.contracted}
 				style={{
-					marginTop: "1rem",
 				}}
-				lineClamp={4}
+				// lineClamp={4}
 			/>
 			<EnRichedTextDisplay
-				Component={Motion.Paragraph}
-				variants={animations.description}
-				initial={"contracted"}
+				Component={MauntMotion.Paragraph}
+				initial={animations.title.contracted}
 				className={classes.description}
 				rich_text={description}
+				animate={animations.description.expanded}
+				exit={animations.description.contracted}
 				style={{
-					marginTop: "1rem",
 				}}
 			/>
+		</hgroup>
+	);
+}
+
+import {
+	GradientThemedButton
+} from "@/components/text/contexted";
+
+function GlobalNavigation() {
+	return (
+		<>
 			<Group
+
+				style={{
+					position: "relative",
+					zIndex: 30,
 				// className={classes.controls}
+				}}
 				>
 				<GradientThemedButton
-					component={Motion.Button}
+					component={MauntMotion.Button}
 					variant="gradient"
-					className={classes.control}
-					variants={animations.button}
+					// className={classes.control}
+					animate={animations.button.expanded}
+					initial={animations.button.contracted}
+					exit={animations.button.contracted}
 					size="xl"
 					mt={40}
-					style={{
-						marginRight: "1rem",
-					}}
 					>
 						Contact
 					</GradientThemedButton>
 			</Group>
-		</Motion.HGroup>
+		</>
 	);
 }
 
@@ -253,7 +287,7 @@ function Hero({
 	return (
 		<>
 			<Image
-				component={Motion.Div}
+				component={MauntMotion.Div}
 				style={{
 					top: 0,
 					height: "100vh",
@@ -265,6 +299,8 @@ function Hero({
 					backgroundPosition: "center",
 				}}
 				variants={animations.hero}
+				initial={"contracted"}
+				animate={"expanded"}
 				className={classes.hero}
 			/>
 		</>

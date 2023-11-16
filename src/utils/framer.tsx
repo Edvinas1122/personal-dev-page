@@ -1,9 +1,9 @@
 "use client";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import {
 	withAnimationControllContext,
 	AnimationProvider,
-	useFramerControl
+	useFramerControl,
 } from "./useFramer";
 
 /*
@@ -37,7 +37,8 @@ export {
 import
 	withScrollObservantFriendContextAnimation,
 {
-	ScrollDrivenEnstructionProvider
+	ScrollDrivenEnstructionProvider,
+	SingleEnstruction
 } from "./reactScroll";
 
 // export const EnstuctionAwareMotion = {
@@ -60,3 +61,47 @@ export const EnstuctionAwareMotionButton = withScrollObservantFriendContextAnima
 export {
 	ScrollDrivenEnstructionProvider
 }
+export type {
+	SingleEnstruction
+}
+
+import {
+	withScrollObservantFriendContextMount
+} from "./reactScroll";
+
+
+export const EnstructionAwareMauntMotionDiv = withScrollObservantFriendContextMount(motion.div);
+export const EnstructionAwareMauntMotionHeader = withScrollObservantFriendContextMount(motion.header);
+export const EnstructionAwareMauntMotionUList = withScrollObservantFriendContextMount(motion.ul);
+export const EnstructionAwareMauntMotionHGroup = withScrollObservantFriendContextMount(motion.hgroup);
+export const EnstructionAwareMauntMotionTitle = withScrollObservantFriendContextMount(motion.h1);
+export const EnstructionAwareMauntMotionParagraph = withScrollObservantFriendContextMount(motion.p);
+export const EnstructionAwareMauntMotionButton = withScrollObservantFriendContextMount(motion.button);
+
+export const PresenceContext = AnimatePresence;
+
+// import {
+// 	SVGMotionProps,
+// 	HTMLMotionProps
+// } from "framer-motion";
+
+// type MotionComponentKey = keyof typeof motion;
+// type MotionComponent = typeof motion[MotionComponentKey];
+// export class EnstructionAware {
+// 	constructor(
+// 		private motionComponentKey: MotionComponentKey,
+// 		private enstructions: MountWhen
+// 	) {}
+
+// 	public get Motion() {
+// 		if (this.isSVGComponent(motion[this.motionComponentKey])) {
+// 			return withScrollObservantFriendContextAnimation<SVGMotionProps<any>>(motion[this.motionComponentKey]);
+// 		} else {
+// 			return withScrollObservantFriendContextAnimation<HTMLMotionProps<any>>(motion[this.motionComponentKey]);
+// 		}
+// 	}
+
+// 	private isSVGComponent(component: MotionComponent): component is React.ComponentType<SVGMotionProps<any>> {
+// 		return component.displayName?.startsWith('motion.svg');
+// 	}
+// }

@@ -6,32 +6,31 @@ type SingleEnstruction = {
 	value: number;
 	threshold: number;
 	animation: string;
+	mount?: boolean;
 };
 
+type Enstruct = Omit<SingleEnstruction, 'value' | 'threshold'>;
+
 type ScrollAwareContextType = {
-	activeEnstruction: string | null;
+	activeEnstruction: Enstruct | null;
+	// parrentActive: boolean;
 };
 
 const ScrollAwareEnstructionContext = createContext<
 	ScrollAwareContextType
 >({
-	activeEnstruction: "expanded"
+	activeEnstruction: null,
+	// parrentActive: false,
 });
 
-const ScrollDrivenEnstructionProvider = ({
-	children,
-	react,
-	initial,
-}: {
-	children: React.ReactNode,
-	react: SingleEnstruction[],
-	initial: string
-}) => {
+const useSelectActiveEnstruction = (
+	react: SingleEnstruction[]
+) => {
 	const [scroll] = useWindowScroll();
 	const [
 		activeEnstruction,
 		setActiveEnstruction
-	] = useState<string>(initial);
+	] = useState<Enstruct | null>(null);
 
 	function is_in_reactive_range(
 		scroll: number,
@@ -43,18 +42,38 @@ const ScrollDrivenEnstructionProvider = ({
 		);
 	}
 
-	useEffect(() => {
+	React.useEffect(() => {
 		const foundEnstruction = react
 			.find(enstruction => 
 				is_in_reactive_range(scroll.y, enstruction)
 			);
-			if (
-				foundEnstruction
-				&& activeEnstruction !== foundEnstruction.animation
-			) {
-				setActiveEnstruction(foundEnstruction.animation);
-			}
-	}, [scroll.y, react, activeEnstruction]);
+		if (foundEnstruction) {
+			if (!activeEnstruction ||
+				activeEnstruction.animation !== foundEnstruction.animation) {
+					setActiveEnstruction(foundEnstruction);
+					console.log("foundEnstruction", foundEnstruction);
+				}
+		}
+	}, [
+		scroll.y,
+		react,
+		activeEnstruction,
+		setActiveEnstruction
+	]);
+
+	return activeEnstruction;
+}
+
+const ScrollDrivenEnstructionProvider = ({
+	children,
+	react,
+	initial,
+}: {
+	children: React.ReactNode,
+	react: SingleEnstruction[],
+	initial: Enstruct,
+}) => {
+	const activeEnstruction = useSelectActiveEnstruction(react);
 
 	return (
 		<ScrollAwareEnstructionContext.Provider
@@ -66,7 +85,8 @@ const ScrollDrivenEnstructionProvider = ({
 };
 
 const useScrollDrivenEnstructions = () => {
-	const context = React.useContext(ScrollAwareEnstructionContext);
+	const context = React
+		.useContext(ScrollAwareEnstructionContext);
 	if (context === undefined) {
 		throw new Error(
 			'useScrollDrivenEnstructions must be used within a ScrollDrivenEnstructionProvider'
@@ -75,15 +95,95 @@ const useScrollDrivenEnstructions = () => {
 	return context;
 }
 
+// const PageTopEnstructionProvider = ({
+// 	children,
+// 	react,
+// 	initial,
+// }: {
+// 	children: React.ReactNode,
+// 	react: SingleEnstruction[],
+// 	initial: Enstruct,
+// }) => {
+// 	const activeEnstruction = useSelectActiveEnstruction(react);
+
+// 	return (
+// 		<ScrollAwareEnstructionContext.Provider
+// 			value={{ activeEnstruction }}
+// 		>
+// 			<></>
+// 			{children}
+// 		</ScrollAwareEnstructionContext.Provider>
+// 	);
+// };
+
 export {
-	ScrollDrivenEnstructionProvider
+	ScrollDrivenEnstructionProvider,
 };
+export type {
+	SingleEnstruction,
+};
+
+const ParrentHasFinishedContext = createContext<boolean | null>(null);
+
+const ParrentHasFinishedProvider = ({
+	children,
+}: {
+	children: React.ReactNode,
+}) => {
+	const [
+		parrentActive,
+		setParrentActive
+	] = useState<boolean>(false);
+
+	return (
+		<ParrentHasFinishedContext.Provider
+			value={parrentActive}
+		>
+			{children}
+		</ParrentHasFinishedContext.Provider>
+	);
+};
+
+const useParrentHasFinished = () => {
+	const context = React
+		.useContext(ParrentHasFinishedContext);
+	if (context === undefined) {
+		return null;
+	}
+	return context;
+}
+
+
 
 import {
 	useAnimation,
 	Variants,
-	HTMLMotionProps
+	HTMLMotionProps,
+	AnimatePresence
 } from "framer-motion";
+import { act } from 'react-dom/test-utils';
+
+const useAnimateVariantWhenScroll = (
+	variants: Variants,
+) => {
+	const controls = useAnimation();
+	const { activeEnstruction } = useScrollDrivenEnstructions();
+
+	React.useEffect(() => {
+		if (activeEnstruction) {
+			const animation = variants[activeEnstruction.animation];
+			if (!animation) throw new Error("component does not have a required animation");
+			controls.start(animation);
+			return controls.stop;
+		}
+	}, [
+		activeEnstruction,
+		variants,
+		controls,
+	]);
+
+	return controls;
+};
 
 const withScrollObservantFriendContextAnimation = (
 		MotionComponent: React.ComponentType<HTMLMotionProps<any>>
@@ -95,24 +195,82 @@ const withScrollObservantFriendContextAnimation = (
 		variants: Variants;
 		} & HTMLMotionProps<any>
 	) => {
-		const controls = useAnimation();
-		const { activeEnstruction } = useScrollDrivenEnstructions();
-
-		React.useEffect(() => {
-			if (activeEnstruction) {
-				const animation = variants[activeEnstruction];
-				if (!animation) throw new Error("component does not have a required animation");
-				controls.start(animation);
-			}
-		}, [
-			activeEnstruction,
-			variants,
-			controls
-		]);
-
-		return <MotionComponent animate={controls} {...props} />;
+		const controls = useAnimateVariantWhenScroll(variants);
+		return (
+			<MotionComponent animate={controls} {...props} />
+		);
 	};
 	return ScrollMotionComponent;
 };
 
+import { usePresence } from "framer-motion";
+
+const useMountWhenScroll = () => {
+	const [mounted, setMounted] = useState<boolean>(false);
+	const { activeEnstruction } = useScrollDrivenEnstructions();
+
+	React.useEffect(() => {
+		if (activeEnstruction &&
+			activeEnstruction.mount !== undefined) {
+				setMounted(activeEnstruction.mount);
+			}
+	}, [
+		activeEnstruction,
+		setMounted,
+	]);
+
+	return mounted;
+};
+
+const withScrollObservantFriendContextMount = (
+	MotionComponent: React.ComponentType<HTMLMotionProps<any>>,
+) => {
+	const ScrollMountComponent = ({
+		animate,
+		...props
+	} : HTMLMotionProps<any>
+	) => {
+		const mounted = useMountWhenScroll();
+
+		return (
+			<>
+			<AnimatePresence>
+			{mounted ? (
+						<MotionComponent
+							animate={animate}
+							{...props}
+							/> 
+					): null}
+			</AnimatePresence>
+		</>
+		)
+	};
+	return ScrollMountComponent;
+};
+
 export default withScrollObservantFriendContextAnimation;
+export { withScrollObservantFriendContextMount };
+
+import {
+	useAnimate,
+	stagger,
+} from "framer-motion";
+
+const withScrollObservantFriendStagger = (
+	MotionComponent: React.ComponentType<HTMLMotionProps<any>>,
+) => {
+	const ScrollStaggerComponent = ({
+		...props
+	}: HTMLMotionProps<any>
+	) => {
+		const { activeEnstruction } = useScrollDrivenEnstructions();
+		const [scope, animate] = useAnimate();
+
+		React.useEffect(() => {
+
+		}, [
+
+		]);
+	};
+	return ScrollStaggerComponent;
+}
