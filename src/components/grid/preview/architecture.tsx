@@ -53,33 +53,31 @@ export function ArchitecturePreviewGrid({
 		threshold: 1,
 	});
 	const matches = useMediaQuery('(max-width: 1000px)');
-	const [scroll, scrollTo] = useWindowScroll();
-	const [visible, setVisible] = React.useState(false);
+	// const [scroll, scrollTo] = useWindowScroll();
+	const [visible, setVisible] = React.useState(true);
 	React.useEffect(() => {
 		if (matches) {
 			setVisible(true);
 			return;
 		}
 		if (entry?.isIntersecting && !visible) {
-			console.log("intersecting");
 			// scrollToProjects();
 			setVisible(true);
 		} else if (!entry?.isIntersecting && visible && scroll.y < 200) {
-			console.log("not intersecting");
 			setVisible(false);
 		}
 	}, [entry, matches]);
 	const PRIMARY_COL_HEIGHT = rem(280);
 	const SECONDARY_COL_HEIGHT = `calc(${PRIMARY_COL_HEIGHT} / 2 - var(--mantine-spacing-md) / 2)`;
 	
-	function scrollToProjects() {
-		const element = document.getElementById('Projects');
-		if (!element) return;
-		const offsetTop = element.offsetTop - 100;
-		if (!matches) {
-			scrollTo({x: 0, y: offsetTop});
-		}
-	}
+	// function scrollToProjects() {
+	// 	const element = document.getElementById('Projects');
+	// 	if (!element) return;
+	// 	const offsetTop = element.offsetTop - 100;
+	// 	// if (!matches) {
+	// 	// 	scrollTo({x: 0, y: offsetTop});
+	// 	// }
+	// }
 
 	if (!articles) {
 		return (

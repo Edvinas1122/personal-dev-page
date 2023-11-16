@@ -5,7 +5,10 @@ import { theme } from "../theme";
 import Script from 'next/script';
 import "@mantine/core/styles.css";
 import '@mantine/code-highlight/styles.css';
-// import "./globals.css";
+import 
+	GlobalHeaderLayout
+from "@/components/header/global"
+import "./globals.css";
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -16,24 +19,32 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
 	children,
-	navbar,
+	header,
 }: {
 	children: React.ReactNode
-	navbar: React.ReactNode
+	header: React.ReactNode
 }) {
-return (
-	<html lang="en">
-		<Script id="color_scheme_script">
-			<ColorSchemeScript />
-		</Script>
-		<body className={inter.className}>
-			<MantineProvider
-				theme={theme}
-			>
-				{navbar}
+	return (
+		<html lang="en">
+			<Script id="color_scheme_script">
+				<ColorSchemeScript />
+			</Script>
+			<body className={inter.className}>
+				<MantineProvider
+					theme={theme}
+				>
+				<GlobalHeaderLayout>
+					{header}
+				</GlobalHeaderLayout>
 				{children}
-			</MantineProvider>
-		</body>
-	</html>
-)
+				<div 
+					style={{
+						height: "50000px",
+					}}
+				>
+				</div>
+				</MantineProvider>
+			</body>
+		</html>
+	)
 }

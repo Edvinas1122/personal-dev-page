@@ -184,7 +184,7 @@ async function TableList({
 	const tableList: ArticleCardProps[] = tables.map((table: any) => {
 		return convertToArticleProps(table);
 	});
-	const stats = await getGitHubStats({user_name});
+	// const stats = await getGitHubStats({user_name});
 
 	return (
 		<>
@@ -194,11 +194,11 @@ async function TableList({
 				articles={tableList}
 			/>
 			<SkillsList />
-			<ProgressCard 
+			{/* <ProgressCard 
 				title="GitHub Stats"
 				description={`Programming Languages used in ${stats.repos} repositories`}
 				items={stats.language_info}
-			/>
+			/> */}
 			</div>
 		</>
 	);
@@ -354,7 +354,18 @@ async function fetchPersonalInfo(): Promise<PersonalInfo> {
 
 export default async function Home() {
 
-	const user: PersonalInfo = await fetchPersonalInfo();
+	// const user: PersonalInfo = await fetchPersonalInfo();
+	const user: PersonalInfo = {
+		login: "edvinas1122",
+		id: 50779875,
+		avatar_url: "https://avatars.githubusercontent.com/u/50779875?v=4",
+		location: "Lithuania",
+		bio: "Full stack developer",
+		twitter_username: "edvinas1122",
+		name: "Edvinas Momkus",
+		html_url: "",
+	}
+
 	const typer = new EnRichedTextTyper();
 	const title = typer
 		.addTextSegment('Hi 👋, I am ')
@@ -374,14 +385,14 @@ export default async function Home() {
 
 	return (
 		<main>
-			<Hero
+			{/* <Hero
 				title={title}
 				description={description}
 				button="Let's talk"
 				background_image={background_image}
 				github_link={github_link}
 				avatar={user.avatar_url}
-			/>
+			/> */}
 			<Suspense fallback={<ArchitecturePreviewGrid/>}>
 				<TableList
 					user_name={user.login}

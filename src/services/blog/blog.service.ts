@@ -287,10 +287,9 @@ export default class BlogService {
 	}
 
 	private exceptionHandler(err: any) {
-		console.log(err);
+		console.error(err);
 		if (err?.message)
 		{
-			console.log(err);
 			console.log(err.message);
 		}
 	}

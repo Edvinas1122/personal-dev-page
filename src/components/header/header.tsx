@@ -107,14 +107,12 @@ export function HeaderSearch(props: HeaderSearchProps) {
 		const handleHashChange = () => {
 			const hash = window.location.hash.replace('#', ''); // Remove the '#' from the hash
 			if (hash && elementRef !== null) {
-				console.log('hash', hash);
 				const element = document.getElementById(hash);
 			  	if (element && element.scrollIntoView) {
 					elementRef.current = element;
 					element.scrollIntoView({ behavior: 'smooth', block: 'start' });
 				}
 			}
-			console.log('hash changed');
 		};
 		window.addEventListener('hashchange', handleHashChange);
 		handleHashChange();
@@ -357,14 +355,12 @@ function SearchBar(
 	const [loading, setLoading] = React.useState(false);
 
 	React.useEffect(() => {
-		console.log('searching', debaunced);
 		if (debaunced.length > 0) {
 			setLoading(true);
 			props.searchServerMethod(debaunced).then((res) => {
 				setLoading(false);
 				setResults(res.results);
 				setWereUsed(true);
-				console.log('results', res);
 			});
 		} else {
 			setResults([]);
