@@ -71,14 +71,14 @@ async function Project({
 
 	return (
 		<>
-			<Hero
+			{/* <Hero
 				title={title}
 				description={description}
 				background_image={background_image}
 				button="Get started"
 				github_link={project["GitHub Page"]}
 				disable_gradient={true}
-			/>
+			/> */}
 			<Suspense>
 				<Description
 					project={project}

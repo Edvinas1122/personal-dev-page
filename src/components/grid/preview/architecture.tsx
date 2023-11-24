@@ -48,25 +48,25 @@ export function ArchitecturePreviewGrid({
 }: {
 	articles?: ArticleCardProps[];
 }) {
-	const { ref, entry } = useIntersection({
-		// root: window.
-		threshold: 1,
-	});
+	// const { ref, entry } = useIntersection({
+	// 	// root: window.
+	// 	threshold: 1,
+	// });
 	const matches = useMediaQuery('(max-width: 1000px)');
 	// const [scroll, scrollTo] = useWindowScroll();
 	const [visible, setVisible] = React.useState(true);
-	React.useEffect(() => {
-		if (matches) {
-			setVisible(true);
-			return;
-		}
-		if (entry?.isIntersecting && !visible) {
-			// scrollToProjects();
-			setVisible(true);
-		} else if (!entry?.isIntersecting && visible && scroll.y < 200) {
-			setVisible(false);
-		}
-	}, [entry, matches]);
+	// React.useEffect(() => {
+	// 	if (matches) {
+	// 		setVisible(true);
+	// 		return;
+	// 	}
+	// 	if (entry?.isIntersecting && !visible) {
+	// 		// scrollToProjects();
+	// 		setVisible(true);
+	// 	} else if (!entry?.isIntersecting && visible) {
+	// 		setVisible(false);
+	// 	}
+	// }, [entry, matches]);
 	const PRIMARY_COL_HEIGHT = rem(280);
 	const SECONDARY_COL_HEIGHT = `calc(${PRIMARY_COL_HEIGHT} / 2 - var(--mantine-spacing-md) / 2)`;
 	
@@ -98,7 +98,7 @@ export function ArchitecturePreviewGrid({
 		>
 		<Title 
 			my="md"
-			ref={ref}
+			// ref={ref}
 		>
 			Projects
 		</Title>
@@ -146,24 +146,29 @@ export function ArchitecturePreviewGrid({
 				height={PRIMARY_COL_HEIGHT}
 			/>
 			</motion.li>
-			<Grid>
-				<Grid.Col span={6}>
+				<SimpleGrid
+					cols={{ base: 1, sm: 1, md: 1, lg: 2 }}
+					// grow={true}
+				>
+				{/* <Grid.Col 
+					span={6}
+				> */}
 				<motion.li variants={item}>
 					<GeneralArticleCard 
 						{...articles[3]}
 						height={PRIMARY_COL_HEIGHT}
 						/>
 				</motion.li>
-				</Grid.Col>
-				<Grid.Col span={6}>
+				{/* </Grid.Col> */}
+				{/* <Grid.Col span={6}> */}
 				<motion.li variants={item}>
 					<GeneralArticleCard 
 						{...articles[4]}
 						height={PRIMARY_COL_HEIGHT}
 						/>
 				</motion.li>
-				</Grid.Col>
-			</Grid>
+				{/* </Grid.Col> */}
+			</SimpleGrid>
 		</SimpleGrid>
 		</motion.ul>
 		</Container>

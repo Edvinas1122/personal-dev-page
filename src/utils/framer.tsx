@@ -50,6 +50,122 @@ import
 // 	Paragraph: withScrollObservantFriendContextAnimation(motion.p)
 // }
 
+// function animation_set(
+// 	animation: {},
+// 	duration: number,
+// 	delay: number,
+// 	type: string = "linear"
+// ) {
+// 	return {
+// 		...animation,
+// 		transition: {
+// 			duration: duration,
+// 			staggerChildren: 0.5,
+// 			delay: delay,
+// 			type: type,
+// 			bounce: 0.55,
+// 		}
+// 	}
+// }
+
+// const down_pop_hidden = {
+// 	y: 40,
+// 	opacity: 0,
+// }
+
+// const down_pop_visible = {
+// 	y: 0,
+// 	opacity: 1,
+// }
+// const animations = {
+// 	// founder: {
+// 	// 	expanded: animation_set({
+// 	// 		marginLeft: 'var(--left-spacing)',
+// 	// 	}, 0.3, 0, "tween"),
+// 	// 	contracted: animation_set({
+// 	// 		marginLeft: "0",
+// 	// 	}, 0.12, 0.1, "linear"),
+// 	// },
+// 	avatar: {
+// 		contracted: animation_set({
+// 			marginTop: "0",
+// 			width: "var(--contracted-size)",
+// 			height: "var(--contracted-size)",
+// 		}, 0.25, 0.15, "linear"),
+// 		expanded: animation_set({
+// 			ease: "easeInOut",
+// 			marginTop: "var(--top-spacing)",
+// 			width: "var(--expanded-size)",
+// 			height: "var(--expanded-size)",
+// 		}, 0.3, 0.1, "linear"),
+// 	},
+// 	title: {
+// 		contracted: animation_set(down_pop_hidden, 0.2, 0),
+// 		expanded: animation_set(down_pop_visible,
+// 			0.3, 0.1, "spring"),
+// 	},
+// 	description: {
+// 		contracted: animation_set(down_pop_hidden, 0.15, 0),
+// 		expanded: animation_set(down_pop_visible,
+// 			0.3, 0.2, "spring"),
+// 	},
+// 	button: {
+// 		contracted: animation_set(down_pop_hidden, 0.1, 0),
+// 		expanded: animation_set(down_pop_visible, 0.3, 0.3, "spring"),
+// 	},
+// 	hero: {
+// 		contracted: {
+// 			opacity: 0,
+// 			scale: 1,
+// 			filter: "blur(0px)",
+// 			transition: {
+// 				duration: 0.2,
+// 				delay: 0.15,
+// 			}
+// 		},
+// 		expanded: {
+// 			opacity: 1,
+// 			scale: 1.1,
+// 			filter: "blur(1.6px)",
+// 			transition: {
+// 				duration: 4,
+// 				delay: 0.4,
+// 				type: "spring",
+// 			}
+// 		},
+// 	}
+// }
+
+// export const EnstuctionAwareMotionDiv = withScrollObservantFriendContextAnimation(
+// 	motion.div,
+// 	animations.avatar
+// );
+// export const EnstuctionAwareMotionHeader = withScrollObservantFriendContextAnimation(
+// 	motion.header,
+// 	animations.title
+// );
+// export const EnstuctionAwareMotionUList = withScrollObservantFriendContextAnimation(
+// 	motion.ul,
+// 	animations.description
+// );
+// export const EnstuctionAwareMotionHGroup = withScrollObservantFriendContextAnimation(
+// 	motion.hgroup,
+// 	animations.button
+// );
+// export const EnstuctionAwareMotionTitle = withScrollObservantFriendContextAnimation(
+// 	motion.h1,
+// 	animations.title
+// );
+// export const EnstuctionAwareMotionParagraph = withScrollObservantFriendContextAnimation(
+// 	motion.p,
+// 	animations.description
+// );
+// export const EnstuctionAwareMotionButton = withScrollObservantFriendContextAnimation(
+// 	motion.button,
+// 	animations.button
+// );
+
+
 export const EnstuctionAwareMotionDiv = withScrollObservantFriendContextAnimation(motion.div);
 export const EnstuctionAwareMotionHeader = withScrollObservantFriendContextAnimation(motion.header);
 export const EnstuctionAwareMotionUList = withScrollObservantFriendContextAnimation(motion.ul);
@@ -80,28 +196,131 @@ export const EnstructionAwareMauntMotionButton = withScrollObservantFriendContex
 
 export const PresenceContext = AnimatePresence;
 
-// import {
-// 	SVGMotionProps,
-// 	HTMLMotionProps
-// } from "framer-motion";
+import {
+	withScrollPosition
+} from "./reactScroll";
 
-// type MotionComponentKey = keyof typeof motion;
-// type MotionComponent = typeof motion[MotionComponentKey];
-// export class EnstructionAware {
-// 	constructor(
-// 		private motionComponentKey: MotionComponentKey,
-// 		private enstructions: MountWhen
-// 	) {}
+function interpolateColor(from: string, to: string, between: number) {
+	const fromColor = from.match(/\d+/g);
+	const toColor = to.match(/\d+/g);
+	if (!fromColor || !toColor) throw new Error("invalid color");
+		const fromColorNumbers = fromColor.map((color) => parseInt(color));
+		const toColorNumbers = toColor.map((color) => parseInt(color));
+		const colorNumbers = fromColorNumbers.map((fromColorNumber, index) => {
+			const toColorNumber = toColorNumbers[index];
+			const difference = toColorNumber - fromColorNumber;
+			const colorNumber = fromColorNumber + (difference * between);
+			return colorNumber;
+	});
+	const colorString = `rgba(${colorNumbers.join(", ")})`;
+	return colorString;
+}
 
-// 	public get Motion() {
-// 		if (this.isSVGComponent(motion[this.motionComponentKey])) {
-// 			return withScrollObservantFriendContextAnimation<SVGMotionProps<any>>(motion[this.motionComponentKey]);
-// 		} else {
-// 			return withScrollObservantFriendContextAnimation<HTMLMotionProps<any>>(motion[this.motionComponentKey]);
-// 		}
-// 	}
+function compensateScroll(scrollY:  number) {
+	const scrollValue = (100 - scrollY * scrollY / 1000);
+	const compensate = Math.min(Math.max(0, scrollValue), 100);
+	const compensateHeight = compensateVarProperty(scrollY, "--min-height", "--max-height", 1);
+	return {
+		height: compensateHeight,
+		backgroundColor: interpolateColor(
+			"rgba(20, 130, 200, 0)",
+			"rgba(6, 35, 67, 1)",
+			compensate / 100,
+		),
+	}
+}
 
-// 	private isSVGComponent(component: MotionComponent): component is React.ComponentType<SVGMotionProps<any>> {
-// 		return component.displayName?.startsWith('motion.svg');
-// 	}
+function compensateProperty(value: number, min: number, max: number, unit: string) {
+	const scrollValue = (max - value * value / 1000);
+	const compensate = Math.min(Math.max(min, scrollValue), max);
+	const compensateString = `${compensate}${unit}`;
+	return compensateString;
+}
+
+function compensateVarProperty(value: number, minVar: string, maxVar: string, factor: number) {
+    // Creating the calc expression
+	const min = 0;
+	const max = 1;
+	const scrollValue = (max - value * value / 100000);
+	const clampedFactor = Math.min(Math.max(min, scrollValue), max);
+	const calcExpression = `calc(var(${minVar}) * (1 - ${clampedFactor}) + var(${maxVar}) * ${clampedFactor})`;
+    return calcExpression;
+}
+
+function avatarScroll(scrollY: number) {
+	// const compensateString = compensateProperty(scrollY, min, 100, "vh");
+	const compensateMarginTop = compensateVarProperty(
+		scrollY,
+		"--min-top-spacing",
+		"--top-spacing",
+		1);
+	const compensateImageSize = compensateVarProperty(scrollY, "--contracted-size", "--expanded-size", 0.01);
+	return {
+		marginTop: compensateMarginTop,
+		width: compensateImageSize,
+		height: compensateImageSize,
+	}
+}
+
+const initial = {
+	height: "100vh",
+	backgroundColor: "rgba(6, 35, 67, 1)",
+}
+
+const initialAvatar = {
+	marginTop: "var(--top-spacing)",
+	width: "var(--expanded-size)",
+	height: "var(--expanded-size)",
+}
+
+export const ScrollPositionAwareMotionDiv = withScrollPosition(
+	motion.div,
+	avatarScroll,
+	initialAvatar
+	);
+export const ScrollPositionAwareMotionHeader = withScrollPosition(
+	motion.header,
+	compensateScroll,
+	initial
+);
+export const ScrollPositionAwareMotionUList = withScrollPosition(
+	motion.ul,
+	compensateScroll,
+	initial
+);
+export const ScrollPositionAwareMotionHGroup = withScrollPosition(
+	motion.hgroup,
+	avatarScroll,
+	initial
+);
+
+
+// export default {
+// 	ScrollPositionAwareMotionDiv,
+// 	ScrollPositionAwareMotionHeader,
+// 	ScrollPositionAwareMotionUList,
+// 	ScrollPositionAwareMotionHGroup,
+// 	EnstuctionAwareMotionDiv,
+// 	EnstuctionAwareMotionHeader,
+// 	EnstuctionAwareMotionUList,
+// 	EnstuctionAwareMotionHGroup,
+// 	EnstuctionAwareMotionTitle,
+// 	EnstuctionAwareMotionParagraph,
+// 	EnstuctionAwareMotionButton,
+// 	EnstructionAwareMauntMotionDiv,
+// 	EnstructionAwareMauntMotionHeader,
+// 	EnstructionAwareMauntMotionUList,
+// 	EnstructionAwareMauntMotionHGroup,
+// 	EnstructionAwareMauntMotionTitle,
+// 	EnstructionAwareMauntMotionParagraph,
+// 	EnstructionAwareMauntMotionButton,
+// 	ScrollDrivenEnstructionProvider,
+// 	withScrollObservantFriendContextAnimation,
+// 	withScrollObservantFriendContextMount,
+// 	withScrollPosition,
+// 	interpolateColor,
+// 	compensateProperty,
+// 	compensateVarProperty,
+// 	avatarScroll,
+// 	compensateScroll,
 // }

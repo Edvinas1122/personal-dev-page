@@ -1,4 +1,6 @@
 .header {
+	--min-height: 4rem;
+	--max-height: 100vh;
 	top: 0;
     position: fixed;
     width: 100vw;
@@ -114,14 +116,40 @@
 	@media (max-width: $mantine-breakpoint-md) or (max-height: 800px) {}
 }
 
+@keyframes appear {
+	0% {
+		opacity: 0;
+		transform: translateY(30px);
+	}
+	/* 50% {
+		transform: translateY(-10px);
+	}
+	80% {
+		transform: translateY(5px);
+	}
+	90% {
+		transform: translateY(-2px);
+	} */
+	100% {
+		opacity: 1;
+		transform: translateY(0px);
+	}
+}
+
 .avatar {
+	--min-top-spacing: 0px;
 	--expanded-size: calc(180px);
 	--contracted-size: calc(40px);
 	height: var(--contracted-size);
 	width: var(--contracted-size);
+	border: 2px solid #fff;
+	z-index: 30;
+	position: relative;
 	@media (max-width: $mantine-breakpoint-sm) or (max-height: 800px) { 
 		--expanded-size: calc(150px);
 	}
+	/* transition: all 0.2s ease-in-out; */
+	animation: appear 0.2s ease-in-out;
 }
 
 /* .heroCode {

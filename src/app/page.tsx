@@ -69,10 +69,10 @@ async function getTables() {
 	});
 	// const entires = await service.getProjects();
 	const entires: Table[] = await service.getCompleteArchitercute();
-	const languages = await fetchRepositoryLanguages(entires);
-	entires.forEach((entry, index) => {
-		entry.repo_languages = languages[index];
-	});
+	// const languages = await fetchRepositoryLanguages(entires);
+	// 	entires.forEach((entry, index) => {
+	// 		entry.repo_languages = languages[index];
+	// });
 	return entires;
 }
 
@@ -116,60 +116,60 @@ const transformAndNormalize = (values: number[]) => {
     return transformed.map(value => (value / sumTransformed) * 100);
 };
 
-async function getGitHubStats({
-	user_name
-}: {
-	user_name: string
-}) {
-	const octokit = new Octokit({
-		auth: process.env.GITHUB_TOKEN
-	});
-	octokit.request.defaults({
-		next: {revalidate: 36000}
-	})
-	const all_repos = await octokit
-		.request(`GET /users/${user_name}/repos`, {
-			headers: {
-				'X-GitHub-Api-Version': '2022-11-28'
-			}
-		});
-	const not_forked_repos = all_repos.data.filter((repo: any) => {
-		return !repo.fork;
-	});
-	const languages_used = await Promise.all(
-		not_forked_repos.map(async (repo: any) => {
-			const repo_languages = await octokit.rest.repos.listLanguages({
-				owner: repo.owner.login,
-				repo: repo.name
-			});
-			return repo_languages.data;
-		})
-	);
-	type Languages = {[lang: string]: number};
-	const languages: Languages = languages_used.reduce((acc: any, curr: any) => {
-		for (const [key, value] of Object.entries(curr)) {
-			if (acc[key]) {
-				acc[key] += value;
-			} else {
-				acc[key] = value;
-			}
-		}
-		return acc;
-	}, {});
-	const totalBytes = Object.values(languages)
-		.reduce((total, current) => total + current, 0);
-	const languagePercentages: Languages = Object.entries(languages)
-		.map(([language, bytes]): [string, number] => [language, Math.round((bytes / totalBytes) * 100)])
-		.sort((a, b) => (b as [string, number])[1] - (a as [string, number])[1]) // Type assertion
-		.reduce((obj: Languages, [language, percentage]) => {
-			obj[language] = percentage;
-			return obj;
-		}, {});
-	return {
-		repos: not_forked_repos.length,
-		language_info: languagePercentages,
-	}
-}
+// async function getGitHubStats({
+// 	user_name
+// }: {
+// 	user_name: string
+// }) {
+// 	const octokit = new Octokit({
+// 		auth: process.env.GITHUB_TOKEN
+// 	});
+// 	octokit.request.defaults({
+// 		next: {revalidate: 36000}
+// 	})
+// 	const all_repos = await octokit
+// 		.request(`GET /users/${user_name}/repos`, {
+// 			headers: {
+// 				'X-GitHub-Api-Version': '2022-11-28'
+// 			}
+// 		});
+// 	const not_forked_repos = all_repos.data.filter((repo: any) => {
+// 		return !repo.fork;
+// 	});
+// 	const languages_used = await Promise.all(
+// 		not_forked_repos.map(async (repo: any) => {
+// 			const repo_languages = await octokit.rest.repos.listLanguages({
+// 				owner: repo.owner.login,
+// 				repo: repo.name
+// 			});
+// 			return repo_languages.data;
+// 		})
+// 	);
+// 	type Languages = {[lang: string]: number};
+// 	const languages: Languages = languages_used.reduce((acc: any, curr: any) => {
+// 		for (const [key, value] of Object.entries(curr)) {
+// 			if (acc[key]) {
+// 				acc[key] += value;
+// 			} else {
+// 				acc[key] = value;
+// 			}
+// 		}
+// 		return acc;
+// 	}, {});
+// 	const totalBytes = Object.values(languages)
+// 		.reduce((total, current) => total + current, 0);
+// 	const languagePercentages: Languages = Object.entries(languages)
+// 		.map(([language, bytes]): [string, number] => [language, Math.round((bytes / totalBytes) * 100)])
+// 		.sort((a, b) => (b as [string, number])[1] - (a as [string, number])[1]) // Type assertion
+// 		.reduce((obj: Languages, [language, percentage]) => {
+// 			obj[language] = percentage;
+// 			return obj;
+// 		}, {});
+// 	return {
+// 		repos: not_forked_repos.length,
+// 		language_info: languagePercentages,
+// 	}
+// }
 
 import {
 	ProgressCard
@@ -193,7 +193,7 @@ async function TableList({
 			<ArchitecturePreviewGrid 
 				articles={tableList}
 			/>
-			<SkillsList />
+			{/* <SkillsList /> */}
 			{/* <ProgressCard 
 				title="GitHub Stats"
 				description={`Programming Languages used in ${stats.repos} repositories`}
@@ -209,21 +209,21 @@ import {
 	Skill
 } from "@/components/grid/skills/skills";
 
-async function SkillsList({
+// async function SkillsList({
 
-}: {
+// }: {
 
-}) {
-	const skills_display: SkillDisplay[] = await fetchSkills();
+// }) {
+// 	const skills_display: SkillDisplay[] = await fetchSkills();
 
-	return (
-		<>
-			<SkillsGrid 
-				skills={skills_display}
-			/>
-		</>
-	);
-} 
+// 	return (
+// 		<>
+// 			<SkillsGrid 
+// 				skills={skills_display}
+// 			/>
+// 		</>
+// 	);
+// } 
 
 type GitHubUser = {
 	data: {
@@ -384,7 +384,11 @@ export default async function Home() {
 	const github_link = user.html_url;
 
 	return (
-		<main>
+		<main
+			style={{
+				marginTop: "60vh",
+			}}
+		>
 			{/* <Hero
 				title={title}
 				description={description}

@@ -2,8 +2,9 @@ import {
 	SingleEnstruction
 } from "@/utils/framer"
 import {
-	Motion,
+	// Motion,
 	MauntMotion,
+	ScrollMotion,
 	PresenceContext,
 	ScrollDrivenEnstructionProvider
 } from "@/utils/module"
@@ -51,6 +52,8 @@ function animation_set(
 	}
 }
 
+const contentAppearDelay = 0.1;
+
 const animations = {
 	// founder: {
 	// 	expanded: animation_set({
@@ -76,28 +79,16 @@ const animations = {
 	title: {
 		contracted: animation_set(down_pop_hidden, 0.2, 0),
 		expanded: animation_set(down_pop_visible,
-			0.3, 0.4, "spring"),
+			0.3, 0.1, "spring"),
 	},
 	description: {
 		contracted: animation_set(down_pop_hidden, 0.15, 0),
 		expanded: animation_set(down_pop_visible,
-			0.3, 0.5, "spring"),
+			0.3, 0.2, "spring"),
 	},
 	button: {
 		contracted: animation_set(down_pop_hidden, 0.1, 0),
-		expanded: animation_set(down_pop_visible, 0.3, 0.6, "spring"),
-	},
-	header: {
-		contracted: animation_set({
-			marginBottom: "6rem",
-			height: "4rem",
-			backgroundColor: "rgba(8, 45, 85, 0)",
-		}, 0.3, 0.2),
-		expanded: animation_set({
-			height: "100vh",
-			backgroundColor: "rgba(6, 35, 67, 1)",
-			type: "tween",
-		}, 0.3, 0.1),
+		expanded: animation_set(down_pop_visible, 0.3, 0.3, "spring"),
 	},
 	hero: {
 		contracted: {
@@ -105,8 +96,8 @@ const animations = {
 			scale: 1,
 			filter: "blur(0px)",
 			transition: {
-				duration: 0.2,
-				delay: 0.15,
+				duration: 0.1,
+				delay: 0.1,
 			}
 		},
 		expanded: {
@@ -115,7 +106,7 @@ const animations = {
 			filter: "blur(1.6px)",
 			transition: {
 				duration: 4,
-				delay: 0.5,
+				delay: 0.4,
 				type: "spring",
 			}
 		},
@@ -124,11 +115,11 @@ const animations = {
 
 const scroll_react_enstructions: SingleEnstruction[] = [{
 	value: 0,
-	threshold: 20,
+	threshold: 10,
 	animation: "expanded",
 	mount: true,
 }, {
-	value: 50,
+	value: 11,
 	threshold: 800000,
 	animation: "contracted",
 	mount: false,
@@ -156,33 +147,37 @@ function GlobalHeaderLayout({
 	const background_image = "https://spangled-hall-d99.notion.site/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2Ffd7e6ad3-3f36-45d5-94fb-5bdb95af5da7%2F37fbe56e-638f-453e-8487-9d6e4c7a5ff0%2FIMG_3042.webp?table=block&id=e764bdcf-2ef7-438f-a63f-6c3efa60b176&spaceId=fd7e6ad3-3f36-45d5-94fb-5bdb95af5da7&width=2000&userId=&cache=v2";
 
 	return (
+		<Suspense fallback={
+			<div>Loading...</div>
+		}>
 		<ScrollDrivenEnstructionProvider
 			react={scroll_react_enstructions}
 			initial={{
-				animation: "contracted",
+				animation: "expanded",
 				mount: true,
 			}}
 		>
-			<Motion.Header
+			<ScrollMotion.Header
 				className={classes.header}
-				variants={animations.header}
 				initial={"expanded"}
 				style={{
 					position: "fixed",
+					height: "100vh",
 				}}
 			>
 				<FounderInfo
 					title={title}
 					description={description}
 					avatar={avatar}
-				/>
+					/>
 				<GlobalNavigation />
 				<Hero
 					background_image={background_image}
 				/>
 				{children}
-			</Motion.Header>
+			</ScrollMotion.Header>
 		</ScrollDrivenEnstructionProvider>
+		</Suspense>
 	);
 }
 
@@ -205,17 +200,22 @@ function FounderInfo({
 				zIndex: 30,
 			}}
 		>
+			<Suspense
+				fallback={
+					<div>Loading...</div>
+				}
+			>
 			<Avatar
-				component={Motion.Div}
+				component={ScrollMotion.Div}
 				className={classes.avatar}
 				src={avatar}
 				size={"sm"}
-				style={{
-					border: "2px solid #fff",
-					zIndex: 30,
-					position: "relative",
-				}}
-				variants={animations.avatar}
+				// style={{
+					// 	border: "2px solid #fff",
+				// 	zIndex: 30,
+				// 	position: "relative",
+				// }}
+				// variants={animations.avatar}
 				/>
 			<EnRichedTextDisplay
 				Component={MauntMotion.Title}
@@ -229,7 +229,7 @@ function FounderInfo({
 				style={{
 				}}
 				// lineClamp={4}
-			/>
+				/>
 			<EnRichedTextDisplay
 				Component={MauntMotion.Paragraph}
 				initial={animations.title.contracted}
@@ -239,7 +239,8 @@ function FounderInfo({
 				exit={animations.description.contracted}
 				style={{
 				}}
-			/>
+				/>
+			</Suspense>
 		</hgroup>
 	);
 }
@@ -277,6 +278,7 @@ function GlobalNavigation() {
 }
 
 import { TyperHeader } from "@/components/hero/typer";
+import { Suspense } from "react";
 
 function Hero({
 	background_image,
@@ -298,10 +300,12 @@ function Hero({
 					backgroundBlendMode: "normal",
 					backgroundPosition: "center",
 				}}
-				variants={animations.hero}
-				initial={"contracted"}
-				animate={"expanded"}
+				initial={animations.hero.contracted}
 				className={classes.hero}
+				// variants={animations.hero}
+				//@ts-ignore
+				animate={animations.hero.expanded}
+				exit={animations.hero.contracted}
 			/>
 		</>
 	);
