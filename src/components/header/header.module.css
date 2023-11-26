@@ -2,12 +2,14 @@
 	--min-height: 4rem;
 	--max-height: 100vh;
 	top: 0;
-    position: fixed;
+    /* position: fixed; */
     width: 100vw;
 	display: flex;
-	flex-direction: column;
-	padding-left: var(--left-spacing);
+	flex-direction: row;
+	padding: 0.8rem var(--left-spacing);
 	height: 4rem;
+	justify-content: space-between;
+	backdrop-filter: blur(3px);
 	/* flex-direction: row;
 	justify-content: space-evenly;
 	flex-wrap: wrap; */
@@ -17,7 +19,7 @@
 }
 
 .header > * {
-	padding: 1em;
+	padding: 0 1em;
 }
 
 .link {
@@ -80,6 +82,26 @@
 	z-index: 10;
 }
 
+.logo_title {
+	--min-top-spacing: 0px;
+	--min-width: 0rem;
+	--max-width: 10rem;
+	--max-font-size: 1rem;
+	--min-font-size: 4rem;
+	overflow: hidden;
+	text-wrap: nowrap;
+	overflow-wrap: nowrap;
+	text-overflow: ellipsis;
+	color: var(--mantine-color-white);
+	font-family: Greycliff CF, var(--mantine-font-family);
+	font-weight: 900;
+	line-height: 1.05;
+	/* font-size: 1rem; */
+	position: relative;
+	margin: 0;
+	z-index: 10;
+}
+
 .description {
 	--font-size-local: var(--font-medium-large);
 	color: var(--mantine-color-white);
@@ -106,12 +128,16 @@
 }
 
 .content {
+	--min-top-spacing: 0px;
 	/* width: calc(100% - 20vw); */
 	--max-width-local: 650px;
-	width: calc(220px + 36vw);
+	/* width: calc(220px + 36vw); */
+	width: fit-content;
 	display: flex;
-	flex-direction: column;
+	flex-direction: row;
+	flex-wrap: wrap;
 	height: fit-content;
+	align-items: center;
 	max-width: var(--max-width-local);
 	@media (max-width: $mantine-breakpoint-md) or (max-height: 800px) {}
 }
@@ -163,3 +189,8 @@
 	text-shadow: "0px 0px 3px rgba(255, 255, 255, 0.9)";
 	filter: "blur(1px)"
 } */
+
+.main {
+	--top-spacing: 19vh + 200px;
+	--min-top-spacing: 110lvh;
+}

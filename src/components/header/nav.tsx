@@ -67,152 +67,127 @@ import classes from './header.module.css';
 	},
 ];
 
-import { useWindowScroll } from '@mantine/hooks';
 import { motion } from 'framer-motion';
 import React from 'react';
 
 export interface HeaderSearchProps {
-	sections: string[];
+	// sections: string[];
 	searchServerMethod: (query: string) => Promise<any>;
 }
 
-const animateAppear = {
-	hidden: {
-		opacity: 0,
-		height: rem(0),
-	},
-	visible: {
-		opacity: 1,
-		height: rem(64),
-		transition: {
-			duration: 0.3,
-			ease: 'easeOut',
-		},
-	},
-};
+import { useSelectedLayoutSegment } from 'next/navigation'
 
+type Link = string;
 
-
-export function HeaderSearch(props: HeaderSearchProps) {
-	const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] = useDisclosure(false);
-	const [linksOpened, { toggle: toggleLinks }] = useDisclosure(false);
+export function NavSection(props: HeaderSearchProps) {
+	const [
+		drawerOpened,
+		{ toggle: toggleDrawer, close: closeDrawer }
+	] = useDisclosure(false);
+	const [
+		linksOpened,
+		{ toggle: toggleLinks }
+	] = useDisclosure(false);
 	const theme = useMantineTheme();
-	const [scroll, scrollTo] = useWindowScroll();
-	const [visible, setVisible] = React.useState(false);
-	const elementRef = React.useRef<
-		HTMLElement | null
-	>(null);
+	const selectedLayoutSegment = useSelectedLayoutSegment();
 
-	React.useEffect(() => {
-		const handleHashChange = () => {
-			const hash = window.location.hash.replace('#', ''); // Remove the '#' from the hash
-			if (hash && elementRef !== null) {
-				const element = document.getElementById(hash);
-			  	if (element && element.scrollIntoView) {
-					elementRef.current = element;
-					element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-				}
-			}
-		};
-		window.addEventListener('hashchange', handleHashChange);
-		handleHashChange();
-		return () => {
-			window.removeEventListener('hashchange', handleHashChange);
-		};
-	}, []);
 
-	React.useEffect(() => {
-		if (scroll.y > 140) {
-			setVisible(true);
-		} else {
-			setVisible(false);
-		}
-	}, [scroll.y]);
-
-	const links = mockdata.map((item) => (
-	  <UnstyledButton className={classes.subLink} key={item.title}>
-		<Group wrap="nowrap" align="flex-start">
-		  <ThemeIcon size={34} variant="default" radius="md">
-			<item.icon style={{ width: rem(22), height: rem(22) }} color={theme.colors.blue[6]} />
-		  </ThemeIcon>
-		  <div>
-			<Text size="sm" fw={500}>
-			  {item.title}
-			</Text>
-			<Text size="xs" c="dimmed">
-			  {item.description}
-			</Text>
-		  </div>
-		</Group>
-	  </UnstyledButton>
-	));
+	// const links = mockdata.map((item) => (
+	//   <UnstyledButton className={classes.subLink} key={item.title}>
+	// 	<Group wrap="nowrap" align="flex-start">
+	// 	  <ThemeIcon size={34} variant="default" radius="md">
+	// 		<item.icon style={{ width: rem(22), height: rem(22) }} color={theme.colors.blue[6]} />
+	// 	  </ThemeIcon>
+	// 	  <div>
+	// 		<Text size="sm" fw={500}>
+	// 		  {item.title}
+	// 		</Text>
+	// 		<Text size="xs" c="dimmed">
+	// 		  {item.description}
+	// 		</Text>
+	// 	  </div>
+	// 	</Group>
+	//   </UnstyledButton>
+	// ));
 	const height = rem(64);
+
+	const links = [
+		'Projects',
+		'Journal',
+		'Contact'
+	];
+
+	const LinksDisplay = ({
+		links,
+		selectedLayoutSegment
+	}:{
+		links: Link[]
+		selectedLayoutSegment: string
+	}) => {
+		return links.map((link) => (
+			<Link
+				className={classes.link}
+				key={link}
+				href={`${link.toLowerCase()}`}
+				style={{
+					backgroundColor: selectedLayoutSegment === link.toLowerCase() ? theme.colors.blue[1] : undefined
+				}}
+			>
+				{link}
+			</Link>
+		));
+	}
+
   
 	return (
 		<>
-		<motion.header
-			className={classes.header}
-			style={{height: height}}
-			animate={visible ? animateAppear.visible : animateAppear.hidden}
-			initial={animateAppear.hidden}
-		>
 			<Group
 				justify="space-between"
 				h="100%"
 				px="lg"
 			>
   
-			<Group h="100%" gap={0} visibleFrom="sm">
-				<a
+			<Group h="100%" gap={0} visibleFrom="md">
+				<LinksDisplay
+					links={links}
+					selectedLayoutSegment={selectedLayoutSegment}
+				/>
+				{/* <a
 					className={classes.link}
 					onClick={() => {
 						document.location.hash = '';
-						scrollTo({x:0,y:0})
 						closeDrawer();
-						// setTimeout(() => {
-						// }, 2000);
 					}}
 				>
 					Main
 				</a>
-				<HoverCardPopover
+				<a href="#" className={classes.link}>
+					Projects
+				</a>
+				{/* <HoverCardPopover
 					name={'Projects'}
 					classes={classes}
 					theme={theme}
 					links={links}
-				/>
-				<a href="#" className={classes.link}>
-					Journal
-				</a>
-				<a href="#" className={classes.link}>
-					Contact
-				</a>
+				/> */}
+
 			</Group>
   
 			<Group visibleFrom='sm'>
 				<SearchBar
 					searchServerMethod={props.searchServerMethod}
 				/>
-				{/* <Autocomplete
-					className={classes.search}
-					placeholder="Search"
-					leftSection={<IconSearch style={{ width: rem(16), height: rem(16) }} stroke={1.5} />}
-					data={['React', 'Angular', 'Vue', 'Next.js', 'Riot.js', 'Svelte', 'Blitz.js']}
-					visibleFrom="xs"
-				/> */}
 			</Group>
   
-			<Burger opened={drawerOpened} onClick={toggleDrawer} hiddenFrom="sm" />
+			<Burger opened={drawerOpened} onClick={toggleDrawer} hiddenFrom="md" />
 		  </Group>
-		</motion.header>
-  
 		<Drawer
 		  opened={drawerOpened}
 		  onClose={closeDrawer}
 		  size="100%"
 		  padding="md"
 		  title="Navigation"
-		  hiddenFrom="sm"
+		  hiddenFrom="md"
 		  zIndex={1000000}
 		>
 		  <ScrollArea h={`calc(100vh - ${rem(80)})`} mx="-md">
@@ -246,7 +221,7 @@ export function HeaderSearch(props: HeaderSearchProps) {
 			  <Button variant="default">Log in</Button>
 			  <Button>Sign up</Button>
 			</Group> */}
-			<Group justify="center" grow pb="xl" px="md">
+			<Group justify="center" grow pb="xl" px="md" hiddenFrom="sm">
 				{/* <Autocomplete
 					className={classes.search}
 					placeholder="Search"
@@ -254,9 +229,9 @@ export function HeaderSearch(props: HeaderSearchProps) {
 					data={['React', 'Angular', 'Vue', 'Next.js', 'Riot.js', 'Svelte', 'Blitz.js']}
 					visibleFrom="xs"
 				/> */}
-				<SearchBar
+				{/* <SearchBar
 					searchServerMethod={props.searchServerMethod}
-				/>
+				/> */}
 			</Group>
 		  </ScrollArea>
 		</Drawer>
@@ -334,6 +309,8 @@ import {
 	Modal,
 	FocusTrap,
 	Loader,
+	ComboboxItem,
+	MantineColor
 } from '@mantine/core';
 import {
 	useHotkeys,
@@ -381,8 +358,6 @@ function SearchBar(
 				rightSectionWidth={70}
 				rightSection={<Code className={classes.searchCode}>Ctrl + K</Code>}
 				styles={{ section: { pointerEvents: 'none' } }}
-				mb="sm"
-				px="lg"
 				onClick={toggle}
 			/>
 			<Modal
@@ -393,7 +368,7 @@ function SearchBar(
 				xOffset={0}
 			>
 				<FocusTrap active={search_opened}>
-				<TextInput
+				{/* <TextInput
 					placeholder="Search"
 					aria-label='Search'
 					size="xs"
@@ -408,11 +383,15 @@ function SearchBar(
 						setSearch(currentValue);
 
 					}}
-					/>
+					/> */}
 				</FocusTrap>
 				<ResultDisplay
 					results={results}
 					were_used={were_used}
+					onChange={(value) => {
+						// const currentValue = value;
+						setSearch(value);
+					}}
 				/>
 			</Modal>
 		</>
@@ -426,6 +405,16 @@ import {
 	to_url_string
 } from '@/utils/url_string';
 
+
+interface ItemProps extends ComboboxItem {
+	color: MantineColor;
+	description: string;
+	image: string;
+	value: string;
+}
+
+import {useRouter} from 'next/navigation';
+  
 function ResultDisplay(props: {
 	results: {
 		at: string;
@@ -433,8 +422,9 @@ function ResultDisplay(props: {
 		description: string;
 	}[],
 	were_used: boolean,
+	onChange: ((value: string) => void)
 }) {
-
+	const router = useRouter();
 	if (props.results.length === 0 && props.were_used) {
 		return (
 			<Text>
@@ -443,58 +433,54 @@ function ResultDisplay(props: {
 		);
 	}
 
-	return (
-		<ul
-			style={{
-				listStyle: 'none',
-				padding: 0,
-				margin: 0,
-			}}
-		>
-			{props.results.map((result, index) => {
-				return (
-					<li 
-						key={index} 
-						style={{
-							padding: '0.5rem',
-							borderBottom: '1px solid #eee',
-						}}
-					>
-						<Group
-							style={{
-								textDecoration: 'none',
-								color: 'inherit',
-								hover: {
-									backgroundColor: '#eee',
-								},
-								margin: '0.5rem',
-							}}
+	function handleSelect(value: string) {
+		console.log("handleSelect", value);
+		router.push(to_url_string(value));
+	}
+
+	const AutoCompleteItem = React
+		.forwardRef<HTMLDivElement, ItemProps>(
+			({ description, at, value, ...others }: ItemProps, ref) => {
+				console.log("console",description, value);
+			return <div ref={ref} {...others}>
+				<Group noWrap>
+				{/* <Avatar src={image} /> */}
+					<Text>
+						{at}
+					</Text>
+					<Text>
+						{value}
+					</Text>
+					<Text
+						size="xs"
+						c="dimmed"
+						lineClamp={2}
 						>
-							<Link
-								href={to_url_string(result.title)}
-								style={{
-									textDecoration: 'none',
-									color: 'inherit',
-								}}
-							>
-						<Text>
-							{result.at}
-						</Text>
-						<Text>
-							{result.title}
-						</Text>
-						<Text
-							size="xs"
-							c="dimmed"
-							lineClamp={2}
-							>
-							{result.description}
-						</Text>
-							</Link>
-						</Group>
-					</li>
-				)
-			})}
-		</ul>
+						{description}
+					</Text>
+				</Group>
+			</div>
+			}
+		);
+
+	const resultsMapped = props.results.map((item) => ({ ...item, value: item.label }));
+
+	return (
+			<Autocomplete
+				onChange={props.onChange}
+				className={classes.search}
+				placeholder="Search"
+				leftSection={<IconSearch style={{ width: rem(16), height: rem(16) }} stroke={1.5} />}
+				itemComponent={AutoCompleteItem}
+				onOptionSubmit={handleSelect}
+				data={resultsMapped}
+				filter={(item) => {
+					console.log("item", item);
+					return item.options;
+
+				}
+				}
+				visibleFrom="xs"
+			/>
 	)
 }

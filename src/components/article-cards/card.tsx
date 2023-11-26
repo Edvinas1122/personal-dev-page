@@ -28,6 +28,7 @@ export interface ArticleCardProps {
 	repo_languages?: {[language: string]: number};
 	created_at: string;
 	dist: string;
+	hide_read_more?: boolean;
 };
 
 export function GeneralArticleCard(
@@ -87,6 +88,7 @@ export function HoverExample() {
 type ArticleCardSelectProps = ArticleCardProps & {
 	theme: MantineTheme;
 	children?: React.ReactNode;
+	hide_read_more?: boolean;
 };
 
 import { 
@@ -139,21 +141,21 @@ function ArticleCardSelect(props: ArticleCardSelectProps) {
 		</>
 	)
 
-	if (props.image) {
-		return (
-			<SimpleCard
-				{...props}
-				badges={badge}
-				theme={props.theme}
-				// image={"https://images.unsplash.com/photo-1530122037265-a5f1f91d3b99?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"}
-			>
-				<>
-				{props.children}
-				</>
-			</SimpleCard>
-		);
-	}
-	else {
+	// if (props.image) {
+	// 	return (
+	// 		<SimpleCard
+	// 			{...props}
+	// 			badges={badge}
+	// 			theme={props.theme}
+	// 			// image={"https://images.unsplash.com/photo-1530122037265-a5f1f91d3b99?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"}
+	// 		>
+	// 			<>
+	// 			{props.children}
+	// 			</>
+	// 		</SimpleCard>
+	// 	);
+	// }
+	// else {
 		return (
 			<SimpleCard
 				{...props}
@@ -163,7 +165,7 @@ function ArticleCardSelect(props: ArticleCardSelectProps) {
 				{props.children}
 			</SimpleCard>
 		)
-	}
+	// }
 }
 
 

@@ -23,6 +23,11 @@ export {
 	useFramerControl
 }
 
+// import {
+// 	SimpleGrid
+// } from "@mantine/core";
+
+// export const MantineGrid = SimpleGrid;
 
 // does calculations in itself so better to context that does the calculations
 // import
@@ -38,7 +43,8 @@ import
 	withScrollObservantFriendContextAnimation,
 {
 	ScrollDrivenEnstructionProvider,
-	SingleEnstruction
+	SingleEnstruction,
+	withMountAnimation
 } from "./reactScroll";
 
 // export const EnstuctionAwareMotion = {
@@ -193,6 +199,7 @@ export const EnstructionAwareMauntMotionHGroup = withScrollObservantFriendContex
 export const EnstructionAwareMauntMotionTitle = withScrollObservantFriendContextMount(motion.h1);
 export const EnstructionAwareMauntMotionParagraph = withScrollObservantFriendContextMount(motion.p);
 export const EnstructionAwareMauntMotionButton = withScrollObservantFriendContextMount(motion.button);
+export const EnstructionAwareMauntMotionNav = withScrollObservantFriendContextMount(motion.nav);
 
 export const PresenceContext = AnimatePresence;
 
@@ -249,16 +256,44 @@ function compensateVarProperty(value: number, minVar: string, maxVar: string, fa
 
 function avatarScroll(scrollY: number) {
 	// const compensateString = compensateProperty(scrollY, min, 100, "vh");
+
+	const compensateImageSize = compensateVarProperty(scrollY, "--contracted-size", "--expanded-size", 0.01);
+	return {
+		// marginTop: compensateMarginTop,
+		width: compensateImageSize,
+		height: compensateImageSize,
+	}
+}
+
+function handleHGroupScroll(scrollY: number) {
 	const compensateMarginTop = compensateVarProperty(
 		scrollY,
 		"--min-top-spacing",
 		"--top-spacing",
 		1);
-	const compensateImageSize = compensateVarProperty(scrollY, "--contracted-size", "--expanded-size", 0.01);
 	return {
-		marginTop: compensateMarginTop,
-		width: compensateImageSize,
-		height: compensateImageSize,
+		marginTop: compensateMarginTop
+	}
+}
+
+function compensateLogoTitle(scrollY: number) {
+	const width = compensateVarProperty(
+		scrollY,
+		"--max-width",
+		"--min-width",
+		1
+		);
+	const fontSize = compensateVarProperty(
+		scrollY,
+		"--max-font-size",
+		"--min-font-size",
+		1
+		);
+	return {
+		width: width,
+		fontSize: fontSize,
+		// marginTop: marginTop,
+		height: fontSize,
 	}
 }
 
@@ -268,7 +303,7 @@ const initial = {
 }
 
 const initialAvatar = {
-	marginTop: "var(--top-spacing)",
+	// marginTop: "var(--top-spacing)",
 	width: "var(--expanded-size)",
 	height: "var(--expanded-size)",
 }
@@ -278,11 +313,13 @@ export const ScrollPositionAwareMotionDiv = withScrollPosition(
 	avatarScroll,
 	initialAvatar
 	);
+
 export const ScrollPositionAwareMotionHeader = withScrollPosition(
 	motion.header,
 	compensateScroll,
 	initial
 );
+
 export const ScrollPositionAwareMotionUList = withScrollPosition(
 	motion.ul,
 	compensateScroll,
@@ -290,37 +327,51 @@ export const ScrollPositionAwareMotionUList = withScrollPosition(
 );
 export const ScrollPositionAwareMotionHGroup = withScrollPosition(
 	motion.hgroup,
-	avatarScroll,
-	initial
+	handleHGroupScroll,
+	{
+		marginTop: "var(--top-spacing)",
+	}
+);
+
+export const ScrollPositionAwareMotionTitle = withScrollPosition(
+	motion.h1,
+	compensateLogoTitle,
+	{
+		opacity: 0,
+	}
 );
 
 
-// export default {
-// 	ScrollPositionAwareMotionDiv,
-// 	ScrollPositionAwareMotionHeader,
-// 	ScrollPositionAwareMotionUList,
-// 	ScrollPositionAwareMotionHGroup,
-// 	EnstuctionAwareMotionDiv,
-// 	EnstuctionAwareMotionHeader,
-// 	EnstuctionAwareMotionUList,
-// 	EnstuctionAwareMotionHGroup,
-// 	EnstuctionAwareMotionTitle,
-// 	EnstuctionAwareMotionParagraph,
-// 	EnstuctionAwareMotionButton,
-// 	EnstructionAwareMauntMotionDiv,
-// 	EnstructionAwareMauntMotionHeader,
-// 	EnstructionAwareMauntMotionUList,
-// 	EnstructionAwareMauntMotionHGroup,
-// 	EnstructionAwareMauntMotionTitle,
-// 	EnstructionAwareMauntMotionParagraph,
-// 	EnstructionAwareMauntMotionButton,
-// 	ScrollDrivenEnstructionProvider,
-// 	withScrollObservantFriendContextAnimation,
-// 	withScrollObservantFriendContextMount,
-// 	withScrollPosition,
-// 	interpolateColor,
-// 	compensateProperty,
-// 	compensateVarProperty,
-// 	avatarScroll,
-// 	compensateScroll,
-// }
+
+import {
+	withPathEffects
+} from "./reactScroll";
+
+export const NavigationAndScrollHeader = withPathEffects(
+	ScrollPositionAwareMotionHeader
+);
+
+function mainParalax(scrollY: number) {
+	const compensateMarginTop = compensateVarProperty(
+		scrollY,
+		"--top-spacing",
+		"--min-top-spacing",
+		1);
+	return {
+		marginTop: compensateMarginTop,
+	}
+}
+
+export const ScrollPositionAwareMain = withScrollPosition(
+	motion.main,
+	mainParalax,
+	{
+		marginTop: "var(--top-spacing)",
+	}
+);
+
+export const NavigationAndScrollMain = withPathEffects(
+	ScrollPositionAwareMain
+);
+
+export const MountMotionDiv = withMountAnimation(motion.div);

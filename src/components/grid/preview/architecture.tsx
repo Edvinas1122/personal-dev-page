@@ -37,47 +37,20 @@ const container = {
 };
 import { IconSearch } from '@tabler/icons-react';
 import React from 'react';
-import {
-	useIntersection,
-	useWindowScroll,
-	useMediaQuery
-} from "@mantine/hooks";
+// import {
+// 	useIntersection,
+// 	useWindowScroll,
+// 	useMediaQuery
+// } from "@mantine/hooks";
 
 export function ArchitecturePreviewGrid({
 	articles,
 }: {
 	articles?: ArticleCardProps[];
 }) {
-	// const { ref, entry } = useIntersection({
-	// 	// root: window.
-	// 	threshold: 1,
-	// });
-	const matches = useMediaQuery('(max-width: 1000px)');
-	// const [scroll, scrollTo] = useWindowScroll();
-	const [visible, setVisible] = React.useState(true);
-	// React.useEffect(() => {
-	// 	if (matches) {
-	// 		setVisible(true);
-	// 		return;
-	// 	}
-	// 	if (entry?.isIntersecting && !visible) {
-	// 		// scrollToProjects();
-	// 		setVisible(true);
-	// 	} else if (!entry?.isIntersecting && visible) {
-	// 		setVisible(false);
-	// 	}
-	// }, [entry, matches]);
+	const visible = true;
 	const PRIMARY_COL_HEIGHT = rem(280);
 	const SECONDARY_COL_HEIGHT = `calc(${PRIMARY_COL_HEIGHT} / 2 - var(--mantine-spacing-md) / 2)`;
-	
-	// function scrollToProjects() {
-	// 	const element = document.getElementById('Projects');
-	// 	if (!element) return;
-	// 	const offsetTop = element.offsetTop - 100;
-	// 	// if (!matches) {
-	// 	// 	scrollTo({x: 0, y: offsetTop});
-	// 	// }
-	// }
 
 	if (!articles) {
 		return (

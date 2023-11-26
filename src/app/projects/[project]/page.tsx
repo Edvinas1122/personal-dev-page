@@ -31,17 +31,30 @@ async function Description({
 	const root_manual = manuals.find((manual: any) => {
 		return manual["Expands"].length == 0;
 	});
+	if (!root_manual) {
+		return <></>
+	}
 	const root_manual_page = await root_manual.retrievePage();
 	return (
 		<>
-			<Container p="xl" size="md" >
+			<Paper
+				shadow="md"
+				radius="md"
+				mt="md"
+				p="md"
+			>
 				<NotionList
 					page={root_manual_page}
-				/>
-			</Container>
+					/>
+			</Paper>
 		</>
 	);
 }
+
+import {
+	ArticleCardProps,
+	GeneralArticleCard
+} from '@/components/article-cards/card';
 
 async function Project({
 	name
@@ -51,7 +64,7 @@ async function Project({
 
 	const service = constructBlogService({
 		// cache: "no-store"
-		next: {revalidate: 5}
+		next: {revalidate: 400}
 	});
 	const project = await service.getProject(name);
 	if (!project) {
@@ -69,6 +82,7 @@ async function Project({
 	const backup_image = "https://www.edvinasmomkus.com/_next/image?url=https%3A%2F%2Fwww.notion.so%2Fimage%2Fhttps%253A%252F%252Fs3-us-west-2.amazonaws.com%252Fsecure.notion-static.com%252F23185bc3-4231-41dc-8e86-8a4ca374fa80%252F1681923508963.jpeg%3Ftable%3Dblock%26id%3Dacd18d29-7b8c-4eb1-823d-21f63088898c%26cache%3Dv2&w=3840&q=75";
 	const background_image = project.cover ? project.cover : backup_image;
 
+	console.log(project);
 	return (
 		<>
 			{/* <Hero
@@ -79,6 +93,19 @@ async function Project({
 				github_link={project["GitHub Page"]}
 				disable_gradient={true}
 			/> */}
+			<GeneralArticleCard
+				title={project.Name}
+				description={project.Description}
+				// image={background_image}
+				height={"400"}
+				radius={"md"}
+				category={"Project"}
+				external_deps={project.external}
+				github={project["GitHub Page"]}
+				created_at={""}
+				dist={project.Dist}
+				hide_read_more={true}
+			/>
 			<Suspense>
 				<Description
 					project={project}
@@ -109,11 +136,9 @@ export default function ProjectPage({
 
 	return (
 		<>
-			<main>
-					<Project
-						name={name}
-					/>
-			</main>
+			<Project
+				name={name}
+			/>
 		</>
 	);
 }

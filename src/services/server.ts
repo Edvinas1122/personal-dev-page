@@ -1,12 +1,8 @@
 import {
-	HeaderSearch,
-	HeaderSearchProps
-} from "@/components/header/header";
-import {
 	constructBlogService
 } from "@/services/blog/blog.module";
 
-async function searchMethod(query: string): Promise<any> {
+export async function searchMethod(query: string): Promise<any> {
 	"use server";
 	const service = constructBlogService({
 		cache: "no-store"
@@ -33,6 +29,8 @@ async function searchMethod(query: string): Promise<any> {
 			at: result.properties.Category,
 			title: result.properties.Name,
 			description: result.properties.Description,
+			value: result.properties.Name.toLowerCase(),
+			label: result.properties.Name,
 		}
 	});
 
@@ -40,27 +38,4 @@ async function searchMethod(query: string): Promise<any> {
 		outcome: "success",
 		results: propeties
 	}
-}
-
-// export default function Navbar() {
-
-// 	const sections = [
-// 		"Main",
-// 		"Projects",
-// 		"Journal",
-// 		"Contact",
-// 	];
-
-// 	return (
-// 		<>
-// 			<HeaderSearch
-// 				sections={sections}
-// 				searchServerMethod={searchMethod}
-// 			/>
-// 		</>
-// 	);
-// }
-
-export default function Navbar() {
-	null;
 }

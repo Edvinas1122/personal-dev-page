@@ -24,10 +24,10 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
 	children,
-	header,
+	// header,
 }: {
 	children: React.ReactNode
-	header: React.ReactNode
+	// header: React.ReactNode
 }) {
 	return (
 		<html lang="en">
@@ -42,15 +42,8 @@ export default function RootLayout({
 					theme={theme}
 				>
 				<GlobalHeaderLayout>
-					{header}
+					{children}
 				</GlobalHeaderLayout>
-				{children}
-				<div 
-					style={{
-						height: "500px",
-					}}
-				>
-				</div>
 				</MantineProvider>
 			</body>
 		</html>

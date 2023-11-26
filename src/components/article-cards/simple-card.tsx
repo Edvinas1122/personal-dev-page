@@ -22,6 +22,7 @@ type SimpleCardProps = {
 	badges: React.ReactNode;
 	theme: MantineTheme;
 	image?: string;
+	hide_read_more?: boolean;
 }
 
 import {
@@ -79,23 +80,25 @@ export function SimpleCard(props: SimpleCardProps) {
 				</Text>
 
 				{props.children}
-			<Button
-				component={Link}
-				{...linkProps}
-				style={{
-					backgroundColor: "transparent",
-					width: "fit-content",
-					hover: {
+			{props.hide_read_more ? null : (
+				<Button
+					component={Link}
+					{...linkProps}
+					style={{
 						backgroundColor: "transparent",
-					},
-				}}
-				variant="outline"
-				color={description_font_color}
-				className={classes.button}
-
-			>
-				Read more
-			</Button>
+						width: "fit-content",
+						hover: {
+							backgroundColor: "transparent",
+						},
+					}}
+					variant="outline"
+					color={description_font_color}
+					className={classes.button}
+					scroll={false}
+				>
+					Read more
+				</Button>
+			)}
 			</Card.Section>
 			<Card.Section
 				style={{

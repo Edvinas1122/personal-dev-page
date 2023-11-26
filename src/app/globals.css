@@ -12,7 +12,8 @@
   --mobile-breakpoint-height: 800px;
 
   /* spacing tool */
-  --left-spacing: max(0px, calc(30vw - 200px));
+  /* --left-spacing: max(0px, calc(30vw - 200px)); */
+  --left-spacing: max(0px,calc(42vw - 480px));
   --top-spacing: max(0px, calc(34vh - 180px));
   /* fonts */
   --font-extra-large: calc(rem(18px) + 2.4vh);

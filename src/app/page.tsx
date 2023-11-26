@@ -65,7 +65,7 @@ async function fetchRepositoryLanguages(
 async function getTables() {
 	const service = constructBlogService({
 		// cache: "no-store"
-		next: {revalidate: 350}
+		next: {revalidate: 3500}
 	});
 	// const entires = await service.getProjects();
 	const entires: Table[] = await service.getCompleteArchitercute();
@@ -300,7 +300,7 @@ type SkillDisplay = {
 async function fetchSkills(): Promise<SkillDisplay[]> {
     "use server";
     const blog_service = constructBlogService({
-        next: { revalidate: 30 }
+        next: { revalidate: 4000 }
     });
     const external_deps: {[key: string]: Skill[]} = await blog_service.getGroupedExternalDeps(getSkill);
     const skillDisplays = Object.keys(external_deps).map(key => {
@@ -343,7 +343,7 @@ async function fetchPersonalInfo(): Promise<PersonalInfo> {
 		headers: {
 		  'X-GitHub-Api-Version': '2022-11-28',
 		},
-		next: {revalidate: 350}
+		next: {revalidate: 35000}
 	});
 	if (user.status !== 200) {
 		console.error(user);
@@ -384,11 +384,7 @@ export default async function Home() {
 	const github_link = user.html_url;
 
 	return (
-		<main
-			style={{
-				marginTop: "60vh",
-			}}
-		>
+		<>
 			{/* <Hero
 				title={title}
 				description={description}
@@ -407,6 +403,6 @@ export default async function Home() {
 					height: "35vh"
 				}}
 			></div>
-		</main>
+		</>
 	)
 }

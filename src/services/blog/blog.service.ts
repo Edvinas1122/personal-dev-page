@@ -159,7 +159,7 @@ export default class BlogService {
 		return architectures;
 	}
 
-	async getProject(key: string) {
+	async getProject(key: string): Promise<any> {
 		try {
 			const project = await this.databaseTool
 				.getTable("Projects")

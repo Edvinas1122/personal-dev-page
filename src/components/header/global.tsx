@@ -1,3 +1,4 @@
+// "use client";
 import {
 	SingleEnstruction
 } from "@/utils/framer"
@@ -5,8 +6,9 @@ import {
 	// Motion,
 	MauntMotion,
 	ScrollMotion,
-	PresenceContext,
-	ScrollDrivenEnstructionProvider
+	Navigation,
+	ScrollDrivenEnstructionProvider,
+	Mount
 } from "@/utils/module"
 import classes from './header.module.css';
 import
@@ -76,6 +78,24 @@ const animations = {
 			height: "var(--expanded-size)",
 		}, 0.3, 0.1, "linear"),
 	},
+	logo_title: {
+		expanded: animation_set({
+			width: "0px",
+    		overflow: "hidden",
+			textWrap: "nowrap",
+			textOverflow: "ellipsis",
+		}, 0.3, 0),
+		contracted: animation_set({
+			opacity: 1,
+		}, 0.3, 1),
+		test: animation_set({
+			opacity: 1,
+			width: "400px",
+			overflow: "hidden",
+			textWrap: "nowrap",
+			textOverflow: "ellipsis",
+		}, 0.2, 1),
+	},
 	title: {
 		contracted: animation_set(down_pop_hidden, 0.2, 0),
 		expanded: animation_set(down_pop_visible,
@@ -96,8 +116,8 @@ const animations = {
 			scale: 1,
 			filter: "blur(0px)",
 			transition: {
-				duration: 0.1,
-				delay: 0.1,
+				duration: 0,
+				delay: 0,
 			}
 		},
 		expanded: {
@@ -117,13 +137,26 @@ const scroll_react_enstructions: SingleEnstruction[] = [{
 	value: 0,
 	threshold: 10,
 	animation: "expanded",
-	mount: true,
-}, {
+}
+, {
+	value: 320,
+	threshold: 10000,
+	animation: "test",
+}
+, {
 	value: 11,
 	threshold: 800000,
 	animation: "contracted",
-	mount: false,
-}]
+}
+]
+
+import {
+	searchMethod,
+} from "@/services/server";
+
+import {
+	NavSection,
+} from "./nav"
 
 function GlobalHeaderLayout({
 	children
@@ -143,10 +176,14 @@ function GlobalHeaderLayout({
 	const description = typer
 			.addTextSegment("Greetings, my name is Edvinas, I am from Lithuania 🇱🇹, 28 years old. I am computing learner, software development practitioner, craft enthusiast.")
 			.build();
+	const name = typer
+			.addGradientSegment("Edvinas Momkus")
+			.build();
 	const avatar = "https://www.edvinasmomkus.com/_next/image?url=https%3A%2F%2Fwww.notion.so%2Fimage%2Fhttps%253A%252F%252Fs3-us-west-2.amazonaws.com%252Fsecure.notion-static.com%252F5f29da70-9f6a-4980-bf67-f9c0c54704db%252Fprofile.jpeg%3Ftable%3Dblock%26id%3Dacd18d29-7b8c-4eb1-823d-21f63088898c%26cache%3Dv2&w=3840&q=75";
 	const background_image = "https://spangled-hall-d99.notion.site/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2Ffd7e6ad3-3f36-45d5-94fb-5bdb95af5da7%2F37fbe56e-638f-453e-8487-9d6e4c7a5ff0%2FIMG_3042.webp?table=block&id=e764bdcf-2ef7-438f-a63f-6c3efa60b176&spaceId=fd7e6ad3-3f36-45d5-94fb-5bdb95af5da7&width=2000&userId=&cache=v2";
 
 	return (
+		<>
 		<Suspense fallback={
 			<div>Loading...</div>
 		}>
@@ -154,45 +191,79 @@ function GlobalHeaderLayout({
 			react={scroll_react_enstructions}
 			initial={{
 				animation: "expanded",
-				mount: true,
 			}}
 		>
-			<ScrollMotion.Header
+			<Navigation.Header
 				className={classes.header}
 				initial={"expanded"}
-				style={{
-					position: "fixed",
-					height: "100vh",
+				pathEffect={{
+					default: {
+						position: "relative",
+					},
+					"/": {
+						position: "fixed",
+					},
 				}}
 			>
 				<FounderInfo
 					title={title}
 					description={description}
+					name={name}
 					avatar={avatar}
 					/>
 				<GlobalNavigation />
 				<Hero
 					background_image={background_image}
 				/>
-				{children}
-			</ScrollMotion.Header>
+				<MauntMotion.Nav
+					mountInfo={{
+						on: "test",
+						off: "contracted",
+					}}
+					initial={animations.description.contracted}
+					animate={animations.description.expanded}
+					exit={animations.description.contracted}
+				>
+				<NavSection
+					searchServerMethod={searchMethod}
+					/>
+				</MauntMotion.Nav>
+			</Navigation.Header>
 		</ScrollDrivenEnstructionProvider>
 		</Suspense>
+		<Navigation.Main
+			className={classes.main}
+			pathEffect={{
+				default: {
+					marginTop: "1rem",
+				},
+				"/": {},
+			}}
+		>
+
+		{children}
+
+		</Navigation.Main>
+		</>
 	);
 }
+
+import Link from "next/link";
 
 function FounderInfo({
 	title,
 	description,
 	avatar,
+	name,
 }: {
 	title: EnRichedText,
+	name: EnRichedText,
 	description: EnRichedText,
 	avatar: string,
 }) {
 
 	return (
-		<hgroup
+		<ScrollMotion.HGroup
 			className={classes.content}
 			// variants={animations.founder}
 			style={{
@@ -210,17 +281,25 @@ function FounderInfo({
 				className={classes.avatar}
 				src={avatar}
 				size={"sm"}
-				// style={{
-					// 	border: "2px solid #fff",
-				// 	zIndex: 30,
-				// 	position: "relative",
-				// }}
-				// variants={animations.avatar}
 				/>
+			<Link
+				href={"/"}
+				style={{
+					textDecoration: "none",
+				}}
+			>
+			<EnRichedTextDisplay
+				Component={ScrollMotion.Title}
+				className={classes.logo_title}
+				rich_text={name}
+				/>
+			</Link>
 			<EnRichedTextDisplay
 				Component={MauntMotion.Title}
-				// mountable={true}
-				// variants={animations.title}
+				mountInfo={{
+					on: "expanded",
+					off: "contracted",
+				}}
 				className={classes.title}
 				initial={animations.title.contracted}
 				rich_text={title}
@@ -228,20 +307,21 @@ function FounderInfo({
 				exit={animations.title.contracted}
 				style={{
 				}}
-				// lineClamp={4}
 				/>
 			<EnRichedTextDisplay
 				Component={MauntMotion.Paragraph}
+				mountInfo={{
+					on: "expanded",
+					off: "contracted",
+				}}
 				initial={animations.title.contracted}
 				className={classes.description}
 				rich_text={description}
 				animate={animations.description.expanded}
 				exit={animations.description.contracted}
-				style={{
-				}}
 				/>
 			</Suspense>
-		</hgroup>
+		</ScrollMotion.HGroup>
 	);
 }
 
@@ -252,7 +332,7 @@ import {
 function GlobalNavigation() {
 	return (
 		<>
-			<Group
+			{/* <Group
 
 				style={{
 					position: "relative",
@@ -272,7 +352,7 @@ function GlobalNavigation() {
 					>
 						Contact
 					</GradientThemedButton>
-			</Group>
+			</Group> */}
 		</>
 	);
 }
@@ -290,6 +370,11 @@ function Hero({
 		<>
 			<Image
 				component={MauntMotion.Div}
+				//@ts-ignore
+				mountInfo={{
+					on: "expanded",
+					off: "contracted",
+				}}
 				style={{
 					top: 0,
 					height: "100vh",

@@ -6,7 +6,6 @@ type SingleEnstruction = {
 	value: number;
 	threshold: number;
 	animation: string;
-	mount?: boolean;
 };
 
 type Enstruct = Omit<SingleEnstruction, 'value' | 'threshold'>;
@@ -139,27 +138,6 @@ const useScrollDrivenEnstructions = () => {
 	return context;
 }
 
-// const PageTopEnstructionProvider = ({
-// 	children,
-// 	react,
-// 	initial,
-// }: {
-// 	children: React.ReactNode,
-// 	react: SingleEnstruction[],
-// 	initial: Enstruct,
-// }) => {
-// 	const activeEnstruction = useSelectActiveEnstruction(react);
-
-// 	return (
-// 		<ScrollAwareEnstructionContext.Provider
-// 			value={{ activeEnstruction }}
-// 		>
-// 			<></>
-// 			{children}
-// 		</ScrollAwareEnstructionContext.Provider>
-// 	);
-// };
-
 export {
 	ScrollDrivenEnstructionProvider,
 };
@@ -230,16 +208,30 @@ const useAnimateVariantWhenScroll = (
 	return controls;
 };
 
-import { usePresence } from "framer-motion";
-
-const useMountWhenScroll = () => {
+type MountEnstuct = {
+	on: string;
+	off: string;
+}
+const useMountWhenScroll = (mountInfo: MountEnstuct) => {
 	const [mounted, setMounted] = useState<boolean>(false);
 	const { activeEnstruction } = useScrollDrivenEnstructions();
 
+	function is_active_enstruction(enstruction: Enstruct) {
+		return enstruction.animation === mountInfo.on 
+			|| enstruction.animation === mountInfo.off;
+	}
+
+	function enstruction_is_mounted(enstruction: Enstruct) {
+		return enstruction.animation === mountInfo.on;
+	}
+	
 	React.useEffect(() => {
-		if (activeEnstruction &&
-			activeEnstruction.mount !== undefined) {
-				setMounted(activeEnstruction.mount);
+		if (activeEnstruction 
+			// && is_active_enstruction(activeEnstruction)
+			) {
+				setMounted(
+					enstruction_is_mounted(activeEnstruction)
+				);
 			}
 	}, [
 		activeEnstruction,
@@ -272,12 +264,14 @@ const withScrollObservantFriendContextMount = (
 ) => {
 	const ScrollMountComponent = ({
 		animate,
+		mountInfo,
 		...props
 	} : HTMLMotionProps<any> & {
 		animate: MotionStyle;
+		mountInfo: MountEnstuct;
 	}
 	) => {
-		const mounted = useMountWhenScroll();
+		const mounted = useMountWhenScroll(mountInfo);
 
 		return (
 			<>
@@ -294,6 +288,23 @@ const withScrollObservantFriendContextMount = (
 	};
 	return ScrollMountComponent;
 };
+
+export const withMountAnimation = (
+	MotionComponent: React.ComponentType<HTMLMotionProps<any>>,
+) => {
+	const MountAnimated = ({
+		...props
+	}) => {
+		return (
+			<AnimatePresence>
+				<MotionComponent
+					{...props}
+				/>
+			</AnimatePresence>
+		)
+	}
+	return MountAnimated;
+}
 
 export default withScrollObservantFriendContextAnimation;
 export { withScrollObservantFriendContextMount };
@@ -382,12 +393,10 @@ function useAnimateTime(
 	const [startPoint, setStartPoint] = useState<AnimateRate | null>(null);
 
 	React.useEffect(() => {
-		console.log("we run animation", startPoint);
 		if (startPoint === null) return;
 		startPoint.initial && setValue(startPoint.initial);
 		const interval = setInterval(() => {
 			setValue((prev) => {
-				console.log("we run animation", prev)
 				const next = prev + startPoint.incramentRate;
 				if (next <= 0) return 0;
 				if (next >= max && startPoint.incramentRate < 0) {
@@ -475,8 +484,8 @@ export const withScrollPosition = (
 			<MotionComponent
 				{...props}
 				style={{
-					// ...props.style,
 					...scrollPositionStyle,
+					...props.style
 				}}
 			/>
 		);
@@ -484,26 +493,62 @@ export const withScrollPosition = (
 	return ScrollPositionComponent;
 }
 
-// import {
-// 	useAnimate,
-// 	stagger,
-// } from "framer-motion";
-
-// const withScrollObservantFriendStagger = (
-// 	MotionComponent: React.ComponentType<HTMLMotionProps<any>>,
-// ) => {
-// 	const ScrollStaggerComponent = ({
-// 		...props
-// 	}: HTMLMotionProps<any>
-// 	) => {
-// 		const { activeEnstruction } = useScrollDrivenEnstructions();
-// 		const [scope, animate] = useAnimate();
-
-// 		React.useEffect(() => {
-
-// 		}, [
-
-// 		]);
-// 	};
-// 	return ScrollStaggerComponent;
+type PathEffect = MotionStyle;
+// 	// path: string;
+// 	style: MotionStyle;
 // }
+
+type PathEffects = {
+	default: PathEffect;
+	[path: string]: PathEffect;
+}
+
+function usePathEffects(pathEffect: PathEffects) {
+	const pathname = usePathname();
+	const [
+		style,
+		setStyle
+	] = React
+		.useState<MotionStyle>(
+			pathEffect.default);
+
+	function availablePath(path: string): string {
+		const pathAvailable = pathEffect.hasOwnProperty(path);
+		if (pathAvailable) return path;
+		return "default";
+	}
+
+	React.useEffect(() => {
+		const path = availablePath(pathname);
+		setStyle(pathEffect[path]);
+	}, [
+		pathname
+	]);
+
+	return style;
+}
+
+export const withPathEffects = (
+	MotionComponent: React.ComponentType<HTMLMotionProps<any>>,
+) => {
+	const PathEffectsComponent = ({
+		pathEffect,
+		...props
+	}: HTMLMotionProps<any> & {
+		pathEffect: PathEffects;
+	}) => {
+		const style = usePathEffects(pathEffect);
+
+		return (
+			<MotionComponent
+				{...props}
+				style={{
+					...props.style,
+					...style,
+					// transition: "all ease-in-out",
+				}}
+			/>
+		);
+	}
+	return PathEffectsComponent;
+}

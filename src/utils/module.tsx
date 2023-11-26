@@ -148,7 +148,19 @@ type FramerExports = "EnstuctionAwareMotionHeader" |
 "ScrollDrivenEnstructionProvider" |
 "ScrollDrivenEnstructionProvider" |
 "ScrollPositionAwareMotionDiv" |
-"ScrollPositionAwareMotionHeader";
+"ScrollPositionAwareMotionHeader" |
+"ScrollPositionAwareMotionTitle" |
+"MotionDiv" |
+"MotionHeader" |
+"MotionUList" |
+"MotionHGroup" |
+"MotionTitle" |
+"MotionListItem" |
+"NavigationAndScrollHeader" |
+"NavigationAndScrollMain" |
+"MountMotionDiv" |
+"EnstructionAwareMauntMotionNav" |
+"ScrollPositionAwareMotionHGroup";
 
 
 function getLazyItem(item: FramerExports) {
@@ -164,22 +176,22 @@ function getLazyItem(item: FramerExports) {
 
 const EnstuctionAwareMotionHeader = getLazyItem("EnstuctionAwareMotionHeader");
 
-// export const Motion = {
-// 	// Header: getLazyItem("EnstuctionAwareMotionHeader"),
-// 	// Div: getLazyItem("EnstuctionAwareMotionDiv"),
-// 	// Title: getLazyItem("EnstuctionAwareMotionTitle"),
-// 	// Paragraph: getLazyItem("EnstuctionAwareMotionParagraph"),
-// 	// HGroup: getLazyItem("EnstuctionAwareMotionHGroup"),
-// 	// UList: getLazyItem("EnstuctionAwareMotionUList"),
-// 	// Button: getLazyItem("EnstuctionAwareMotionButton")
-// 	// Header: EnstuctionAwareMotionHeader,
-// 	Div: EnstuctionAwareMotionDiv,
-// 	Title: EnstuctionAwareMotionTitle,
-// 	Paragraph: EnstuctionAwareMotionParagraph,
-// 	HGroup: EnstuctionAwareMotionHGroup,
-// 	UList: EnstuctionAwareMotionUList,
-// 	Button: EnstuctionAwareMotionButton
-// }
+export const Motion = {
+	// Header: getLazyItem("EnstuctionAwareMotionHeader"),
+	// Div: getLazyItem("EnstuctionAwareMotionDiv"),
+	// Title: getLazyItem("EnstuctionAwareMotionTitle"),
+	// Paragraph: getLazyItem("EnstuctionAwareMotionParagraph"),
+	// HGroup: getLazyItem("EnstuctionAwareMotionHGroup"),
+	// UList: getLazyItem("EnstuctionAwareMotionUList"),
+	// Button: getLazyItem("EnstuctionAwareMotionButton")
+	// Header: EnstuctionAwareMotionHeader,
+	Div: getLazyItem("MotionDiv"),
+	Header: getLazyItem("MotionHeader"),
+	Title: getLazyItem("MotionTitle"),
+	HGroup: getLazyItem("MotionHGroup"),
+	UList: getLazyItem("MotionUList"),
+	ListItem: getLazyItem("MotionListItem")
+}
 
 export const MauntMotion = {
 	Div: getLazyItem("EnstructionAwareMauntMotionDiv"),
@@ -188,7 +200,8 @@ export const MauntMotion = {
 	Paragraph: getLazyItem("EnstructionAwareMauntMotionParagraph"),
 	HGroup: getLazyItem("EnstructionAwareMauntMotionHGroup"),
 	UList: getLazyItem("EnstructionAwareMauntMotionUList"),
-	Button: getLazyItem("EnstructionAwareMauntMotionButton")
+	Button: getLazyItem("EnstructionAwareMauntMotionButton"),
+	Nav: getLazyItem("EnstructionAwareMauntMotionNav"),
 }
 
 const ScrollDrivenEnstructionProvider = getLazyItem("ScrollDrivenEnstructionProvider");
@@ -206,11 +219,26 @@ import {
 	ScrollPositionAwareMotionDiv,
 	ScrollPositionAwareMotionHeader,
 } from "./framer";
-import { get } from 'http';
+
 
 export const ScrollMotion = {
 	Div: getLazyItem("ScrollPositionAwareMotionDiv"),
-	Header: getLazyItem("ScrollPositionAwareMotionHeader")
+	Header: getLazyItem("ScrollPositionAwareMotionHeader"),
+	Title: getLazyItem("ScrollPositionAwareMotionTitle"),
+	HGroup: getLazyItem("ScrollPositionAwareMotionHGroup"),
 	// Div: ScrollPositionAwareMotionDiv,
 	// Header: ScrollPositionAwareMotionHeader
+}
+
+// import {
+// 	NavigationAndScrollHeader
+// } from './framer';
+
+export const Navigation = {
+	Header: getLazyItem("NavigationAndScrollHeader"),
+	Main: getLazyItem("NavigationAndScrollMain")
+}
+
+export const Mount = {
+	Div: getLazyItem("MountMotionDiv")
 }
