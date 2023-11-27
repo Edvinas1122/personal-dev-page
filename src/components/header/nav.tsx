@@ -325,15 +325,15 @@ function SearchBar(
 				xOffset={0}
 			>
 				<FocusTrap active={search_opened}>
+					<ResultDisplay
+						results={results}
+						onChange={(value) => {
+							// const currentValue = value;
+							setSearch(value);
+						}}
+						loading={loading}
+						/>
 				</FocusTrap>
-				<ResultDisplay
-					results={results}
-					onChange={(value) => {
-						// const currentValue = value;
-						setSearch(value);
-					}}
-					loading={loading}
-				/>
 			</Modal>
 		</>
 	)
