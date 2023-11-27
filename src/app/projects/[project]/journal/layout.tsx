@@ -9,8 +9,6 @@ export default function ProjectJournalPage({
 	return (
 		<article
 			style={{
-				// backgroundColor: "black",
-				// height: "100vh",
 				display: "flex",
 				flexDirection: "row",
 				width: "-webkit-fill-available",
