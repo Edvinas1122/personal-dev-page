@@ -1,8 +1,6 @@
 import 
-	constructNotionDatabase,
-{
-	NotionDatabaseTool
-} from "@edvinas1122/notion-database-tool";
+	constructNotionDatabase
+from "@edvinas1122/notion-database-tool";
 
 import {
 	blogTables,
