@@ -1,9 +1,11 @@
 
 
 export default function ProjectsLayout({
-	children
+	children,
+	// projects,
 }: {
-	children: React.ReactNode
+	children: React.ReactNode,
+	// projects: React.ReactNode,
 }) {
 	return (
 		<>

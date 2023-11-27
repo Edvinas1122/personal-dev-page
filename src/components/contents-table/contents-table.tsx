@@ -17,56 +17,96 @@ const links = [
 ];
 
 export function TableOfContentsFloating({
-	links,
-}: {
-	links: {
-		label: string
-		link: string
-		order: number
-	}[]
-}) {
-  const [active, setActive] = useState(2);
+		links,
+	}: {
+		links: {
+			label: string
+			link: string
+			order: number
+		}[]
+	}) {
+	const [active, setActive] = useState(2);
 
-  const items = links.map((item, index) => (
-    <Box<'a'>
-      component="a"
-      href={item.link}
-      onClick={(event) => {
-        event.preventDefault();
-        setActive(index);
-		window.history.pushState(null, '', item.link);
-      }}
-      key={item.label}
-      className={cx(classes.link, { [classes.linkActive]: active === index })}
-      style={{ paddingLeft: `calc(${item.order} * var(--mantine-spacing-md))` }}
-    >
-      {item.label}
-    </Box>
-  ));
+	function selectFontsize(order: number) {
+		switch (order) {
+			case 1:
+				return "var(--mantine-font-size-md)";
+			case 2:
+				return "var(--mantine-font-size-sm)";
+			case 3:
+				return "var(--mantine-font-size-xs)";
+			case 4:
+				return "var(--mantine-font-size-xs)";
+			default:
+				return "var(--mantine-font-size-xs)";
+		}
+	}
+	function selectHeight(order: number) {
+		switch (order) {
+			case 1:
+				return "3rem";
+			case 2:
+				return "2.5rem";
+			case 3:
+				return "1.8rem";
+			case 4:
+				return "1rem";
+			default:
+				return "0.8rem";
+		}
+	}
 
-  return (
-    <div className={classes.root} style={{
-		// position: "--webkit-sticky",
-		position: "sticky",
-		top: 0,
-		marginTop: "var(--mantine-spacing-md)",
-		paddingTop: "6vh",
-		whiteSpace: "nowrap",
+	const items = links.map((item, index) => (
+		<Box<'a'>
+			component="a"
+			href={item.link}
+			onClick={(event) => {
+				event.preventDefault();
+				setActive(index);
+			window.history.pushState(null, '', item.link);
+			}}
+			key={item.label}
+			className={cx(classes.link, { [classes.linkActive]: active === index })}
+			style={{
+				paddingLeft: `calc(${item.order} * var(--mantine-spacing-sm))`,
+				fontSize: selectFontsize(item.order),
+				height: selectHeight(item.order),
+				lineHeight: selectHeight(item.order),
+			}}
+		>
+			{item.label}
+		</Box>
+	));
 
-	}}>
-      <Group mb="md">
-        <IconListSearch style={{ width: rem(18), height: rem(18) }} stroke={1.5} />
-        <Text>Table of contents</Text>
-      </Group>
-      <div className={classes.links}>
-        <div
-          className={classes.indicator}
-          style={{
-            transform: `translateY(calc(${active} * var(--link-height) + var(--indicator-offset)))`,
-          }}
-        />
-        {items}
-      </div>
-    </div>
-  );
+	return (
+		<nav className={classes.root} style={{
+			position: "sticky",
+			top: 0,
+			marginTop: "var(--mantine-spacing-md)",
+			paddingTop: "6vh",
+			whiteSpace: "nowrap",
+			width: "100%",
+			minWidth: "100px",
+			maxWidth: "240px",
+		}}>
+			<Group
+				mb="md"
+				hiddenFrom='sm'
+				>
+				<IconListSearch style={{ width: rem(18), height: rem(18) }} stroke={1.5} />
+				<Text
+					size='xs'
+				>Table of contents</Text>
+			</Group>
+			<div className={classes.links}>
+				<div
+					className={classes.indicator}
+					style={{
+						transform: `translateY(calc(${active} * var(--link-height) + var(--indicator-offset)))`,
+				}}
+				/>
+				{items}
+			</div>
+		</nav>
+	);
 }

@@ -15,7 +15,7 @@
     "@mantine/core": "^7.1.7",
     "@mantine/ds": "^7.1.7",
     "@mantine/form": "^7.2.1",
-    "@mantine/hooks": "^7.1.7",
+    "@mantine/hooks": "^7.2.2",
     "@next/bundle-analyzer": "^14.0.3",
     "@tabler/icons-react": "^2.40.0",
     "framer-motion": "^10.16.4",

@@ -32,8 +32,8 @@ import {
 export function SimpleCard(props: SimpleCardProps) {
 
 	const { hovered, ref } = useHover();
-	const title_font_color = !props.image ? "black" : "white";
-	const description_font_color = !props.image ? "gray" : "#FFFAF0";
+	const title_font_color = props.image ? "white" : undefined;
+	const description_font_color = props.image ? "#FFFAF0" : props.theme.colors.gray[8];
 	const linkProps = { 
 		href: "/projects/"+ to_url_string(props.title),
 	};

@@ -20,6 +20,7 @@ import {
 	Autocomplete,
 	Container,
 	MantineTheme,
+	NavLink
 } from '@mantine/core';
 import { useDebouncedValue, useDisclosure } from '@mantine/hooks';
 import {
@@ -73,6 +74,7 @@ import React from 'react';
 export interface HeaderSearchProps {
 	// sections: string[];
 	searchServerMethod: (query: string) => Promise<any>;
+	children?: React.ReactNode;
 }
 
 import { useSelectedLayoutSegment } from 'next/navigation'
@@ -91,24 +93,6 @@ export function NavSection(props: HeaderSearchProps) {
 	const theme = useMantineTheme();
 	const selectedLayoutSegment = useSelectedLayoutSegment();
 
-
-	// const links = mockdata.map((item) => (
-	//   <UnstyledButton className={classes.subLink} key={item.title}>
-	// 	<Group wrap="nowrap" align="flex-start">
-	// 	  <ThemeIcon size={34} variant="default" radius="md">
-	// 		<item.icon style={{ width: rem(22), height: rem(22) }} color={theme.colors.blue[6]} />
-	// 	  </ThemeIcon>
-	// 	  <div>
-	// 		<Text size="sm" fw={500}>
-	// 		  {item.title}
-	// 		</Text>
-	// 		<Text size="xs" c="dimmed">
-	// 		  {item.description}
-	// 		</Text>
-	// 	  </div>
-	// 	</Group>
-	//   </UnstyledButton>
-	// ));
 	const height = rem(64);
 
 	const links = [
@@ -122,19 +106,29 @@ export function NavSection(props: HeaderSearchProps) {
 		selectedLayoutSegment
 	}:{
 		links: Link[]
-		selectedLayoutSegment: string
+		selectedLayoutSegment: string | null
 	}) => {
+
+		const selected_color = theme.primaryColor;
+
+		function background_color(link: string) {
+			return selectedLayoutSegment === link.toLowerCase() ? selected_color : undefined;
+		}
+
 		return links.map((link) => (
-			<Link
+			<Button
+				component={Link}
+				h="1.8rem"
+				variant="transparent"
 				className={classes.link}
 				key={link}
-				href={`${link.toLowerCase()}`}
+				href={`/${link.toLowerCase()}`}
 				style={{
-					backgroundColor: selectedLayoutSegment === link.toLowerCase() ? theme.colors.blue[1] : undefined
+					backgroundColor: background_color(link),
 				}}
 			>
 				{link}
-			</Link>
+			</Button>
 		));
 	}
 
@@ -147,30 +141,12 @@ export function NavSection(props: HeaderSearchProps) {
 				px="lg"
 			>
   
-			<Group h="100%" gap={0} visibleFrom="md">
+			<Group h="100%" gap={2} visibleFrom="md">
 				<LinksDisplay
 					links={links}
 					selectedLayoutSegment={selectedLayoutSegment}
 				/>
-				{/* <a
-					className={classes.link}
-					onClick={() => {
-						document.location.hash = '';
-						closeDrawer();
-					}}
-				>
-					Main
-				</a>
-				<a href="#" className={classes.link}>
-					Projects
-				</a>
-				{/* <HoverCardPopover
-					name={'Projects'}
-					classes={classes}
-					theme={theme}
-					links={links}
-				/> */}
-
+				{props.children}
 			</Group>
   
 			<Group visibleFrom='sm'>
@@ -193,27 +169,11 @@ export function NavSection(props: HeaderSearchProps) {
 		  <ScrollArea h={`calc(100vh - ${rem(80)})`} mx="-md">
 			<Divider my="sm" />
   
-			<a href="#" className={classes.link}>
-				Home
-			</a>
-			<UnstyledButton className={classes.link} onClick={toggleLinks}>
-			  <Center inline>
-				<Box component="span" mr={5}>
-					Features
-				</Box>
-				<IconChevronDown
-				  style={{ width: rem(16), height: rem(16) }}
-				  color={theme.colors.blue[6]}
-				/>
-			  </Center>
-			</UnstyledButton>
-			<Collapse in={linksOpened}>{links}</Collapse>
-			<a href="#" className={classes.link}>
-			  Learn
-			</a>
-			<a href="#" className={classes.link}>
-			  Academy
-			</a>
+			<LinksDisplay
+				links={links}
+				selectedLayoutSegment={selectedLayoutSegment}
+			/>
+			{props.children}
   
 			<Divider my="sm" />
   
@@ -328,7 +288,6 @@ function SearchBar(
 	const [search, setSearch] = React.useState('');
 	const [debaunced] = useDebouncedValue(search, 200);
 	const [results, setResults] = React.useState([]);
-	const [were_used, setWereUsed] = React.useState(false);
 	const [loading, setLoading] = React.useState(false);
 
 	React.useEffect(() => {
@@ -337,11 +296,9 @@ function SearchBar(
 			props.searchServerMethod(debaunced).then((res) => {
 				setLoading(false);
 				setResults(res.results);
-				setWereUsed(true);
 			});
 		} else {
 			setResults([]);
-			setWereUsed(false);
 		}
 	}, [debaunced]);
 
@@ -368,30 +325,14 @@ function SearchBar(
 				xOffset={0}
 			>
 				<FocusTrap active={search_opened}>
-				{/* <TextInput
-					placeholder="Search"
-					aria-label='Search'
-					size="xs"
-					leftSection={<IconSearch style={{ width: rem(12), height: rem(12) }} stroke={1.5} />}
-					rightSection={loading ? <Loader size="xs" />: null}
-					rightSectionWidth={70}
-					styles={{ section: { pointerEvents: 'none' } }}
-					mb="sm"
-					data-autofocus
-					onChange={(event) => {
-						const currentValue = event.currentTarget.value;
-						setSearch(currentValue);
-
-					}}
-					/> */}
 				</FocusTrap>
 				<ResultDisplay
 					results={results}
-					were_used={were_used}
 					onChange={(value) => {
 						// const currentValue = value;
 						setSearch(value);
 					}}
+					loading={loading}
 				/>
 			</Modal>
 		</>
@@ -410,60 +351,52 @@ interface ItemProps extends ComboboxItem {
 	color: MantineColor;
 	description: string;
 	image: string;
-	value: string;
+	at: string;
+	title: string;
 }
 
 import {useRouter} from 'next/navigation';
   
-function ResultDisplay(props: {
+const ResultDisplay = (props: {
 	results: {
 		at: string;
 		title: string;
 		description: string;
+		label: string;
+		path: string;
 	}[],
-	were_used: boolean,
-	onChange: ((value: string) => void)
-}) {
+	onChange: ((value: string) => void),
+	loading: boolean;
+}) => {
 	const router = useRouter();
-	if (props.results.length === 0 && props.were_used) {
+	function handleSelect(path: string) {
+		console.log("handleSelect", path);
+		router.push(path);
+	}
+
+	function AutoCompleteItemComponent(
+		props: ItemProps & {
+			ref: React.ForwardedRef<HTMLDivElement>;
+			others: React.ComponentPropsWithoutRef<"div">;
+		}
+	) {
 		return (
-			<Text>
-				No results found
-			</Text>
-		);
-	}
-
-	function handleSelect(value: string) {
-		console.log("handleSelect", value);
-		router.push(to_url_string(value));
-	}
-
-	const AutoCompleteItem = React
-		.forwardRef<HTMLDivElement, ItemProps>(
-			({ description, at, value, ...others }: ItemProps, ref) => {
-				console.log("console",description, value);
-			return <div ref={ref} {...others}>
-				<Group noWrap>
-				{/* <Avatar src={image} /> */}
-					<Text>
-						{at}
-					</Text>
-					<Text>
-						{value}
-					</Text>
-					<Text
-						size="xs"
-						c="dimmed"
-						lineClamp={2}
-						>
-						{description}
+			<div ref={props.ref} {...props.others}>
+				<Group wrap='nowrap'>
+					{/* <Avatar src={image} /> */}
+					<Text>{props.at}</Text>
+					<Text>{props.title}</Text>
+					<Text size="xs" c="dimmed" lineClamp={2}>
+						{props.description}
 					</Text>
 				</Group>
 			</div>
-			}
 		);
+	}
 
-	const resultsMapped = props.results.map((item) => ({ ...item, value: item.label }));
+	const AutoCompleteItem = React.forwardRef(AutoCompleteItemComponent);
+
+	const resultsMapped = props.results.map((item) => ({ ...item, value: item.path }));
 
 	return (
 			<Autocomplete
@@ -471,6 +404,7 @@ function ResultDisplay(props: {
 				className={classes.search}
 				placeholder="Search"
 				leftSection={<IconSearch style={{ width: rem(16), height: rem(16) }} stroke={1.5} />}
+				//@ts-ignore
 				itemComponent={AutoCompleteItem}
 				onOptionSubmit={handleSelect}
 				data={resultsMapped}
@@ -478,8 +412,8 @@ function ResultDisplay(props: {
 					console.log("item", item);
 					return item.options;
 
-				}
-				}
+				}}
+				rightSection={props.loading ? <Loader size="xs" /> : null}
 				visibleFrom="xs"
 			/>
 	)

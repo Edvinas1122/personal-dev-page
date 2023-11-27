@@ -1,6 +1,9 @@
 import {
 	constructBlogService
 } from "@/services/blog/blog.module";
+import {
+	to_url_string
+} from "@/utils/url_string";
 
 export async function searchMethod(query: string): Promise<any> {
 	"use server";
@@ -31,6 +34,7 @@ export async function searchMethod(query: string): Promise<any> {
 			description: result.properties.Description,
 			value: result.properties.Name.toLowerCase(),
 			label: result.properties.Name,
+			path: `projects/${to_url_string(result.properties.Name)}`,
 		}
 	});
 

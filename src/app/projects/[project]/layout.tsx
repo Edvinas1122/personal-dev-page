@@ -4,21 +4,28 @@ import { Container } from '@mantine/core';
 export default function ProjectRootPage({
 	params,
 	children,
+	journal,
 }: {
 	params: {
 		project: string
 	},
 	children: React.ReactNode
+	journal: React.ReactNode
 }) {
 
 	return (
 		<>
-			<Container
-				// p="xl"
-				size="md"
+			<section
+				style={{
+					display: "flex",
+					flexDirection: "row",
+					width: "100%",
+					gap: "1em",
+				}}
 			>
-			{children}
-			</Container>
+				{journal}
+				{children}
+			</section>
 		</>
 	);
 }

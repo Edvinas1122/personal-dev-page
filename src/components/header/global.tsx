@@ -157,6 +157,9 @@ import {
 import {
 	NavSection,
 } from "./nav"
+import 
+	ColorShcemeSelect
+from "./colorScheme";
 
 function GlobalHeaderLayout({
 	children
@@ -226,7 +229,9 @@ function GlobalHeaderLayout({
 				>
 				<NavSection
 					searchServerMethod={searchMethod}
-					/>
+				>
+					<ColorShcemeSelect />
+				</NavSection>
 				</MauntMotion.Nav>
 			</Navigation.Header>
 		</ScrollDrivenEnstructionProvider>

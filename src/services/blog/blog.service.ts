@@ -16,9 +16,9 @@ export default class BlogService {
 		const projects = await this.databaseTool
 			.getTable("Projects")
 			.query()
-			.filter("Category", "select", "equals", "Application")
-			.sort("Created", "ascending")
-			.limit(3)
+			// .filter("Category", "select", "equals", "Application")
+			.sort("Created", "descending")
+			.limit(12)
 			.get()
 			.then((entries: any) => entries.all());
 		// console.log(projects);
@@ -53,7 +53,7 @@ export default class BlogService {
 			.then((entry: Entry) => entry.all());
 		if (!projects || !projects[0]) {
 			console.error("no journal found");
-			throw new Error("no journal found");
+			return null;
 		}
 		const journal: DevJournal[] = await Promise
 			.all(projects[0]["Dev Journal"]
@@ -80,7 +80,7 @@ export default class BlogService {
 			.then((entries: Entry) => entries.all());
 		if (!journal || !journal[0]) {
 			console.error("no journal article found");
-			throw new Error("no journal article found");
+			return null;
 		}
 		const article_info: NotionEntry = journal[0];
 		const article_blocks = await article_info.retrievePage();
@@ -115,8 +115,10 @@ export default class BlogService {
 		return contents;
 	}
 
-	async getCompleteArchitercute() {
-		const architecture = (await this.getArchitectures())[0];
+	async getCompleteArchitercute(
+		page: number = 0
+	) {
+		const architecture = (await this.getArchitectures())[page];
 		const architercureModules = await Promise.all(architecture.Modules
 			.map(async (project_fetch: any) => await project_fetch())
 		);
@@ -148,7 +150,7 @@ export default class BlogService {
 		
 
 	private async getArchitectures() {
-		const architectures = await this.databaseTool
+		const architectures: any = await this.databaseTool
 			.getTable("Projects")
 			.query()
 			.filter("Category", "select", "equals", "Architecture")

@@ -67,8 +67,8 @@ async function getTables() {
 		// cache: "no-store"
 		next: {revalidate: 3500}
 	});
-	// const entires = await service.getProjects();
-	const entires: Table[] = await service.getCompleteArchitercute();
+	const entires: Table[] = await service.getProjects();
+	// const entires: Table[] = await service.getCompleteArchitercute();
 	// const languages = await fetchRepositoryLanguages(entires);
 	// 	entires.forEach((entry, index) => {
 	// 		entry.repo_languages = languages[index];
@@ -349,63 +349,52 @@ async function fetchPersonalInfo(): Promise<PersonalInfo> {
 	return getUser(user as GitHubUser);
 }
 
-export default function Home({
+export default function ProjectSelection() {
 
-}: {
+	// const user: PersonalInfo = await fetchPersonalInfo();
+	const user: PersonalInfo = {
+		login: "edvinas1122",
+		id: 50779875,
+		avatar_url: "https://avatars.githubusercontent.com/u/50779875?v=4",
+		location: "Lithuania",
+		bio: "Full stack developer",
+		twitter_username: "edvinas1122",
+		name: "Edvinas Momkus",
+		html_url: "",
+	}
 
-}) {
+	// const typer = new EnRichedTextTyper();
+	// const title = typer
+	// 	.addTextSegment('Hi 👋, I am ')
+	// 	.addNewLine()
+	// 	.addTextSegment(user.name)
+	// 	.addNewLine()
+	// 	.addTextSegment('a ')
+	// 	.addGradientSegment('Full stack developer')
+	// 	.build();
+
+	// const description = typer
+	// 	.addTextSegment(user.bio)
+	// 	.build();
+
+	const background_image = "https://www.edvinasmomkus.com/_next/image?url=https%3A%2F%2Fwww.notion.so%2Fimage%2Fhttps%253A%252F%252Fs3-us-west-2.amazonaws.com%252Fsecure.notion-static.com%252F23185bc3-4231-41dc-8e86-8a4ca374fa80%252F1681923508963.jpeg%3Ftable%3Dblock%26id%3Dacd18d29-7b8c-4eb1-823d-21f63088898c%26cache%3Dv2&w=3840&q=75"
+	const github_link = user.html_url;
+
 	return (
 		<>
+			{/* <Hero
+				title={title}
+				description={description}
+				button="Let's talk"
+				background_image={background_image}
+				github_link={github_link}
+				avatar={user.avatar_url}
+			/> */}
+			<Suspense fallback={<ArchitecturePreviewGrid/>}>
+				<TableList
+					user_name={user.login}
+				/>
+			</Suspense>
 		</>
-	);
+	)
 }
-
-// export default async function Home() {
-
-// 	// const user: PersonalInfo = await fetchPersonalInfo();
-// 	const user: PersonalInfo = {
-// 		login: "edvinas1122",
-// 		id: 50779875,
-// 		avatar_url: "https://avatars.githubusercontent.com/u/50779875?v=4",
-// 		location: "Lithuania",
-// 		bio: "Full stack developer",
-// 		twitter_username: "edvinas1122",
-// 		name: "Edvinas Momkus",
-// 		html_url: "",
-// 	}
-
-// 	const typer = new EnRichedTextTyper();
-// 	const title = typer
-// 		.addTextSegment('Hi 👋, I am ')
-// 		.addNewLine()
-// 		.addTextSegment(user.name)
-// 		.addNewLine()
-// 		.addTextSegment('a ')
-// 		.addGradientSegment('Full stack developer')
-// 		.build();
-
-// 	const description = typer
-// 		.addTextSegment(user.bio)
-// 		.build();
-
-// 	const background_image = "https://www.edvinasmomkus.com/_next/image?url=https%3A%2F%2Fwww.notion.so%2Fimage%2Fhttps%253A%252F%252Fs3-us-west-2.amazonaws.com%252Fsecure.notion-static.com%252F23185bc3-4231-41dc-8e86-8a4ca374fa80%252F1681923508963.jpeg%3Ftable%3Dblock%26id%3Dacd18d29-7b8c-4eb1-823d-21f63088898c%26cache%3Dv2&w=3840&q=75"
-// 	const github_link = user.html_url;
-
-// 	return (
-// 		<>
-// 			{/* <Hero
-// 				title={title}
-// 				description={description}
-// 				button="Let's talk"
-// 				background_image={background_image}
-// 				github_link={github_link}
-// 				avatar={user.avatar_url}
-// 			/> */}
-// 			<Suspense fallback={<ArchitecturePreviewGrid/>}>
-// 				<TableList
-// 					user_name={user.login}
-// 				/>
-// 			</Suspense>
-// 		</>
-// 	)
-// }

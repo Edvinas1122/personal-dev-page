@@ -10,13 +10,16 @@
 	display: block;
 	text-decoration: none;
 	color: var(--mantine-color-text);
-	line-height: var(--link-height);
+	/* line-height: var(--link-height); */
 	font-size: var(--mantine-font-size-sm);
-	height: var(--link-height);
+	/* height: var(--link-height); */
 	border-top-right-radius: var(--mantine-radius-sm);
 	border-bottom-right-radius: var(--mantine-radius-sm);
 	border-left: rem(2px) solid light-dark(var(--mantine-color-gray-2), var(--mantine-color-dark-4));
-  
+	overflow: hidden;
+	text-wrap: nowrap;
+	overflow-wrap: nowrap;
+	text-overflow: ellipsis;
 	@mixin hover {
 	  background-color: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-6));
 	}

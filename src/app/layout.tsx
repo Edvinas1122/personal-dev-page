@@ -1,6 +1,11 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
-import { MantineProvider, ColorSchemeScript } from "@mantine/core";
+import {
+	MantineProvider,
+	ColorSchemeScript,
+	Container,
+	SimpleGrid,
+} from "@mantine/core";
 import { theme } from "../theme";
 import Script from 'next/script';
 import "@mantine/core/styles.css";
@@ -22,16 +27,23 @@ export const metadata: Metadata = {
 	description: 'an app for personal project bloging, documentation, and more',
 }
 
+import { 
+	localStorageColorSchemeManager
+} from '@mantine/core';
+
+
 export default function RootLayout({
 	children,
+	projects,
 	// header,
 }: {
 	children: React.ReactNode
+	projects: React.ReactNode
 	// header: React.ReactNode
 }) {
 	return (
 		<html lang="en">
-			<Script 
+			<Script
 				strategy='lazyOnload'
 				id="color_scheme_script"
 			>
@@ -40,9 +52,22 @@ export default function RootLayout({
 			<body className={inter.className}>
 				<MantineProvider
 					theme={theme}
+					// theme={{
+					// 	colorScheme: 'dark'
+					// }}
 				>
 				<GlobalHeaderLayout>
-					{children}
+					<Container
+						style={{
+							// display: "flex",
+							// flexDirection: "row",
+							// flexWrap: "wrap",
+						}}
+						size="xl"
+					>
+						{projects}
+						{children}
+					</Container>
 				</GlobalHeaderLayout>
 				</MantineProvider>
 			</body>

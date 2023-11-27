@@ -5,6 +5,7 @@ import {
 import {
 	url_string
 } from "@/utils/url_string";
+import { notFound } from "next/navigation";
 
 
 async function fetchArticle(name: string) {
@@ -14,6 +15,9 @@ async function fetchArticle(name: string) {
 	const article = await service.getJournalArticle({
 		name: url_string(name),
 	});
+	if (!article) {
+		notFound();
+	}
 	return article;
 }
 
@@ -24,12 +28,14 @@ import OnPage from "@/services/notion-views/OnPage";
 import {
 	Text,
 	Paper,
-	Container,
-	GridCol,
-	Grid,
-	SimpleGrid
+	Title,
 } from '@mantine/core';
-import { TableOfContentsFloating } from "@/components/contents-table/contents-table";
+import {
+	TableOfContentsFloating
+} from "@/components/contents-table/contents-table";
+import {
+	ArticleLayout
+} from "../components";
 
 async function ArticlePage({
 	params: {
@@ -44,37 +50,45 @@ async function ArticlePage({
 }) {
 	const article = await fetchArticle(name);
 	return (
-		<div>
-			<div
-				style={{
-					// backgroundColor: "black",
-					// height: "100vh",
-					display: "flex",
-					flexDirection: "row",
-				}}
+		<>
+			<ArticleLayout
+				contents={
+					<TableOfContentsFloating
+						links={article.contents}
+					/>
+				}
 			>
-			<Container
-				my="md"
-				size="md"
-				>
-			<h1>{article.article_info.Name}</h1>
-			<h2>{article.article_info.Description}</h2>
-
-			<NotionList
-				page={article}
-			/>
-			</Container>
-			<Container
-				my="md"
-				size="xs"
-				ml="xs"
-			>
-			<TableOfContentsFloating
-				links={article.contents}
-			/>
-				</Container>
-			</div>
-		</div>
+				<>
+					<Paper
+						p="md"
+						shadow="sm"
+						my="md"
+						w="100%"
+					>
+					<Title
+						order={1}
+						size={"2.5rem"}
+						>{article.article_info.Name}
+					</Title>
+					<Text
+						size="lg"
+						style={{
+							italic: true,
+						}}
+						>{article.article_info.Description}</Text>
+					</Paper>
+					<Paper
+						p="md"
+						shadow="sm"
+						w="100%"
+					>
+					<NotionList
+						page={article}
+						/>
+					</Paper>
+				</>
+			</ArticleLayout>
+			</>
 	);
 }
 

@@ -21,7 +21,6 @@ function ProjectsPage() {
 
 	return (
 		<>
-			<p>projectsPage</p>
 		</>
 	);
 }
