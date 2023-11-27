@@ -1,6 +1,6 @@
 import {
 	ArticleLayout
-} from "./components";
+} from "./article_layout";
 import {
 	Skeleton,
 	Button

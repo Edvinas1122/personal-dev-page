@@ -152,7 +152,7 @@ const scroll_react_enstructions: SingleEnstruction[] = [{
 
 import {
 	searchMethod,
-} from "@/services/server";
+} from "@/services/server/search";
 
 import {
 	NavSection,

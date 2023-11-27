@@ -100,19 +100,43 @@ async function Project({
 // 	}
 // }
 
+import 
+	ArticlePage, {
+	Loading
+} from "../components/article/component"
+import {
+	ItemPaths
+} from "@/services/server/fetchProjectItems";
 export default function ProjectPage({
 	params,
 }: {
 	params: {
-		project: string;
+		project: string[]
 	}
 }) {
-	const name = url_string(params.project);
+	const project = url_string(params.project[0]);
+	const relation = params.project[1];
+	const section = params.project[2];
+
+	if (!relation || !section) {
+		return null;
+	}
 
 	return (
 		<>
+			<Suspense fallback={
+				<Loading/>
+			}>
+				<ArticlePage
+					params={{
+						project: project,
+						relation: relation as ItemPaths,
+						name: url_string(section),
+					}}
+				/>
+			</Suspense>
 			{/* <Project
-				name={name}
+				name={project}
 			/> */}
 		</>
 	);

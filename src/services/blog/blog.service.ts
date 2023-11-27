@@ -5,7 +5,13 @@ import {
 	//@ts-ignore
 	NotionEntry
 } from "@edvinas1122/notion-database-tool";
-import { DevJournal } from "./blog.orm";
+import {
+	DevJournal,
+	Project,
+	ExternalDeps,
+	Goal,
+	Manual,
+} from "./blog.orm";
 
 export default class BlogService {
 	constructor(
@@ -91,6 +97,34 @@ export default class BlogService {
 		}
 	}
 
+	async getManual({
+		name,
+	}: {
+		name: string,
+	}) {
+		//@ts-ignore
+		const journal: NotionEntry[] = await this.databaseTool
+			.getTable("Manual")
+			.query()
+			.filter("Name", "title", "equals", name)
+			.limit(1)
+			.get()
+			//@ts-ignore
+			.then((entries: Entry) => entries.all());
+		if (!journal || !journal[0]) {
+			console.error("no journal article found");
+			return null;
+		}
+		const article_info: NotionEntry = journal[0];
+		const article_blocks = await article_info.retrievePage();
+		return {
+			page: article_blocks.page,
+			article_info: this.transformJournal(article_info),
+			contents: this.transpileArticeContents(article_blocks.page)
+		}
+	}
+
+
 
 
 	private transpileArticeContents(
@@ -161,7 +195,7 @@ export default class BlogService {
 		return architectures;
 	}
 
-	async getProject(key: string): Promise<any> {
+	async getProject(key: string): Promise<Project | null> {
 		try {
 			const project = await this.databaseTool
 				.getTable("Projects")
@@ -172,10 +206,10 @@ export default class BlogService {
 				console.error("no project found");
 				throw new Error("no project found");
 			}
-			const constructed_item = await this.getProjectDetails(project[0]);
+			const constructed_item = await this.getProjectDetails(project[0]) as Project & {[key:string]: any};
 			return constructed_item;
 		} catch	(err: any) {
-			this.exceptionHandler(err);
+			return this.exceptionHandler(err);
 		}
 	}
 
@@ -294,6 +328,7 @@ export default class BlogService {
 		{
 			console.log(err.message);
 		}
+		return null;
 	}
 
 }

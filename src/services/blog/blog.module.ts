@@ -2,10 +2,6 @@ import
 	constructNotionDatabase
 from "@edvinas1122/notion-database-tool";
 
-import {
-	blogTables,
-	DevJournal
-} from "./blog.orm";
 import
 	BlogService
 from "./blog.service";
@@ -24,6 +20,21 @@ export function constructBlogService(cache?: { [key: string]: any }) {
 	return blogService;
 }
 
+import {
+	blogTables,
+	DevJournal,
+	Project,
+	ExternalDeps,
+	Goal,
+	Manual,
+	AquisitionMethod,
+} from "./blog.orm";
+
 export type {
-	DevJournal
+	DevJournal,
+	Project,
+	ExternalDeps,
+	Goal,
+	Manual,
+	AquisitionMethod,
 };

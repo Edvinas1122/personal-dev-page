@@ -1,5 +1,5 @@
 import {
-	TableProps,
+	TableProps
 } from "@edvinas1122/notion-database-tool";
 
 export const blogTables: TableProps[] = [
@@ -74,6 +74,35 @@ export const blogTables: TableProps[] = [
 				property_type: "relation",
 			},]
 		}
+	},
+	{
+		name: "Manual",
+		database_id: process.env.MANUAL as string,
+		properties: {
+			key: {
+				property: "Name",
+				property_type: "title",
+			},
+			properties: [{
+				property: "Name",
+				property_type: "title",
+			},{
+				property: "Type",
+				property_type: "select",
+			},{
+				property: "Part",
+				property_type: "select",
+			},{
+				property: "Expands",
+				property_type: "relation",
+			},{
+				property: "Expansions",
+				property_type: "relation",
+			},{
+				property: "Does Document",
+				property_type: "relation",
+			}]
+		}
 	}
 ]
 
@@ -91,3 +120,48 @@ export type DevJournal = {
 }
 
 
+type Manual = {
+	Part: "Fragment" | "Full";
+	Expands: AquisitionMethod<Manual>[];
+	Expansions: AquisitionMethod<Manual>[];
+	Type: "Documentation" | "Tutorial";
+	DoesDocument: AquisitionMethod<Project>[];
+	Name: string;
+}
+
+type Goal = {
+	[key: string]: string;
+}
+
+type ExternalDeps = {
+	title: string;
+	description: string;
+	url: string;
+	image: string;
+	image_type: string;
+}
+
+type AquisitionMethod<T> = () => Promise<T>; 
+
+interface Project {
+	Manual: AquisitionMethod<Manual>[];
+	Dist: string;
+	Status: string; // Private, Public
+	Goals: AquisitionMethod<Goal>[];
+	'Dev Journal': AquisitionMethod<DevJournal>[];
+	Demand: string;
+	Modules: AquisitionMethod<Project>[];
+	'External Deps': AquisitionMethod<ExternalDeps>[];
+	Name: string;
+	Description: string;
+	Category: string;
+	external: ExternalDeps[];
+}
+
+export type {
+	Project,
+	ExternalDeps,
+	Goal,
+	Manual,
+	AquisitionMethod,
+}

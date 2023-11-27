@@ -26,54 +26,25 @@ function useActiveSegment(
 	return activeSegment;
 }
 
-
-// function withActiveSegment<T>(
-// 	Component: React.ComponentType<T>,
-// 	order: number = 3
-// ) {
-// 	const ActiveSegmentComponent = (
-// 		props: T & {
-// 			title: string;
-// 		}
-// 	) => {
-// 		const path = usePathname();
-// 		const [activeSegment, setActiveSegment] = React.useState<boolean>(false);
-
-// 		React.useEffect(() => {
-// 			const pathSegments = path.split("/");
-// 			const activeSegment = pathSegments[order];
-// 			setActiveSegment(
-// 				url_string(activeSegment) === props.title
-// 				);
-// 		}, [path]);
-
-// 		return (
-// 			<Component
-// 				{...props}
-// 				activeSegment={activeSegment}
-// 			/>
-// 		);
-// 	};
-// 	return ActiveSegmentComponent;
-// }
-
 import {
 	Card,
 	Title
 } from "@mantine/core";
 
-export function ActiveSegmentComponent({
+export function ActiveSegmentLayout({
 	children,
 	title,
+	states,
 }: {
 	children: React.ReactNode;
-	title: string;
+	title: React.ReactNode;
+	states: {
+		activeSegment: boolean;
+	}
 }) {
-	const activeSegment = useActiveSegment(title, 4);
-	console.log("activeSegment", activeSegment);
 	return (
 		<Card
-			shadow={activeSegment ? "md" : "md"}
+			shadow={states.activeSegment ? "md" : "md"}
 			withBorder
 			color="gray"
 			radius={"md"}
@@ -89,17 +60,42 @@ export function ActiveSegmentComponent({
 		>
 			<Title
 				order={3}
-				size={activeSegment ? "md" : "sm"}
+				w="100%"
+				size={states.activeSegment ? "md" : "sm"}
 			>{title}</Title>
 			{children}
 		</Card>
 	);
 }
 
-// export const ActiveSegmentComponent = withActiveSegment(Component, 4);
+export function ActiveSegmentComponent({
+	children,
+	title,
+}: {
+	children: React.ReactNode;
+	title: string;
+}) {
+	const activeSegment = useActiveSegment(title, 3);
+	return (
+		<ActiveSegmentLayout
+			title={
+				<>
+					{title}
+				</>
+			}
+			states={{
+				activeSegment,
+			}}
+		>
+			<>
+			{children}
+			</>
+		</ActiveSegmentLayout>
+	);
+}
+
 import {
 	SimpleGrid,
-	Container,
 	Group,
 } from "@mantine/core";
 
@@ -120,11 +116,11 @@ export function RouteReactiveGrid({
 
 	return (
 		<Group
-			// w="18%"
 			style={{
 				alignContent: "baseline",
 				flexDirection: "column",
 				alignItems: "baseline",
+				width: isComprised ? "270px" : "100%"
 			}}
 			visibleFrom={isComprised ? "lg" : undefined}
 		>
@@ -134,12 +130,12 @@ export function RouteReactiveGrid({
 			style={{
 				listStyle: "none",
 				maxWidth: isComprised ? "270px" : "100%",
-				position: "sticky"
+				position: "sticky",
+				width: "100%",
 			}}
 		>
 			{children}
 		</SimpleGrid>
 		</Group>
 	);
-
 }

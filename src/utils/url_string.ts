@@ -5,6 +5,9 @@
 export function url_string(
 	url: string
 ): string {
+	if (!url) {
+		return "";
+	}
 	return url.replace(/%20/g, " ");
 }
 

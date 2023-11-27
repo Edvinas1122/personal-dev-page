@@ -1,30 +1,6 @@
-import {
-	constructBlogService,
-	DevJournal
-} from "@/services/blog/blog.module";
-import {
-	url_string
-} from "@/utils/url_string";
-import { notFound } from "next/navigation";
-
-
-async function fetchArticle(name: string) {
-	const service = constructBlogService({
-		cache: "no-store"
-	});
-	const article = await service.getJournalArticle({
-		name: url_string(name),
-	});
-	if (!article) {
-		notFound();
-	}
-	return article;
-}
-
 import
 	NotionList
 from "@/services/notion-views/List";
-import OnPage from "@/services/notion-views/OnPage";
 import {
 	Text,
 	Paper,
@@ -35,20 +11,33 @@ import {
 } from "@/components/contents-table/contents-table";
 import {
 	ArticleLayout
-} from "../components";
+} from "./article_layout";
+import {
+	fetchProjectItemPage,
+	ItemPaths
+} from "@/services/server/fetchProjectItems";
 
 async function ArticlePage({
 	params: {
 		project,
+		relation,
 		name,
 	}
 }:{
 	params: {
 		project: string,
+		relation: ItemPaths,
 		name: string,
 	}
 }) {
-	const article = await fetchArticle(name);
+	const article = await fetchProjectItemPage(
+		relation,
+		name
+	);
+	if (!article) {
+		return notFound();
+	}
+	console.log("fetched", article);
 	return (
 		<>
 			<ArticleLayout
@@ -93,3 +82,8 @@ async function ArticlePage({
 }
 
 export default ArticlePage;
+import Loading from './article_loading';
+import { notFound } from "next/navigation";
+export {
+	Loading
+};
