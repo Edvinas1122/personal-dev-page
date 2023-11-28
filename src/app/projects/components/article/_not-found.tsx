@@ -7,11 +7,7 @@ import {
 } from "@mantine/core"
 
 export default function NotFound({
-	// params,
 }: {
-	// params: {
-	// 	project: string
-	// }
 }) {
 	return (
 		<Container
