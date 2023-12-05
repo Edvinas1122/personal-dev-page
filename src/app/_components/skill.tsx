@@ -54,6 +54,7 @@ function SkillsCategoryGrid(
 			title={props.skill_name}
 			subtitle={<Info/>}
 		>
+			<></>
 			{/* <RetractableAccordion
 				skills={props.modules_used}
 			/>
