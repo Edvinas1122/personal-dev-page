@@ -1,0 +1,13 @@
+.article {
+	display: flex;
+	flex-direction: column;
+	width: 700px;
+	/* width: 100%; */
+	@media (max-width: 1199px) {
+		width: -webkit-fill-available;
+	}	
+}
+
+.article_nav {
+	display: contents;
+}

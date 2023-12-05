@@ -17,7 +17,7 @@ import {
 	ItemPaths
 } from "@/services/server/fetchProjectItems";
 
-async function ArticlePage({
+async function ArticleDisplay({
 	params: {
 		project,
 		relation,
@@ -37,7 +37,6 @@ async function ArticlePage({
 	if (!article) {
 		return notFound();
 	}
-	console.log("fetched", article);
 	return (
 		<>
 			<ArticleLayout
@@ -49,31 +48,34 @@ async function ArticlePage({
 			>
 				<>
 					<Paper
+						component={"header"}
 						p="md"
 						shadow="sm"
 						my="md"
 						w="100%"
 					>
-					<Title
-						order={1}
-						size={"2.5rem"}
-						>{article.article_info.Name}
-					</Title>
-					<Text
-						size="lg"
-						style={{
-							italic: true,
-						}}
-						>{article.article_info.Description}</Text>
+						<Title
+							order={1}
+							size={"2.5rem"}
+							>{article.article_info.Name}
+						</Title>
+						<Text
+							size="lg"
+							style={{
+								italic: true,
+							}}
+							>{article.article_info.Description}</Text>
 					</Paper>
 					<Paper
+						component={"main"}
 						p="md"
 						shadow="sm"
 						w="100%"
 					>
-					<NotionList
-						page={article}
-						/>
+						<NotionList
+							page={article}
+							fetchBlocks={article.getBlockChildren}
+							/>
 					</Paper>
 				</>
 			</ArticleLayout>
@@ -81,7 +83,7 @@ async function ArticlePage({
 	);
 }
 
-export default ArticlePage;
+export default ArticleDisplay;
 import Loading from './article_loading';
 import { notFound } from "next/navigation";
 export {

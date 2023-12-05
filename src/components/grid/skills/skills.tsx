@@ -37,24 +37,7 @@ export function SkillsGrid({
 
 
 	return (
-		<Container
-			my="lg"
-			size="lg"
-		>
-			{/* <Title order={1}
-			>Skills</Title> */}
-			<Group
-				display="flex"
-				dir='row'
-				justify='center'
-			>
-				<Group justify='end' w="100%">
-				<Title order={2} style={{
-					weight: 900,
-				}}>
-					I use these tools
-				</Title>
-				</Group>
+			<>
 			<SimpleGrid
 				cols={{base: 2, sm: 3, lg: 4}}
 				spacing={{base: 'md', sm: 'lg'}}
@@ -73,8 +56,7 @@ export function SkillsGrid({
 					/>
 				))}
 			</SimpleGrid>
-			</Group>
-		</Container>
+			</>
 	);
 }
 
@@ -155,13 +137,12 @@ props: {
 	);
 }
 
-function RetractableAccordion({
+export function RetractableAccordion({
 	skills,
 }: {
 	skills: Skill[];
 }) {
 	const { hovered, ref } = useHover();
-	console.log("redering ", skills);
 	return (
 		<>
 			<div

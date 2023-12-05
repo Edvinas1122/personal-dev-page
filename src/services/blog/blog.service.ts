@@ -11,12 +11,26 @@ import {
 	ExternalDeps,
 	Goal,
 	Manual,
+	Paged
 } from "./blog.orm";
 
 export default class BlogService {
 	constructor(
 		private readonly databaseTool: NotionDatabaseTool
 	) {}
+
+	async getAvailable() {
+		const projects = await this.databaseTool
+			.getTable("Projects")
+			.query()
+			// .filter("Category", "select", "equals", "Application")
+			.sort("Created", "descending")
+			.limit(12)
+			.get()
+			.then((entries: any) => entries.all());
+		
+		return projects as Promise<Project[]>;
+	}
 
 	async getProjects() {
 		const projects = await this.databaseTool
@@ -30,7 +44,7 @@ export default class BlogService {
 		// console.log(projects);
 		const tablesWithImagesPromises = projects.map((project: any) => this.getProjectDetails(project));
 		const tablesWithImages = await Promise.all(tablesWithImagesPromises); /// parallel issues
-		return tablesWithImages;
+		return tablesWithImages as Paged<Project>[]
 	}
 
 	private transformJournal(journal: DevJournal) {
@@ -90,10 +104,14 @@ export default class BlogService {
 		}
 		const article_info: NotionEntry = journal[0];
 		const article_blocks = await article_info.retrievePage();
+		console.log("hournal", article_info.notion);
+
 		return {
 			page: article_blocks.page,
 			article_info: this.transformJournal(article_info),
-			contents: this.transpileArticeContents(article_blocks.page)
+			contents: this.transpileArticeContents(article_blocks.page),
+			getBlockChildren: async (id: string) => await article_info.notion.getBlockChildren(id),
+
 		}
 	}
 
@@ -120,7 +138,8 @@ export default class BlogService {
 		return {
 			page: article_blocks.page,
 			article_info: this.transformJournal(article_info),
-			contents: this.transpileArticeContents(article_blocks.page)
+			contents: this.transpileArticeContents(article_blocks.page),
+			getBlockChildren: async (id: string) => await article_info.notion.getBlockChildren(id),
 		}
 	}
 

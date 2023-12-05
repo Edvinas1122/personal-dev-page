@@ -1,42 +1,52 @@
 import dynamic from 'next/dynamic'
 
 const ProjectNavTabs = dynamic(
-	() => import('../components/navTabs'),
+	() => import('../_components/navTabs'),
 	{
 		loading: () => <p>Loading...</p>
 	}
 )
 
-export default function ProjectRootPage({
-	params,
+import Selector from "./_components/display/selector"
+import styles from "./reader.module.css"
+import {Group} from "@mantine/core"
+
+export default function ArticleReaderLayout({
 	children,
 	select,
 }: {
-	params: {
-		project: string[]
-	},
 	children: React.ReactNode
 	select: React.ReactNode
 }) {
 
-	const currentPath = `/projects/${params.project[0]}`;
-
 	return (
 		<>
 			<ProjectNavTabs/>
-			<section
+			<main
 				style={{
 					display: "flex",
 					flexDirection: "row",
+					justifyContent: "space-between",
 					width: "100%",
 					gap: "1em",
 				}}
 			>
-				<>
-				{select}
-				</>
+				<Selector
+					as={Group}
+					className={styles.selector}
+					comprisedFrom={4}
+					comprisedStyle={{
+						visibleFrom: "lg",
+						// maxWidth: "240px",
+					}}
+					uncomprisedStyle={{
+						w: "100%"
+					}}
+				>
+					{select}
+				</Selector>
 				{children}
-			</section>
+			</main>
 		</>
 	);
 }

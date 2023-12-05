@@ -3,13 +3,14 @@ import BlocksView from "./render/blocks";
 
 
 const NotionList = ({
-	page
+	page,
+	fetchBlocks
 }: {
 	page: any
+	fetchBlocks: (id: string) => Promise<any>
 }) => {
 
 	const list = page.page;
-	const fetchBlocks = (block_id: string) => page.getChildrenBlocks(block_id);
 
 	if (list === undefined) {
 		return (

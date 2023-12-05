@@ -10,13 +10,34 @@ import {
 } from "@/utils/url_string";
 import { notFound } from "next/navigation";
 
+export async function fetchAvailableProjects()
+{
+	"use server";
+	const projects = constructBlogService({
+		cache: "no-store"
+	});
+	const availableProjects = await projects.getAvailable();
+	return availableProjects.map((project) => (
+		to_url_string(project.Name)
+	));
+}
+
+const cachePolicies = {
+	journal: {
+		revalidate: 50
+	},
+	projects: {
+		revalidate: 50
+	}
+}
+
 export async function fetchProjectManuals(
 	name: string
 ): Promise<Manual[]> {
 	"use server";
 	const service = constructBlogService({
 		next: {
-			revalidate: 3
+			revalidate: 50
 		}
 	});
 	const correctedName = url_string(name);
@@ -102,9 +123,8 @@ export async function fetchProjectItem<T extends PageItems>(
 async function fetchArticle(name: string) {
 	"use server";
 	const service = constructBlogService({
-		cache: "no-store"
+		next: cachePolicies.journal
 	});
-	console.log("fetching article", name);
 	const article = await service.getJournalArticle({
 		name: name,
 	});
@@ -114,9 +134,8 @@ async function fetchArticle(name: string) {
 async function fetchManual(name: string) {
 	"use server";
 	const service = constructBlogService({
-		cache: "no-store"
+		next: cachePolicies.journal
 	});
-	console.log("fetching manual", name);
 	const manual = await service.getManual({
 		name
 	});
@@ -130,7 +149,7 @@ export async function fetchProjectItemPage(
 	if (item_type === ItemPaths.manual) {
 		return fetchManual(item_name);
 	}
-	if (item_type === ItemPaths.journal) {
+	else if (item_type === ItemPaths.journal) {
 		return fetchArticle(item_name);
 	}
 	return null;

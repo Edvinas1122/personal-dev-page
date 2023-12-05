@@ -64,6 +64,9 @@ async function ItemsGrid({
 }) {
 	const reducer = (project_items == ItemPaths.manual)
 		? reduceManual : reduceDevJournal;
+	// const wait = await new Promise(resolve => {
+	// 	setTimeout(resolve, 50000);
+	// }); // debug block for loading skeleton
 	const journal = await fetchProjectItem(
 		project_name,
 		project_items,
@@ -88,7 +91,11 @@ async function ItemsGrid({
 			>
 				{journal.map((entry, index: number) => {
 					return (
-						<li key={index}>
+						<li key={index}
+							style={{
+								padding: "0 5px"
+							}}
+						>
 							<JournalItem
 								entry={entry}
 								project={project_name}
@@ -114,9 +121,6 @@ function JournalItem({
 	entry: CardItem,
 	project: string
 }) {
-
-	console.log(entry);
-
 	return (
 		<ActiveSegmentComponent
 			title={entry.title}
@@ -147,6 +151,15 @@ function JournalItem({
 
 import Loading from "./loading";
 
+// export async function generateStaticParams() {
+// 	// const projects = await fetchAvailableProjects();
+// 	return [
+// 		["API%20Wrapper", "manual", "Use%20API%20wrapper"],
+// 		["WebSocketService", "journal", "Auto%20Message%20Parsing%20error"],
+// 		// [],
+// 	]
+// }
+
 function ArticleSelector({
 	params
 }: {
@@ -155,7 +168,6 @@ function ArticleSelector({
 	}
 }) {
 
-	console.log(params);
 	const project_name = params.project[0];
 	const route = params.project[1];
 
@@ -173,7 +185,6 @@ function ArticleSelector({
 	}
 
 	const route_name = checkRoute(route);
-	console.log("fewfgewfew", route_name, route, ItemPaths.journal);
 	if (!route_name) {
 		notFound();
 	}

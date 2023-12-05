@@ -23,6 +23,16 @@ export function handleHeading({
 	);
 }
 
+function markheadingID(heading: Heading)
+{
+	const text = heading.rich_text
+		.map((richText) => richText.plain_text)
+		.join("")
+		// .replace(/ /g, "%20");
+
+	return text;
+}
+
 export function handleHeading_1({
 	heading_1
 }: {
@@ -32,7 +42,7 @@ export function handleHeading_1({
 	return (
 		<h1
 			className={"notion-heading_1"}
-			id={heading_1.rich_text.map((richText) => richText.plain_text).join("")}
+			id={markheadingID(heading_1)}
 		>
 			{heading}
 		</h1>
@@ -48,7 +58,7 @@ export function handleHeading_2({
 	return (
 		<h2
 			className={"notion-heading_2"}
-			id={heading_2.rich_text.map((richText) => richText.plain_text).join("")}
+			id={markheadingID(heading_2)}
 		>
 			{heading}
 		</h2>
@@ -64,7 +74,7 @@ export function handleHeading_3({
 	return (
 		<h3
 			className={"notion-heading_3"}
-			id={heading_3.rich_text.map((richText) => richText.plain_text).join("")}
+			id={markheadingID(heading_3)}
 		>
 			{heading}
 		</h3>

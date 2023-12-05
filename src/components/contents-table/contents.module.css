@@ -1,5 +1,5 @@
 .root {
-	--link-height: rem(38px);
+	--link-height: rem(33px);
 	--indicator-size: rem(10px);
 	--indicator-offset: calc((var(--link-height) - var(--indicator-size)) / 2);
 	position: relative;

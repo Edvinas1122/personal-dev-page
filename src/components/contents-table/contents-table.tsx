@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Box, Text, Group, rem } from '@mantine/core';
 import { IconListSearch } from '@tabler/icons-react';
 import classes from './contents.module.css';
+import React from 'react';
 
 const links = [
   { label: 'Usage', link: '#usage', order: 1 },
@@ -16,6 +17,56 @@ const links = [
   { label: 'With form', link: '#4', order: 2 },
 ];
 
+// function useActiveTitle({
+// 	headings
+// }: {
+// 	headings: string[]
+// }) {
+// 	const [activeInScroll, setActiveInScroll] = useState(0);
+  
+// 	const mapPositions = () => {
+// 		const newPositions = headings
+// 			.map(heading => {
+// 				const element = document
+// 					.getElementById(heading);
+// 				return element ? element
+// 					.getBoundingClientRect()
+// 					.top + window.scrollY - 100 : null;
+// 			})
+// 			.filter(item => item !== null);
+// 		return newPositions;
+// 	};
+  
+// 	const handleScroll = () => {
+// 		const currentScroll = window.scrollY;
+// 		const activeIndex = positions
+// 			.findIndex((
+// 				pos,
+// 				index
+// 			) => {
+// 				return currentScroll >= pos &&
+// 					(index === positions.length - 1 ||
+// 						currentScroll < positions[index + 1]);
+// 			});
+
+// 			setActiveInScroll(activeIndex);
+// 	};
+
+// 	const mappedPositions = React.useMemo(
+// 		mapPositions, [
+// 			headings,
+// 		]
+// 	)
+
+// 	React.useEffect(() => {
+
+// 	}, [
+// 		mappedPositions,
+// 	]);
+  
+// 	return activeInScroll;
+// }
+
 export function TableOfContentsFloating({
 		links,
 	}: {
@@ -25,7 +76,11 @@ export function TableOfContentsFloating({
 			order: number
 		}[]
 	}) {
-	const [active, setActive] = useState(2);
+	// const labels = links.map((link) => (link.label))
+	// const activeInScroll = useActiveTitle({
+	// 	headings: labels
+	// })
+	const [active, setActive] = React.useState(1);
 
 	function selectFontsize(order: number) {
 		switch (order) {

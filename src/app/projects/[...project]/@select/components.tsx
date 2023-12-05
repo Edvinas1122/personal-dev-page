@@ -21,7 +21,9 @@ function useActiveSegment(
 			url_string(activeSegment) === title
 		);
 	}, [
-		path
+		path,
+		order,
+		title
 	]);
 	return activeSegment;
 }
@@ -115,15 +117,7 @@ export function RouteReactiveGrid({
 	const cols = isComprised ? 1 : { base: 1, sm: 2, md: 3, lg: 4 };
 
 	return (
-		<Group
-			style={{
-				alignContent: "baseline",
-				flexDirection: "column",
-				alignItems: "baseline",
-				width: isComprised ? "270px" : "100%"
-			}}
-			visibleFrom={isComprised ? "lg" : undefined}
-		>
+		<>
 		{heading}
 		<SimpleGrid
 			cols={cols}
@@ -136,6 +130,6 @@ export function RouteReactiveGrid({
 		>
 			{children}
 		</SimpleGrid>
-		</Group>
+		</>
 	);
 }

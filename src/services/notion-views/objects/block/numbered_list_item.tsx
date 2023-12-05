@@ -14,8 +14,8 @@ export default function handleNumberedListItem({
 }: {
 	bulleted_list_item?: NumberedListItem
 	numbered_list_item?: NumberedListItem
-	children?: any
-}): any {
+	children?: JSX.Element
+}): JSX.Element {
 	const list_item = numbered_list_item || bulleted_list_item;
 	if (list_item === undefined) {
 		throw new Error("list_item is undefined");

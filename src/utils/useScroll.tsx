@@ -23,7 +23,10 @@ const withScrollControlledContext = (
 	} & HTMLMotionProps<any>) => {
 		const controls = useAnimation();
 		const [scroll] = useWindowScroll();
-		const [currentEnstruction, setCurrentEnstruction] = React.useState<SingleEnstruction>();
+		const [
+			currentEnstruction,
+			setCurrentEnstruction
+		] = React.useState<SingleEnstruction>();
 
 		function is_in_reactive_range(
 			scroll: number,
@@ -47,7 +50,13 @@ const withScrollControlledContext = (
 				setCurrentEnstruction(activeEnstruction);
 				controls.start(variants[activeEnstruction.animation]);
 			}
-		}, [scroll.y, react, variants, controls]);
+		}, [
+			scroll.y,
+			react,
+			variants,
+			controls,
+			currentEnstruction
+		]);
 
 		return <MotionComponent animate={controls} {...props} />;
 	};

@@ -47,9 +47,11 @@ export function SimpleCard(props: SimpleCardProps) {
 			}}
 			withBorder
 			shadow='md'
-			ref={ref}
-		>
+			component={Link}
+			href={linkProps.href}
+			>
 			<Card.Section
+				ref={ref}
 				p="md"
 				style={{
 					zIndex: 2,
@@ -80,7 +82,7 @@ export function SimpleCard(props: SimpleCardProps) {
 				</Text>
 
 				{props.children}
-			{props.hide_read_more ? null : (
+			{props.hide_read_more || !hovered ? null : (
 				<Button
 					component={Link}
 					{...linkProps}
@@ -94,7 +96,6 @@ export function SimpleCard(props: SimpleCardProps) {
 					variant="outline"
 					color={description_font_color}
 					className={classes.button}
-					scroll={false}
 				>
 					Read more
 				</Button>

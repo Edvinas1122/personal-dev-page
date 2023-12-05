@@ -141,7 +141,12 @@ type ExternalDeps = {
 	image_type: string;
 }
 
-type AquisitionMethod<T> = () => Promise<T>; 
+type AquisitionMethod<T> = () => Promise<T>;
+type Paged<T> = T & {
+	Created: string;
+	cover: string;
+	icon: string;
+}
 
 interface Project {
 	Manual: AquisitionMethod<Manual>[];
@@ -156,9 +161,11 @@ interface Project {
 	Description: string;
 	Category: string;
 	external: ExternalDeps[];
+	"GitHub Page": string,
 }
 
 export type {
+	Paged,
 	Project,
 	ExternalDeps,
 	Goal,

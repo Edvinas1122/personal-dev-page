@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import Block, {BlockType, notionBlock} from "./blocksRender";
 
 type BlocksViewProps = {
@@ -14,9 +15,10 @@ function isWrappedList(block: notionBlock): boolean {
 	if (block.type === BlockType.numbered_list_item) {
 		return true;
 	}
-	if (block.type === BlockType.bulleted_list_item) {
+	else if (block.type === BlockType.bulleted_list_item) {
 		return true;
-	}
+	} 
+
 	return false;
 }
 
@@ -31,11 +33,15 @@ function listRender(
 			<ol key={list[0].id} className={"notion-list"}>
 				{list.map((block) => {
 					return (
-						<Block
+						<Suspense
 							key={block.id}
-							block={block}
-							fetchBlocks={fetchBlocks}
-						/>
+						>
+							<Block
+								key={block.id}
+								block={block}
+								fetchBlocks={fetchBlocks}
+								/>
+						</Suspense>
 					);
 				})}
 			</ol>
@@ -75,15 +81,30 @@ export default function BlocksView({
 			if (list.length > 0) {
 				const contents = listRender(list, fetchBlocks, listType);
 				list = [];
-				return contents;
+				return (
+					<Suspense
+						key={block.id}
+					>
+						{contents}
+						<Block
+							key={block.id}
+							block={block}
+							fetchBlocks={fetchBlocks}
+						/>
+					</Suspense>
+				);
 			}
 		}
 		return (
-			<Block
+			<Suspense
 				key={block.id}
-				block={block}
-				fetchBlocks={fetchBlocks}
-			/>
+			>
+				<Block
+					key={block.id}
+					block={block}
+					fetchBlocks={fetchBlocks}
+					/>
+			</Suspense>
 		);
 	});
 }

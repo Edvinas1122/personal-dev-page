@@ -19,10 +19,7 @@
 function ProjectsPage() {
 
 
-	return (
-		<>
-		</>
-	);
+	return null;
 }
 
 export default ProjectsPage;

@@ -3,7 +3,7 @@
 	handle url bar string
 */
 export function url_string(
-	url: string
+	url: string | null
 ): string {
 	if (!url) {
 		return "";

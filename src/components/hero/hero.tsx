@@ -71,7 +71,6 @@ const item = {
 		filter: "blur(0px)"
 	}
 };
-import { usePathname, useRouter } from 'next/navigation';
 
 export function Hero(
 	props: HeroProps
@@ -99,7 +98,11 @@ export function Hero(
 			focusOnHero();
 			setHeroVisible(true);
 		}
-	}, [entry?.isIntersecting, hero_visible, isMobile]);
+	}, [
+		entry?.isIntersecting,
+		hero_visible,
+		isMobile,
+	]);
 
 	const background_gradient = "linear-gradient(250deg, rgba(130, 201, 30, 0) 0%, #062343 70%)"
 	const dimGradient = "linear-gradient(250deg, rgba(0, 0, 0, 0) 20%, rgba(0, 0, 0, 0.82) 70%)";

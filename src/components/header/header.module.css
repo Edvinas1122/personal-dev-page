@@ -194,6 +194,7 @@
 .main {
 	--top-spacing: 19vh + 200px;
 	--min-top-spacing: 110lvh;
+	padding: 0 var(--left-spacing);
 }
 
 

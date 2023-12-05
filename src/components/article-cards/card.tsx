@@ -5,7 +5,7 @@ import { ArticleCardImage } from './image-card';
 import { ImageCard } from './image-card-3';
 import { ArticleCardVertical } from './vertical-card';
 import { RelatedItems } from './related-items';
-import { MantineTheme, useMantineTheme } from '@mantine/core';
+import { Group, MantineTheme, useMantineTheme } from '@mantine/core';
 import { SimpleCard } from './simple-card';
 import { CategoryBadge, LinkBadge } from './badges';
 import { Card } from '@mantine/core';
@@ -37,8 +37,13 @@ export function GeneralArticleCard(
 	const theme = useMantineTheme();
 	const color = props.image ? "antiquewhite" : "gray";
 	return (
-		<ArticleCardSelect
+		<SimpleCard
 			{...props}
+			badges={
+				<ArticleBadges
+					{...props}
+				/>
+			}
 			theme={theme}
 		>
 			<>
@@ -58,16 +63,16 @@ export function GeneralArticleCard(
 							justifyContent: "flex-end",
 						}}
 					>
-						<div>
+						<Group>
 						<Languages
 							color={color}
 							languages={props.repo_languages}
 						/>
-						</div>
+						</Group>
 					</Card.Section>
 				)}
 			</>
-		</ArticleCardSelect>
+		</SimpleCard>
 	);
 }
 
@@ -85,11 +90,7 @@ export function HoverExample() {
 	);
 }
 
-type ArticleCardSelectProps = ArticleCardProps & {
-	theme: MantineTheme;
-	children?: React.ReactNode;
-	hide_read_more?: boolean;
-};
+type ArticleCardSelectProps = ArticleCardProps;
 
 import { 
 	IconBrandGithub,
@@ -97,9 +98,9 @@ import {
 } from '@tabler/icons-react';
 import { Languages } from './languages';
 
-function ArticleCardSelect(props: ArticleCardSelectProps) {
+function ArticleBadges(props: ArticleCardSelectProps) {
 
-	const badge = (
+	const Badges = (
 		<>
 			<CategoryBadge
 				gradient={{
@@ -142,13 +143,9 @@ function ArticleCardSelect(props: ArticleCardSelectProps) {
 	)
 
 	return (
-		<SimpleCard
-			{...props}
-			badges={badge}
-			theme={props.theme}
-		>
-			{props.children}
-		</SimpleCard>
+	<>
+		{Badges}
+	</>
 	)
 }
 

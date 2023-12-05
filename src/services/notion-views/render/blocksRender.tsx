@@ -5,6 +5,7 @@ import { handleHeading_1, handleHeading_2, handleHeading_3 } from "../objects/bl
 import handleNumberedListItem from "../objects/block/numbered_list_item";
 import handle_image from "../objects/block/image";
 import handle_code from "../objects/block/code";
+import handleColumnList, {handleColumn} from "../objects/block/column_list";
 
 export enum BlockType {
 	callout = "callout",
@@ -18,6 +19,8 @@ export enum BlockType {
 	bulleted_list_item = "bulleted_list_item",
 	image = "image",
 	code = "code",
+	column_list = "column_list",
+	column = "column"
 }
 
 type BlockContent = {
@@ -47,10 +50,10 @@ export type notionBlock = {
 
 
 interface BlockProps {
-	children?: any,
+	children?: JSX.Element
 }
 
-type BlockSpecifics = BlockContent & BlockProps;
+export type BlockSpecifics = BlockContent & BlockProps;
 
 type BlockHandler = (content: BlockSpecifics) => JSX.Element | null;
 
@@ -65,6 +68,8 @@ const blockHandlers: { [key: BlockType | string]: BlockHandler } = {
 	[BlockType.bulleted_list_item]: handleNumberedListItem,
 	[BlockType.image]: handle_image,
 	[BlockType.code]: handle_code,
+	[BlockType.column_list]: handleColumnList,
+	[BlockType.column]: handleColumn,
 	// "Breadcrumb": handleBreadcrumb,
 	// "Bulleted list item": handleBulleted,
 	// "Child page": handleChild_page,
@@ -96,24 +101,24 @@ function childrenBlocks(
 	block: notionBlock, 
 	fetchBlocks: (blockId: string) => Promise<any>
 ): JSX.Element | null { // recursive children blocks
-	if (!block?.has_children) return null;
+	if (!block) return null;
 	return (
 		<>
 			<BlocksView
-				blocks={block.children!.results as notionBlock[]}
+				blocks={block.results as notionBlock[]}
 				fetchBlocks={fetchBlocks}
 			/>
 		</>
 	);
 }
 
-export default function Block({
+export default async function Block({
 	block,
 	fetchBlocks,
 }: {
 	block: notionBlock;
 	fetchBlocks: (blockId: string) => Promise<any>;
-}): JSX.Element | null {
+}): Promise<JSX.Element | null> {
 
 	const handler = blockHandlers[block.type];
 	if (!handler) {
@@ -121,12 +126,12 @@ export default function Block({
 		return null;
 	}
 
-	// const childrenElements = block.has_children ? childrenBlocks(block) : undefined;
-	// const content: any = {
-	// 	[block.type]: block[block.type],
-	// 	children: childrenElements,
-	// };
-	const html = handler(block);
+	const childrenElements = block.has_children ? await fetchBlocks(block.id) : undefined;
+	const content: any = {
+		[block.type]: block[block.type],
+		children: childrenElements ? childrenBlocks(childrenElements, fetchBlocks) : undefined
+	};
+	const html = handler(content);
 	return (
 		<>
 			{html}

@@ -19,6 +19,7 @@ import {
 	IconBrandNodejs,
 	IconBrandReact,
 	TablerIconsProps,
+	IconJson
 } from '@tabler/icons-react';
 
 type code = {
@@ -47,6 +48,8 @@ function iconForLanguage(language: string) {
 			return <IconBrandNodejs size={18}/>;
 		case "plain text":
 			return null;
+		case "json":
+			return <IconJson size={18}/>;
 		default:
 			console.warn(`No icon for language ${language}`);
 			return null;
@@ -62,16 +65,18 @@ export default function handle_code({
 		return text.plain_text;
 	}).join("");
 
+	const reducedCode = code_text.replace(/\t/g, "  ");
+
 	return (
 		<CodeHighlightTabs
 			withExpandButton
 			defaultExpanded={code_text.length < 400}
 			expandCodeLabel="Show full code"
 			collapseCodeLabel="Show less"
+			
 			code={[
 				{
-					// fileName: "index.tsx",
-					code: code_text,
+					code: reducedCode,
 					language: languageToLanguage(code.language),
 					icon: iconForLanguage(code.language),
 				}

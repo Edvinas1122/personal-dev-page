@@ -155,7 +155,10 @@ import {
 } from "@/services/server/search";
 
 import {
+	LinksDisplay,
 	NavSection,
+	LinkType,
+	SearchBar
 } from "./nav"
 import 
 	ColorShcemeSelect
@@ -184,57 +187,67 @@ function GlobalHeaderLayout({
 			.build();
 	const avatar = "https://www.edvinasmomkus.com/_next/image?url=https%3A%2F%2Fwww.notion.so%2Fimage%2Fhttps%253A%252F%252Fs3-us-west-2.amazonaws.com%252Fsecure.notion-static.com%252F5f29da70-9f6a-4980-bf67-f9c0c54704db%252Fprofile.jpeg%3Ftable%3Dblock%26id%3Dacd18d29-7b8c-4eb1-823d-21f63088898c%26cache%3Dv2&w=3840&q=75";
 	const background_image = "https://spangled-hall-d99.notion.site/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2Ffd7e6ad3-3f36-45d5-94fb-5bdb95af5da7%2F37fbe56e-638f-453e-8487-9d6e4c7a5ff0%2FIMG_3042.webp?table=block&id=e764bdcf-2ef7-438f-a63f-6c3efa60b176&spaceId=fd7e6ad3-3f36-45d5-94fb-5bdb95af5da7&width=2000&userId=&cache=v2";
+	const links: LinkType[] = [
+		'Projects',
+		'Journal',
+		'Contact'
+	];
 
 	return (
 		<>
 		<Suspense fallback={
 			<div>Loading...</div>
 		}>
-		<ScrollDrivenEnstructionProvider
-			react={scroll_react_enstructions}
-			initial={{
-				animation: "expanded",
-			}}
-		>
-			<Navigation.Header
-				className={classes.header}
-				initial={"expanded"}
-				pathEffect={{
-					default: {
-						position: "relative",
-					},
-					"/": {
-						position: "fixed",
-					},
+			<ScrollDrivenEnstructionProvider
+				react={scroll_react_enstructions}
+				initial={{
+					animation: "expanded",
 				}}
 			>
-				<FounderInfo
-					title={title}
-					description={description}
-					name={name}
-					avatar={avatar}
-					/>
-				<GlobalNavigation />
-				<Hero
-					background_image={background_image}
-				/>
-				<MauntMotion.Nav
-					mountInfo={{
-						on: "test",
-						off: "contracted",
+				<Navigation.Header
+					className={classes.header}
+					initial={"expanded"}
+					pathEffect={{
+						default: {
+							position: "relative",
+						},
+						"/": {
+							position: "fixed",
+						},
 					}}
-					initial={animations.description.contracted}
-					animate={animations.description.expanded}
-					exit={animations.description.contracted}
 				>
-				<NavSection
-					searchServerMethod={searchMethod}
-				>
-					<ColorShcemeSelect />
-				</NavSection>
-				</MauntMotion.Nav>
-			</Navigation.Header>
-		</ScrollDrivenEnstructionProvider>
+					<FounderInfo
+						title={title}
+						description={description}
+						name={name}
+						avatar={avatar}
+					>
+						<GlobalNavigation />
+					</FounderInfo>
+					<Hero
+						background_image={background_image}
+					/>
+					<MauntMotion.Nav
+						mountInfo={{
+							on: "test",
+							off: "contracted",
+						}}
+						initial={animations.description.contracted}
+						animate={animations.description.expanded}
+						exit={animations.description.contracted}
+					>
+						<NavSection>
+							<LinksDisplay
+								links={links}
+								/>
+							<ColorShcemeSelect />
+							<SearchBar
+								searchServerMethod={searchMethod}
+							/>
+						</NavSection>
+					</MauntMotion.Nav>
+				</Navigation.Header>
+			</ScrollDrivenEnstructionProvider>
 		</Suspense>
 		<Navigation.Main
 			className={classes.main}
@@ -260,11 +273,13 @@ function FounderInfo({
 	description,
 	avatar,
 	name,
+	children
 }: {
 	title: EnRichedText,
 	name: EnRichedText,
 	description: EnRichedText,
 	avatar: string,
+	children: React.ReactElement
 }) {
 
 	return (
@@ -325,6 +340,7 @@ function FounderInfo({
 				animate={animations.description.expanded}
 				exit={animations.description.contracted}
 				/>
+			{children}
 			</Suspense>
 		</ScrollMotion.HGroup>
 	);
@@ -337,7 +353,7 @@ import {
 function GlobalNavigation() {
 	return (
 		<>
-			{/* <Group
+			<Group
 
 				style={{
 					position: "relative",
@@ -345,19 +361,24 @@ function GlobalNavigation() {
 				// className={classes.controls}
 				}}
 				>
+				<Link
+					href={"/projects"}
+				>
 				<GradientThemedButton
 					component={MauntMotion.Button}
 					variant="gradient"
-					// className={classes.control}
-					animate={animations.button.expanded}
-					initial={animations.button.contracted}
+					mountInfo={{
+						on: "expanded",
+						off: "contracted",
+					}}
 					exit={animations.button.contracted}
 					size="xl"
 					mt={40}
 					>
-						Contact
+						Projects
 					</GradientThemedButton>
-			</Group> */}
+				</Link>
+			</Group>
 		</>
 	);
 }

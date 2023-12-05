@@ -28,6 +28,7 @@ import {
 	Goal,
 	Manual,
 	AquisitionMethod,
+	Paged
 } from "./blog.orm";
 
 export type {
@@ -37,4 +38,5 @@ export type {
 	Goal,
 	Manual,
 	AquisitionMethod,
+	Paged
 };

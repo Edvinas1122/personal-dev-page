@@ -236,6 +236,7 @@ const useMountWhenScroll = (mountInfo: MountEnstuct) => {
 	}, [
 		activeEnstruction,
 		setMounted,
+		enstruction_is_mounted
 	]);
 
 	return mounted;
@@ -369,7 +370,11 @@ function usePathDrivenEnstructions(react: SingleEnstruction[]) {
         } else {
             dispatch({ type: 'SET_ACTIVE', payload: react[1] });
         }
-    }, [root, activeEnstruction]);
+    }, [
+		root,
+		activeEnstruction,
+		react
+	]);
 
     return {
 		pathEnstruction: activeEnstruction,
@@ -415,6 +420,8 @@ function useAnimateTime(
 		}
 	}, [
 		startPoint,
+		max,
+		rate
 	]);
 
 	React.useEffect(() => {
@@ -423,6 +430,7 @@ function useAnimateTime(
 	}, [
 		value,
 		animateState,
+		compensate
 	]);
 
 	return {
@@ -522,7 +530,9 @@ function usePathEffects(pathEffect: PathEffects) {
 		const path = availablePath(pathname);
 		setStyle(pathEffect[path]);
 	}, [
-		pathname
+		pathname,
+		availablePath,
+		pathEffect
 	]);
 
 	return style;
