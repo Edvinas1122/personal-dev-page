@@ -1,4 +1,8 @@
-import { DevJournal, Manual } from "@/services/blog/blog.orm";
+import { 
+	DevJournal,
+	Manual,
+	describeManual
+} from "@/services/blog/blog.module";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import {
@@ -14,24 +18,6 @@ import {
 	CardItem,
 } from "@/services/server/fetchProjectItems";
 
-function describeManual(
-	type: Manual["Type"],
-	part: Manual["Part"],
-	expands: Manual["Expands"],
-): string {
-	if (type == "Documentation" && part == "Full" && expands.length == 0) {
-		return "A full documentation of the project";
-	} else if (type == "Documentation" && part == "Full" && expands.length > 0) {
-		return "Main documentation of the project";
-	} else if (type == "Documentation" && part == "Fragment") {
-		return "Documentation part";
-	} else if (type == "Tutorial" && part == "Full") {
-		return "A tutorial for the project";
-	} else if (type == "Tutorial" && part == "Fragment") {
-		return "A tutorial for a part of the project";
-	} else 
-		return "A manual for the project";
-}
 
 function reduceManual(manual: Manual) {
 	const description = describeManual(

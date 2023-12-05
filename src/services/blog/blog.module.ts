@@ -40,3 +40,11 @@ export type {
 	AquisitionMethod,
 	Paged
 };
+
+import {
+	describeManual
+} from "./blog.utils"
+
+export {
+	describeManual
+};

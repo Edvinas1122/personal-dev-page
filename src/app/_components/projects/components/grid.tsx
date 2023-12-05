@@ -40,6 +40,7 @@ export function ArchitecturePreviewGrid({
 			</MotionSimpleGrid>
 		);
 	}
+
 	return (
 		<InnerContents />
 	);

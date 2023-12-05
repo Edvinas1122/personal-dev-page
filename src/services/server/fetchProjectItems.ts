@@ -142,7 +142,7 @@ async function fetchManual(name: string) {
 	return manual;
 }
 
-export async function fetchProjectItemPage(
+export async function fetchItemPage(
 	item_type: ItemPaths,
 	item_name: string
 ) {

@@ -32,16 +32,16 @@ function SkillsCategoryGrid(
 	const Info = () => {
 		return (
 			<>
-				<Text fz="sm" c="dimmed">
+				<Text fz="xs" c="dimmed">
 					Utilised 
 				</Text>
-				<Badge size="sm">
+				<Badge size="xs">
 					{props.modules_used.length} tools
 				</Badge>
-				<Text fz="sm" c="dimmed">
+				<Text fz="xs" c="dimmed">
 					in
 				</Text>
-				<Badge size="sm">
+				<Badge size="xs">
 					{props.at_projects.length} projects
 				</Badge>
 			</>

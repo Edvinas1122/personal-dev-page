@@ -106,6 +106,11 @@ const animations = {
 		expanded: animation_set(down_pop_visible,
 			0.3, 0.2, "spring"),
 	},
+	content: {
+		contracted: animation_set(down_pop_hidden, 0.10, 0),
+		expanded: animation_set(down_pop_visible,
+			0.3, 0.3, "spring"),
+	},
 	button: {
 		contracted: animation_set(down_pop_hidden, 0.1, 0),
 		expanded: animation_set(down_pop_visible, 0.3, 0.3, "spring"),
@@ -164,10 +169,17 @@ import
 	ColorShcemeSelect
 from "./colorScheme";
 
+import {
+	FooterCentered,
+} from "./footer"
+import Contacts, {
+	Contact
+} from "./contacts";
+
 function GlobalHeaderLayout({
 	children
 }: {
-	children: React.ReactNode // local_navigation
+	children: React.ReactNode
 }) {
 
 	const typer = new EnRichedTextTyper();
@@ -189,8 +201,26 @@ function GlobalHeaderLayout({
 	const background_image = "https://spangled-hall-d99.notion.site/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2Ffd7e6ad3-3f36-45d5-94fb-5bdb95af5da7%2F37fbe56e-638f-453e-8487-9d6e4c7a5ff0%2FIMG_3042.webp?table=block&id=e764bdcf-2ef7-438f-a63f-6c3efa60b176&spaceId=fd7e6ad3-3f36-45d5-94fb-5bdb95af5da7&width=2000&userId=&cache=v2";
 	const links: LinkType[] = [
 		'Projects',
-		'Journal',
-		'Contact'
+		'Tutorials',
+		// 'Contact'
+	];
+
+	const contacts: Contact[] = [{
+			tabler_icon_name: "IconBrandX",
+			link: "https://x.com/EdvinasMomkus"
+		},
+		{
+			tabler_icon_name: "IconBrandGithub",
+			link: "https://github.com/edvinas1122/",
+		},
+		{
+			tabler_icon_name: "IconBrandInstagram",
+			link: "https://www.instagram.com/edvinasmomkus/",
+		},
+		{
+			tabler_icon_name: "IconBrandDiscord",
+			link: "https://discordapp.com/users/520663867320303617",
+		}
 	];
 
 	return (
@@ -222,7 +252,22 @@ function GlobalHeaderLayout({
 						name={name}
 						avatar={avatar}
 					>
-						<GlobalNavigation />
+						<MauntMotion.Div
+							mountInfo={{
+								on: "expanded",
+								off: "contracted",
+							}}
+							initial={animations.content.contracted}
+							animate={animations.content.expanded}
+							exit={animations.content.contracted}
+							style={{
+								justifyContent: "start"
+							}}
+						>
+						<Contacts contacts={contacts} />
+						<GlobalNavigation links={links} />
+						<ScrollIndicator/>
+						</MauntMotion.Div>
 					</FounderInfo>
 					<Hero
 						background_image={background_image}
@@ -260,13 +305,41 @@ function GlobalHeaderLayout({
 		>
 
 		{children}
-
 		</Navigation.Main>
+		<FooterCentered
+			links={links}>
+				<Contacts
+					contacts={contacts}
+				/>
+		</FooterCentered>
 		</>
 	);
 }
 
 import Link from "next/link";
+import {
+	IconCaretDown,
+	IconMouse
+} from '@tabler/icons-react';
+
+function ScrollIndicator() {
+	return (
+		<Group
+			className={classes.appear}
+			my="md"
+			style={{
+				justifyContent: "center",
+				flexDirection: "column",
+				zIndex: 1000,
+				gap: 0
+			}}
+		>
+			{/* <Text c="white">Scroll</Text> */}
+			<IconMouse style={{width: "8rem", height: "4rem", color: "white"}} stroke={0.5}/>
+			<IconCaretDown style={{width: "8rem", height: "4rem", color: "white"}} stroke={0.5}/>
+		</Group>
+	)
+}
 
 function FounderInfo({
 	title,
@@ -285,7 +358,6 @@ function FounderInfo({
 	return (
 		<ScrollMotion.HGroup
 			className={classes.content}
-			// variants={animations.founder}
 			style={{
 				position: "relative",
 				zIndex: 30,
@@ -325,8 +397,6 @@ function FounderInfo({
 				rich_text={title}
 				animate={animations.title.expanded}
 				exit={animations.title.contracted}
-				style={{
-				}}
 				/>
 			<EnRichedTextDisplay
 				Component={MauntMotion.Paragraph}
@@ -350,7 +420,11 @@ import {
 	GradientThemedButton
 } from "@/components/text/contexted";
 
-function GlobalNavigation() {
+function GlobalNavigation({
+	links,
+}: {
+	links: string[],
+}) {
 	return (
 		<>
 			<Group
@@ -361,23 +435,26 @@ function GlobalNavigation() {
 				// className={classes.controls}
 				}}
 				>
-				<Link
-					href={"/projects"}
-				>
-				<GradientThemedButton
-					component={MauntMotion.Button}
-					variant="gradient"
-					mountInfo={{
-						on: "expanded",
-						off: "contracted",
-					}}
-					exit={animations.button.contracted}
-					size="xl"
-					mt={40}
+				{links.map((link) => (
+					<Link
+						key={link + "_link"}
+						href={`/${link.toLowerCase()}`}
 					>
-						Projects
-					</GradientThemedButton>
-				</Link>
+						<GradientThemedButton
+							// component={MauntMotion.Button}
+							variant="gradient"
+							// mountInfo={{
+							// 	on: "expanded",
+							// 	off: "contracted",
+							// }}
+							// exit={animations.button.contracted}
+							size="xl"
+							mt={40}
+							>
+								{link}
+						</GradientThemedButton>
+					</Link>
+				))}
 			</Group>
 		</>
 	);
@@ -385,6 +462,7 @@ function GlobalNavigation() {
 
 import { TyperHeader } from "@/components/hero/typer";
 import { Suspense } from "react";
+import { IconBrandTwitter } from "@tabler/icons-react";
 
 function Hero({
 	background_image,

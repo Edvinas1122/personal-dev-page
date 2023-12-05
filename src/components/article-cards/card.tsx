@@ -32,7 +32,7 @@ export interface ArticleCardProps {
 };
 
 export function GeneralArticleCard(
-	props: ArticleCardProps
+	props: ArticleCardProps & {link: string}
 ) {
 	const theme = useMantineTheme();
 	const color = props.image ? "antiquewhite" : "gray";
@@ -44,6 +44,7 @@ export function GeneralArticleCard(
 					{...props}
 				/>
 			}
+			// link={link}
 			theme={theme}
 		>
 			<>

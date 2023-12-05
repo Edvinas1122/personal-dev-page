@@ -43,21 +43,23 @@ const HeaderCard = (
 	props
 : ArticleCardProps & { 
 	variants: Variants
+	link: string
 }) => {
 	const visible = useIsSelectedPath(props.title);
 	const height = rem(280);
 
-	return 	(visible && <motion.li variants={props.variants}
-			exit={{ opacity: 0, transition: { duration: 1, dely: 1 } }}
-			style={{
-				transition: "width 0.7s ease-in-out 0.5s",
-			}}
-		>
-			<GeneralArticleCard
-				hide_read_more={visible}
-				{...props} height={height}
-			/>
-		</motion.li>);
+	return (visible && <motion.li 
+				variants={props.variants}
+				exit={{ opacity: 0, transition: { duration: 1, dely: 1 } }}
+				style={{
+					transition: "width 0.7s ease-in-out 0.5s",
+				}}
+			>
+				<GeneralArticleCard
+					hide_read_more={visible}
+					{...props} height={height}
+				/>
+			</motion.li>);
 
 };
 

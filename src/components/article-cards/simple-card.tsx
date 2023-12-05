@@ -23,6 +23,7 @@ type SimpleCardProps = {
 	theme: MantineTheme;
 	image?: string;
 	hide_read_more?: boolean;
+	link: string;
 }
 
 import {
@@ -34,9 +35,7 @@ export function SimpleCard(props: SimpleCardProps) {
 	const { hovered, ref } = useHover();
 	const title_font_color = props.image ? "white" : undefined;
 	const description_font_color = props.image ? "#FFFAF0" : props.theme.colors.gray[8];
-	const linkProps = { 
-		href: "/projects/"+ to_url_string(props.title),
-	};
+
 	return (
 		<Card
 			radius="md"
@@ -48,7 +47,7 @@ export function SimpleCard(props: SimpleCardProps) {
 			withBorder
 			shadow='md'
 			component={Link}
-			href={linkProps.href}
+			href={props.link}
 			>
 			<Card.Section
 				ref={ref}
@@ -85,7 +84,7 @@ export function SimpleCard(props: SimpleCardProps) {
 			{props.hide_read_more || !hovered ? null : (
 				<Button
 					component={Link}
-					{...linkProps}
+					href={props.link}
 					style={{
 						backgroundColor: "transparent",
 						width: "fit-content",

@@ -3,8 +3,6 @@ import { Inter } from 'next/font/google'
 import {
 	MantineProvider,
 	ColorSchemeScript,
-	Container,
-	SimpleGrid,
 } from "@mantine/core";
 import { theme } from "../theme";
 import Script from 'next/script';
@@ -12,8 +10,8 @@ import "@mantine/core/styles.css";
 import '@mantine/code-highlight/styles.css';
 import 
 	GlobalHeaderLayout
-from "@/components/header/global"
-import dynamic from 'next/dynamic'
+from "@/app/_components/body/global"
+// import dynamic from 'next/dynamic'
 import "./globals.css";
 import { Suspense } from 'react';
 

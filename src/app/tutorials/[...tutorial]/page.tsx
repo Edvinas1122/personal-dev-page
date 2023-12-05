@@ -5,7 +5,7 @@ import {
 
 import ArticleDisplay, {
 	Loading
-} from "./_components/article/component"
+} from "@/app/projects/[...project]/_components/article/component"
 import {
 	ItemPaths
 } from "@/services/server/fetchProjectItems";
@@ -15,15 +15,10 @@ export default function ArticlePage({
 	params,
 }: {
 	params: {
-		project: string[]
+		tutorial: string[]
 	}
 }) {
-	const relation = params.project[1];
-	const section = params.project[2];
-
-	if (!relation || !section) {
-		return null;
-	}
+	const tutorial_name = url_string(params.tutorial[0]);
 
 	return (
 		<>
@@ -32,8 +27,8 @@ export default function ArticlePage({
 			}>
 				<ArticleDisplay
 					params={{
-						relation: relation as ItemPaths,
-						name: url_string(section),
+						relation: ItemPaths.manual,
+						name: url_string(tutorial_name),
 					}}
 				/>
 			</Suspense>

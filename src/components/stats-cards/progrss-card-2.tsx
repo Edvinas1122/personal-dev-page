@@ -43,38 +43,14 @@ function defaultColorMethod(key: string) {
 }
 
 export function ProgressCard({
-	title,
-	description,
 	items,
 }: {
-	title: string;
-	description: string;
 	items: {[props: string]: number},
 }) {
 
 	return (
 		<>
 			<Container my="lg" size={"lg"}>
-				<Title my="md">
-					{title}
-				</Title>
-				<Paper
-					my="md"
-					withBorder
-					style={{
-						display: "flex",
-						justifyContent: "center",
-						flexDirection: "column",
-						width: "50%",
-					}}
-					>
-				<Text
-					style={{
-						padding: "var(--mantine-spacing-md)",
-					}}
-				>
-					{description}
-				</Text>
 				<div style={{
 					padding: "var(--mantine-spacing-md)"
 				}}>
@@ -82,12 +58,10 @@ export function ProgressCard({
 				{/* <CircularProgress */}
 				<RationalProgress
 					items={items}
-					// label={"used languages"}
 					colorMethod={defaultColorMethod}
 					/>
 				</div>
 				<Legend items={items} />
-				</Paper>
 			</Container>
 		</>
 	);

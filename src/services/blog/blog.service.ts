@@ -44,7 +44,27 @@ export default class BlogService {
 		// console.log(projects);
 		const tablesWithImagesPromises = projects.map((project: any) => this.getProjectDetails(project));
 		const tablesWithImages = await Promise.all(tablesWithImagesPromises); /// parallel issues
-		return tablesWithImages as Paged<Project>[]
+		return tablesWithImages as Paged<Project>[];
+	}
+
+	async getTutorials() {
+		const manuals = await this.databaseTool
+			.getTable("Manual")
+			.query()
+			// .sort("Created", "descending")
+			.filter("Type", "select", "equals", "Tutorial")
+			.limit(12)
+			.get()
+			.then((entries: any) => entries.all());
+		const manualsWithImagePromises = manuals
+			.map(this.retrievePageDetails.bind(this))
+		const manuals_with_images = await Promise
+			.all(manualsWithImagePromises);
+		const manuals_with_external_modules_promises = manuals_with_images
+			.map(this.fetchRelatedItems.bind(this, "External Modules"));
+		const manuals_with_external_modules = await Promise
+			.all(manuals_with_external_modules_promises);
+		return manuals_with_external_modules as (Paged<Manual & {external: ExternalDeps[]}>)[];
 	}
 
 	private transformJournal(journal: DevJournal) {
@@ -278,23 +298,48 @@ export default class BlogService {
 		return structure;
 	}
 
+	private async retrievePageDetails(
+		table: any
+	) {
+		const page = await table.retrievePageInfo();
+		if (!page?.object || page?.object !== "page") {
+			console.error("mistakes", page);
+		}
+		if (page) {
+			return {
+				cover: this.coverImage(page.cover),
+				icon: page.icon,
+				...table
+			}
+		} else {
+			return {
+				cover: "",
+				icon: "",
+				...table,
+			}
+		}
+	}
+
+	private async fetchRelatedItems(
+		related_table: string,
+		table: any
+	) {
+		console.log(table);
+		const external = await this
+			.getRelations(table[related_table])
+			.then((relations) => relations
+				.map((relation) => this.external(relation)));
+		return {
+			external,
+			...table
+		}
+	}
+
 	private async getProjectDetails(
 		table: any,
 		related_table: string = "External Deps"
 	) {
-		const page = await table.retrievePageInfo();
-		if (!page?.object || page?.object !== "page") 
-		{
-			console.error("mistakes", page);
-		}
-		const constructed_item = table;
-		if (page) {
-			constructed_item.cover = this.coverImage(page.cover);
-			constructed_item.icon = page.icon;
-		} else {
-			constructed_item.cover = "";
-			constructed_item.icon = "";
-		}
+		const constructed_item = await this.retrievePageDetails(table);
 		if (related_table) {
 			constructed_item.external = await this
 				.getRelations(table[related_table])

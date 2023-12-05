@@ -13,24 +13,22 @@ import {
 	ArticleLayout
 } from "./article_layout";
 import {
-	fetchProjectItemPage,
+	fetchItemPage,
 	ItemPaths
 } from "@/services/server/fetchProjectItems";
 
 async function ArticleDisplay({
 	params: {
-		project,
 		relation,
 		name,
 	}
 }:{
 	params: {
-		project: string,
 		relation: ItemPaths,
 		name: string,
 	}
 }) {
-	const article = await fetchProjectItemPage(
+	const article = await fetchItemPage(
 		relation,
 		name
 	);

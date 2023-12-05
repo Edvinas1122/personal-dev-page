@@ -29,7 +29,7 @@ function IconSelector(props: {
 			width: rem(32),
 			height: rem(32)
 		},
-		stroke: 1.5
+		stroke: 1
 	};
 
 	switch (props.title) {
@@ -63,21 +63,30 @@ export function StatsCard({
 	return (
 		<Paper
 			radius="md"
-			// withBorder
-			p="sm"
+			withBorder
+			p="xs"
+			w="fit-content"
 			className={classes.card}
-			mt={20}
+			// mt={20}
 			ref={ref}
 		>
-		<ThemeIcon className={classes.icon} size={60} radius={60}>
-			<IconSelector title={title} />
-		</ThemeIcon>
-
-		<Title ta="start" order={3} fw={700} className={classes.title}>
-			{title}
-		</Title>
-		<Group justify="start" gap={4} mt="md">
-			{subtitle}
+		<Group
+			dir="row"
+		>
+			<ThemeIcon className={classes.icon} size={50} radius={50}>
+				<IconSelector title={title} />
+			</ThemeIcon>
+			<Group
+				style={{flexDirection: "column", alignItems: "start"}}
+				gap="3px"
+			>
+				<Title ta="start" order={3} fw={700} className={classes.title}>
+					{title}
+				</Title>
+				<Group justify="start" gap={4}>
+					{subtitle}
+				</Group>
+			</Group>
 		</Group>
 
 		<Group justify="start" mt="xs">

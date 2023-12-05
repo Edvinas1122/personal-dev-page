@@ -59,7 +59,7 @@ export interface ProjectStat extends Paged<Project> {
 
 export async function getTables<T>(
 	reduce: (item: ProjectStat) => T
-) {
+): Promise<T[]> {
 	"use server";
 	const service = constructBlogService({
 		next: {revalidate: 3500}
