@@ -50,6 +50,12 @@ function iconForLanguage(language: string) {
 			return null;
 		case "json":
 			return <IconJson size={18}/>;
+		case "docker":
+			return <IconBrandDocker size={18}/>;
+		case "shell":
+			return <IconBrandNodejs size={18}/>;
+		case "javascript":
+			return <IconBrandJavascript size={18}/>;
 		default:
 			console.warn(`No icon for language ${language}`);
 			return null;

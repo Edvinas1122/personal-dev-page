@@ -124,7 +124,6 @@ export default class BlogService {
 		}
 		const article_info: NotionEntry = journal[0];
 		const article_blocks = await article_info.retrievePage();
-		console.log("hournal", article_info.notion);
 
 		return {
 			page: article_blocks.page,
@@ -178,7 +177,6 @@ export default class BlogService {
 			.map((block: any) => {
 				const text = block[block.type].rich_text
 					.map((text: any) => text.plain_text).join("");
-				console.log(text);
 				return {
 					label: text,
 					link: "#"+text,
@@ -324,7 +322,6 @@ export default class BlogService {
 		related_table: string,
 		table: any
 	) {
-		console.log(table);
 		const external = await this
 			.getRelations(table[related_table])
 			.then((relations) => relations

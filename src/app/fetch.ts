@@ -103,7 +103,6 @@ export async function getGitHubStats({
 			obj[language] = percentage;
 			return obj;
 		}, {});
-	console.log(languagePercentages)
 	return {
 		repos: not_forked_repos.length,
 		language_info: makeMeMoreATechnician({

@@ -6,6 +6,7 @@ import handleNumberedListItem from "../objects/block/numbered_list_item";
 import handle_image from "../objects/block/image";
 import handle_code from "../objects/block/code";
 import handleColumnList, {handleColumn} from "../objects/block/column_list";
+import handleBookmark from "../objects/block/bookmark";
 
 export enum BlockType {
 	callout = "callout",
@@ -20,7 +21,9 @@ export enum BlockType {
 	image = "image",
 	code = "code",
 	column_list = "column_list",
-	column = "column"
+	column = "column",
+	bookmark = "bookmark",
+
 }
 
 type BlockContent = {
@@ -70,6 +73,7 @@ const blockHandlers: { [key: BlockType | string]: BlockHandler } = {
 	[BlockType.code]: handle_code,
 	[BlockType.column_list]: handleColumnList,
 	[BlockType.column]: handleColumn,
+	[BlockType.bookmark]: handleBookmark,
 	// "Breadcrumb": handleBreadcrumb,
 	// "Bulleted list item": handleBulleted,
 	// "Child page": handleChild_page,
