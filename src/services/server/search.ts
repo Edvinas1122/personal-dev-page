@@ -26,7 +26,7 @@ export async function searchMethod(query: string): Promise<any> {
 		  ...result,
 		  properties: resolvedProperties
 		};
-	  }));
+	}));
 	const propeties = resolvedResults.map((result: any) => {
 		return {
 			at: result.properties.Category,
@@ -34,7 +34,7 @@ export async function searchMethod(query: string): Promise<any> {
 			description: result.properties.Description,
 			value: result.properties.Name.toLowerCase(),
 			label: result.properties.Name,
-			path: `projects/${to_url_string(result.properties.Name)}`,
+			path: `/projects/${to_url_string(result.properties.Name)}`,
 		}
 	});
 

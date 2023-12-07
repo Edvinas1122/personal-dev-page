@@ -218,6 +218,12 @@ export default class BlogService {
 			.search(query, "Projects");
 		return projects;
 	}
+
+	async searchTutorials(query: string) {
+		const projects = await this.databaseTool
+			.search(query, "Tutorials");
+		return projects;
+	}
 		
 
 	private async getArchitectures() {
