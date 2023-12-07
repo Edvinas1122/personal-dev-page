@@ -9,7 +9,11 @@ import ArticleDisplay, {
 import {
 	ItemPaths
 } from "@/services/server/fetchProjectItems";
+import {
+	generateProjectMetadata
+} from "./meta";
 
+export const generateMetadata = generateProjectMetadata;
 
 export default function ArticlePage({
 	params,

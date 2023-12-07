@@ -238,7 +238,7 @@ export default class BlogService {
 		return architectures;
 	}
 
-	async getProject(key: string): Promise<Project | null> {
+	async getProject(key: string): Promise<Paged<Project> | null> {
 		try {
 			const project = await this.databaseTool
 				.getTable("Projects")
@@ -249,7 +249,9 @@ export default class BlogService {
 				console.error("no project found");
 				throw new Error("no project found");
 			}
-			const constructed_item = await this.getProjectDetails(project[0]) as Project & {[key:string]: any};
+			const constructed_item = await this.getProjectDetails(project[0]) as Paged<Project> & {
+				[key:string]: any
+			};
 			return constructed_item;
 		} catch	(err: any) {
 			return this.exceptionHandler(err);
