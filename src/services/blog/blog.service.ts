@@ -220,9 +220,9 @@ export default class BlogService {
 	}
 
 	async searchTutorials(query: string) {
-		const projects = await this.databaseTool
-			.search(query, "Tutorials");
-		return projects;
+		const manuals = await this.databaseTool
+			.search(query, "Manual");
+		return manuals;
 	}
 		
 

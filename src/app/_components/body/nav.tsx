@@ -225,7 +225,8 @@ import {
 	FocusTrap,
 	Loader,
 	ComboboxItem,
-	MantineColor
+	MantineColor,
+	Tabs,
 } from '@mantine/core';
 import {
 	useHotkeys,
@@ -233,7 +234,7 @@ import {
 } from '@mantine/hooks';
 
 type SearchBarProps = {
-	searchServerMethod: (query: string) => Promise<any>;
+	searchServerMethod: (query: string, lookFor: "projects" | "tutorials") => Promise<any>;
 };
 
 export function SearchBar(
@@ -242,13 +243,17 @@ export function SearchBar(
 	const [search_opened, { toggle, close }] = useDisclosure(false);
 	const [search, setSearch] = React.useState('');
 	const [debaunced] = useDebouncedValue(search, 200);
+	const [lookFor, setLookFor] = React.useState<"projects" | "tutorials" | null>("projects");
 	const [results, setResults] = React.useState([]);
 	const [loading, setLoading] = React.useState(false);
 
 	React.useEffect(() => {
 		if (debaunced.length > 0) {
 			setLoading(true);
-			props.searchServerMethod(debaunced).then((res) => {
+			props.searchServerMethod(
+				debaunced,
+				lookFor || "projects"
+				).then((res) => {
 				setLoading(false);
 				setResults(res.results);
 			});
@@ -283,6 +288,29 @@ export function SearchBar(
 				xOffset={0}
 				autoFocus={false}
 			>
+				<>
+				<Tabs
+					onChange={(value) => {
+						// @ts-ignore
+						setLookFor(value);
+					}}
+					value={lookFor}
+				>
+					<Tabs.List>
+					<Tabs.Tab
+						color="blue"
+						value="projects"
+					>
+						Projects
+					</Tabs.Tab>
+					<Tabs.Tab
+						color="blue"
+						value="tutorials"
+					>
+						Tutorials
+					</Tabs.Tab>
+					</Tabs.List>
+				</Tabs>
 				<ResultDisplay
 					onSelectCallback={close}
 					results={results}
@@ -291,6 +319,7 @@ export function SearchBar(
 					}}
 					loading={loading}
 					/>
+					</>
 			</Modal>
 		</Group>
 	)
